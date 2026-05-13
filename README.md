@@ -5,8 +5,8 @@
 ## 구성
 
 - `backend/`: Spring Boot API, MySQL 저장, Swagger 관리 조회
-- `worker/`: Python Playwright 크롤러, 종목 별칭 매칭, LLM 감성 분석
-- `docker-compose.yml`: MySQL, backend, worker 로컬 시연 환경
+- `worker/`: Python crawler, Playwright fallback, 종목 별칭 매칭, LLM 감성 분석
+- `docker-compose.yml`: MySQL, backend, worker 로컬 실행 환경
 
 ## 실행
 
@@ -41,7 +41,7 @@ OPENAI_MODEL=gpt-4.1-mini
 
 ## 종목 마스터
 
-샘플 CSV는 `worker/data/instruments.sample.csv`와 backend Flyway seed에 들어 있습니다. 국내 전체 종목 + 미국 상장 주식/ETF로 확장할 때는 같은 컬럼 형식의 CSV를 준비하고 `INSTRUMENT_CSV_PATH`를 교체합니다. `NAVER_STOCK_CODES`를 따로 지정하지 않으면 worker는 CSV 안의 `KR` 종목 전체를 네이버 종토방 수집 대상으로 사용합니다.
+샘플 CSV인 `worker/data/instruments.sample.csv`는 backend Flyway seed에도 들어 있습니다. 국내 전체 종목 + 미국 상장 주식/ETF로 확장할 때는 같은 컬럼 형식의 CSV를 준비하고 `INSTRUMENT_CSV_PATH`를 교체합니다. `NAVER_STOCK_CODES`를 별도로 지정하지 않으면 worker는 CSV 안의 `KR` 종목 전체를 네이버 종토방 수집 대상으로 사용합니다.
 
 ```csv
 market,symbol,name,aliases,type
