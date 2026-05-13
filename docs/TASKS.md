@@ -23,6 +23,7 @@
 - [x] GitHub CLI 설치 확인
 - [x] `gh auth login` 완료 확인
 - [x] GitHub remote 연결
+- [x] 첫 bootstrap draft PR 생성
 - [ ] 첫 bootstrap draft PR 생성
 - [ ] 실제 네이버 종토방 HTML 구조에 맞춘 parser 보강
 - [ ] 실제 에펨코리아 주식 게시판 구조에 맞춘 parser 보강

@@ -9,6 +9,7 @@
 - GitHub remote: `origin` -> `https://github.com/99hyuk/YouBuyFirst.git`
 - GitHub CLI: 설치/로그인 완료. Codex PATH에는 없을 수 있어 스크립트가 기본 설치 경로도 자동 탐색합니다.
 - 현재 브랜치: `codex/human-indicator-mvp`
+- Bootstrap draft PR: https://github.com/99hyuk/YouBuyFirst/pull/1
 
 ## 사용자가 준비해야 하는 것
 

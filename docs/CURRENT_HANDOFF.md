@@ -29,6 +29,7 @@
 - 브랜치: `codex/human-indicator-mvp`
 - GitHub remote: `origin` 연결 완료, `https://github.com/99hyuk/YouBuyFirst.git`
 - GitHub CLI: 설치와 인증 확인 완료, Codex PATH에는 없을 수 있어 스크립트가 `C:\Program Files\GitHub CLI\gh.exe`를 fallback으로 찾습니다
+- Bootstrap draft PR: https://github.com/99hyuk/YouBuyFirst/pull/1
 - Docker Compose: 이전 실행에서 backend, worker, MySQL까지 구동 확인
 - Swagger: `http://localhost:8080/swagger-ui.html`
 - MySQL host port: `3307`
@@ -52,7 +53,7 @@
 
 ## 가장 가까운 다음 작업 후보
 
-- 첫 bootstrap draft PR 생성
+- PR #1 CI 결과 확인 후 리뷰/머지 여부 결정
 - 네이버 종토방 실제 HTML 변화에 맞춘 parser 보강
 - 에펨코리아 게시판 parser 보강
 - worker가 backend readiness를 기다리도록 개선
