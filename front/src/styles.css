@@ -93,7 +93,7 @@ a {
 
 .briefing-copy,
 .hero-card,
-.terminal-board {
+.mood-board {
   min-width: 0;
   border: 1px solid #d6e1df;
   border-radius: 8px;
@@ -172,11 +172,11 @@ a {
   color: #bdd0cc;
 }
 
-.terminal-board {
+.mood-board {
   padding: 18px;
 }
 
-.terminal-header {
+.mood-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -184,31 +184,51 @@ a {
   margin-bottom: 12px;
 }
 
-.terminal-header h3 {
+.mood-header h3 {
   margin: 4px 0 0;
   font-size: 22px;
 }
 
-.terminal-list {
+.mood-card-grid {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(176px, 1fr));
+  gap: 12px;
 }
 
-.terminal-row {
+.mood-card {
   display: grid;
-  grid-template-columns: minmax(140px, 1.1fr) 80px 80px minmax(180px, 1.2fr) minmax(120px, 0.9fr) auto;
+  align-content: space-between;
   gap: 12px;
-  align-items: center;
-  min-height: 74px;
+  aspect-ratio: 1.08 / 1;
+  min-height: 194px;
   padding: 14px;
+  border: 1px solid #e1ebe8;
   border-radius: 7px;
   background: #f5f8f7;
 }
 
-.compact-terminal-row {
-  grid-template-columns: 58px minmax(150px, 0.8fr) minmax(220px, 1.25fr) minmax(120px, 0.8fr) auto;
-  min-height: 58px;
-  padding: 10px 12px;
+.mood-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mood-stock {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.mood-stock strong {
+  color: #142326;
+  font-size: 17px;
+}
+
+.mood-stock span {
+  color: #66787d;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .reaction-gauge {
@@ -235,20 +255,6 @@ a {
   color: #183032;
   font-size: 15px;
   font-weight: 800;
-}
-
-.stock-cell strong,
-.metric-cell strong {
-  display: block;
-  color: #142326;
-}
-
-.stock-cell span,
-.metric-cell span {
-  display: block;
-  margin-top: 3px;
-  color: #66787d;
-  font-size: 12px;
 }
 
 .metric-cell {
@@ -330,7 +336,29 @@ a {
   background: #9a5c3e;
 }
 
-.terminal-tags {
+.mood-compare {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.mood-label {
+  color: #4c6065;
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.mood-ratio {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+  color: #4c6065;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mood-tags {
   min-width: 0;
 }
 
@@ -437,6 +465,11 @@ a {
   border-color: #397367;
   background: #397367;
   color: #ffffff;
+}
+
+.mood-period-tabs {
+  justify-content: flex-end;
+  margin: 0;
 }
 
 .return-line-chart {
@@ -746,8 +779,6 @@ a {
     font-size: 44px;
   }
 
-  .terminal-header,
-  .terminal-row,
   .rising-row,
   .return-row,
   .compact-row {
@@ -755,23 +786,26 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .terminal-row {
-    gap: 10px;
+  .mood-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  .compact-terminal-row {
-    grid-template-columns: 46px minmax(0, 1fr);
-    align-items: center;
+  .mood-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .compact-terminal-row .reaction-gauge {
-    grid-row: 1 / span 2;
+  .mood-card {
+    min-height: 178px;
+    padding: 12px;
   }
 
-  .compact-terminal-row .reaction-compact,
-  .compact-terminal-row .terminal-tags,
-  .compact-terminal-row > .status-pill {
-    grid-column: 2;
+  .mood-card-head {
+    align-items: flex-start;
+  }
+
+  .mood-period-tabs {
+    justify-content: flex-start;
   }
 
   .return-legend {

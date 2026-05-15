@@ -35,27 +35,39 @@ import reactionRanking from '../fixtures/reaction-ranking.json';
       </aside>
     </section>
 
-    <section class="terminal-board" aria-labelledby="terminal-title">
-      <div class="terminal-header">
+    <section class="mood-board" aria-labelledby="mood-title">
+      <div class="mood-header">
         <div>
-          <p class="label">reaction terminal</p>
-          <h3 id="terminal-title">반응 터미널</h3>
+          <p class="label">종목 심리</p>
+          <h3 id="mood-title">종목별 심리 비교</h3>
         </div>
-        <span class="status-pill">{{ reactionRanking.windowLabel }}</span>
+        <div class="period-tabs mood-period-tabs" aria-label="종목별 심리 비교 기간">
+          <button
+            v-for="period in dashboardSummary.moodPeriods"
+            :key="period"
+            type="button"
+            :class="{ active: period === dashboardSummary.activeMoodPeriod }"
+          >
+            {{ period }}
+          </button>
+        </div>
       </div>
 
-      <div class="terminal-list">
-        <article v-for="item in reactionRanking.items" :key="item.symbol" class="terminal-row compact-terminal-row">
-          <div class="reaction-gauge" :style="`--score: ${item.heatScore}`" aria-label="열기 후보 원형 지표">
-            <span>{{ item.heatScore }}</span>
+      <div class="mood-card-grid">
+        <article v-for="item in reactionRanking.items" :key="item.symbol" class="mood-card">
+          <div class="mood-card-head">
+            <div class="mood-stock">
+              <strong>{{ item.name }}</strong>
+              <span>{{ item.symbol }} · {{ item.market }}</span>
+              <span>언급 {{ item.mentionCount }} · 전시간 대비 +{{ item.mentionDeltaPct }}%</span>
+            </div>
+            <div class="reaction-gauge" :style="`--score: ${item.heatScore}`" aria-label="열기 후보 원형 지표">
+              <span>{{ item.heatScore }}</span>
+            </div>
           </div>
 
-          <div class="stock-cell">
-            <strong>{{ item.name }}</strong>
-            <span>{{ item.symbol }} · {{ item.market }} · 언급 {{ item.mentionCount }} · 전시간 대비 +{{ item.mentionDeltaPct }}%</span>
-          </div>
-
-          <div class="reaction-compact" aria-label="반응 방향 단일 막대">
+          <div class="mood-compare" aria-label="심리 비교 막대">
+            <span class="mood-label">심리 비교</span>
             <div class="reaction-balance">
               <span
                 class="reaction-segment bullish"
@@ -70,14 +82,14 @@ import reactionRanking from '../fixtures/reaction-ranking.json';
                 :style="`--value: ${Math.round(item.reactionDirectionRatio.bearish * 100)}%`"
               ></span>
             </div>
-            <span>
-              낙관 {{ Math.round(item.reactionDirectionRatio.bullish * 100) }} ·
-              중립 {{ Math.round(item.reactionDirectionRatio.neutral * 100) }} ·
-              비관 {{ Math.round(item.reactionDirectionRatio.bearish * 100) }}
-            </span>
+            <div class="mood-ratio">
+              <span>낙관 {{ Math.round(item.reactionDirectionRatio.bullish * 100) }}</span>
+              <span>중립 {{ Math.round(item.reactionDirectionRatio.neutral * 100) }}</span>
+              <span>비관 {{ Math.round(item.reactionDirectionRatio.bearish * 100) }}</span>
+            </div>
           </div>
 
-          <div class="tags terminal-tags">
+          <div class="tags mood-tags">
             <span v-for="keyword in item.topKeywords" :key="keyword">{{ keyword }}</span>
           </div>
 
