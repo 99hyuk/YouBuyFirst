@@ -205,6 +205,38 @@ a {
   background: #f5f8f7;
 }
 
+.compact-terminal-row {
+  grid-template-columns: 58px minmax(150px, 0.8fr) minmax(220px, 1.25fr) minmax(120px, 0.8fr) auto;
+  min-height: 58px;
+  padding: 10px 12px;
+}
+
+.reaction-gauge {
+  --score: 0;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: conic-gradient(#397367 calc(var(--score) * 1%), #dfe8e5 0);
+}
+
+.reaction-gauge::before {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+  content: "";
+}
+
+.reaction-gauge span {
+  position: relative;
+  color: #183032;
+  font-size: 15px;
+  font-weight: 800;
+}
+
 .stock-cell strong,
 .metric-cell strong {
   display: block;
@@ -260,6 +292,48 @@ a {
   background: #9a5c3e;
 }
 
+.reaction-compact {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.reaction-compact > span {
+  color: #4c6065;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.reaction-balance {
+  display: flex;
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dfe8e5;
+}
+
+.reaction-segment {
+  width: var(--value);
+  height: 100%;
+}
+
+.reaction-segment.bullish {
+  background: #397367;
+}
+
+.reaction-segment.neutral {
+  background: #b5c6c2;
+}
+
+.reaction-segment.bearish {
+  background: #9a5c3e;
+}
+
+.terminal-tags {
+  min-width: 0;
+}
+
 .insight-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
@@ -275,24 +349,35 @@ a {
 
 .rising-row {
   display: grid;
-  grid-template-columns: 74px minmax(0, 1fr) 76px;
+  grid-template-columns: 92px minmax(0, 1fr) 76px;
   gap: 12px;
-  align-items: center;
-  min-height: 86px;
+  align-items: flex-start;
+  min-height: 118px;
   padding: 14px;
   border-radius: 7px;
   background: #f5f8f7;
 }
 
 .rank-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   min-height: 44px;
+  padding: 8px 6px;
   border-radius: 7px;
   background: #e8eefc;
   color: #2f5ca8;
+  text-align: center;
+}
+
+.rank-badge strong {
+  font-size: 18px;
   font-weight: 780;
+}
+
+.rank-badge span {
+  color: #496895;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .rising-copy {
@@ -317,6 +402,107 @@ a {
   color: #53666b;
   font-size: 13px;
   line-height: 1.45;
+}
+
+.reaction-notes {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #405054;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.period-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.period-tabs button {
+  min-width: 44px;
+  min-height: 30px;
+  border: 1px solid #c7d4d1;
+  border-radius: 6px;
+  background: #f9fbfa;
+  color: #405054;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.period-tabs button.active {
+  border-color: #397367;
+  background: #397367;
+  color: #ffffff;
+}
+
+.return-line-chart {
+  min-height: 222px;
+  padding: 12px 12px 6px;
+  border-radius: 7px;
+  background: #f5f8f7;
+}
+
+.return-line-chart svg {
+  display: block;
+  width: 100%;
+  height: 190px;
+}
+
+.chart-grid {
+  stroke: #d5e0dd;
+  stroke-width: 1;
+}
+
+.axis-label {
+  fill: #6a7d81;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.return-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.8;
+}
+
+.return-dot {
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.return-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.legend-item {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 28px;
+  color: #405054;
+  font-size: 12px;
+}
+
+.legend-item strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--swatch);
 }
 
 .return-row {
@@ -571,6 +757,25 @@ a {
 
   .terminal-row {
     gap: 10px;
+  }
+
+  .compact-terminal-row {
+    grid-template-columns: 46px minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .compact-terminal-row .reaction-gauge {
+    grid-row: 1 / span 2;
+  }
+
+  .compact-terminal-row .reaction-compact,
+  .compact-terminal-row .terminal-tags,
+  .compact-terminal-row > .status-pill {
+    grid-column: 2;
+  }
+
+  .return-legend {
+    grid-template-columns: 1fr;
   }
 
   .metric-cell {

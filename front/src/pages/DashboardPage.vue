@@ -20,16 +20,17 @@ import reactionRanking from '../fixtures/reaction-ranking.json';
 
       <aside class="hero-card" aria-label="대표 반응 종목">
         <div>
-          <p class="label">top reaction</p>
-          <h3>{{ reactionRanking.items[0].name }}</h3>
-          <p>{{ reactionRanking.items[0].symbol }} · {{ reactionRanking.items[0].market }}</p>
+          <p class="label">fast riser</p>
+          <h3>{{ dashboardSummary.risingStars[0].name }}</h3>
+          <p>{{ dashboardSummary.risingStars[0].symbol }} · {{ dashboardSummary.risingStars[0].market }}</p>
         </div>
         <div class="hero-score">
-          <strong>{{ reactionRanking.items[0].heatScore }}</strong>
-          <span>열기 후보</span>
+          <strong>+{{ dashboardSummary.risingStars[0].mentionDeltaPct }}%</strong>
+          <span>전시간 대비</span>
         </div>
         <div class="tags">
-          <span v-for="keyword in reactionRanking.items[0].topKeywords" :key="keyword">{{ keyword }}</span>
+          <span>언급 {{ dashboardSummary.risingStars[0].previousMentionCount }} → {{ dashboardSummary.risingStars[0].mentionCount }}</span>
+          <span>mock</span>
         </div>
       </aside>
     </section>
@@ -44,44 +45,39 @@ import reactionRanking from '../fixtures/reaction-ranking.json';
       </div>
 
       <div class="terminal-list">
-        <article v-for="item in reactionRanking.items" :key="item.symbol" class="terminal-row">
+        <article v-for="item in reactionRanking.items" :key="item.symbol" class="terminal-row compact-terminal-row">
+          <div class="reaction-gauge" :style="`--score: ${item.heatScore}`" aria-label="열기 후보 원형 지표">
+            <span>{{ item.heatScore }}</span>
+          </div>
+
           <div class="stock-cell">
             <strong>{{ item.name }}</strong>
-            <span>{{ item.symbol }} · {{ item.market }} · {{ item.dataStatus }}</span>
+            <span>{{ item.symbol }} · {{ item.market }} · 언급 {{ item.mentionCount }} · 전시간 대비 +{{ item.mentionDeltaPct }}%</span>
           </div>
 
-          <div class="metric-cell">
-            <strong>{{ item.heatScore }}</strong>
-            <span>열기 후보</span>
-          </div>
-
-          <div class="metric-cell">
-            <strong>{{ item.mentionCount }}</strong>
-            <span>언급</span>
-          </div>
-
-          <div class="direction-stack" aria-label="반응 방향 비율">
-            <div class="direction-line">
-              <span>낙관 {{ Math.round(item.reactionDirectionRatio.bullish * 100) }}%</span>
-              <div class="direction-track">
-                <div
-                  class="direction-bar bullish"
-                  :style="`--value: ${Math.round(item.reactionDirectionRatio.bullish * 100)}%`"
-                ></div>
-              </div>
+          <div class="reaction-compact" aria-label="반응 방향 단일 막대">
+            <div class="reaction-balance">
+              <span
+                class="reaction-segment bullish"
+                :style="`--value: ${Math.round(item.reactionDirectionRatio.bullish * 100)}%`"
+              ></span>
+              <span
+                class="reaction-segment neutral"
+                :style="`--value: ${Math.round(item.reactionDirectionRatio.neutral * 100)}%`"
+              ></span>
+              <span
+                class="reaction-segment bearish"
+                :style="`--value: ${Math.round(item.reactionDirectionRatio.bearish * 100)}%`"
+              ></span>
             </div>
-            <div class="direction-line">
-              <span>비관 {{ Math.round(item.reactionDirectionRatio.bearish * 100) }}%</span>
-              <div class="direction-track">
-                <div
-                  class="direction-bar bearish"
-                  :style="`--value: ${Math.round(item.reactionDirectionRatio.bearish * 100)}%`"
-                ></div>
-              </div>
-            </div>
+            <span>
+              낙관 {{ Math.round(item.reactionDirectionRatio.bullish * 100) }} ·
+              중립 {{ Math.round(item.reactionDirectionRatio.neutral * 100) }} ·
+              비관 {{ Math.round(item.reactionDirectionRatio.bearish * 100) }}
+            </span>
           </div>
 
-          <div class="tags">
+          <div class="tags terminal-tags">
             <span v-for="keyword in item.topKeywords" :key="keyword">{{ keyword }}</span>
           </div>
 
@@ -104,11 +100,18 @@ import reactionRanking from '../fixtures/reaction-ranking.json';
 
         <div class="rising-list">
           <article v-for="item in dashboardSummary.risingStars" :key="item.symbol" class="rising-row">
-            <div class="rank-badge">+{{ item.mentionDeltaPct }}%</div>
+            <div class="rank-badge">
+              <strong>+{{ item.mentionDeltaPct }}%</strong>
+              <span>전시간 대비</span>
+            </div>
             <div class="rising-copy">
               <strong>{{ item.name }}</strong>
-              <span>{{ item.symbol }} · {{ item.market }} · {{ item.dataStatus }}</span>
-              <p>{{ item.reason }}</p>
+              <span>
+                {{ item.symbol }} · {{ item.market }} · 언급 {{ item.previousMentionCount }} → {{ item.mentionCount }} · {{ item.dataStatus }}
+              </span>
+              <ul class="reaction-notes">
+                <li v-for="reaction in item.coreReactions" :key="reaction">{{ reaction }}</li>
+              </ul>
             </div>
             <div class="metric-cell">
               <strong>{{ item.heatScore }}</strong>
@@ -127,25 +130,51 @@ import reactionRanking from '../fixtures/reaction-ranking.json';
           <span class="status-pill warning">mock</span>
         </div>
 
-        <div class="return-list" aria-label="커뮤니티별 mock 수익률 그래프">
-          <div
-            v-for="community in dashboardSummary.communityReturns"
-            :key="community.community"
-            class="return-row"
+        <div class="period-tabs" aria-label="수익률 기간">
+          <button
+            v-for="period in dashboardSummary.returnPeriods"
+            :key="period"
+            type="button"
+            :class="{ active: period === dashboardSummary.activeReturnPeriod }"
           >
-            <div class="return-meta">
-              <strong>{{ community.community }}</strong>
-              <span>승률 {{ community.winRatePct }}% · 표본 {{ community.sampleTrades }}</span>
-            </div>
-            <div class="return-track">
-              <div
-                :class="['return-bar', community.returnPct < 0 ? 'negative' : 'positive']"
-                :style="`--value: ${Math.min(Math.abs(community.returnPct) * 14, 100)}%`"
-              ></div>
-            </div>
-            <strong :class="['return-value', community.returnPct < 0 ? 'negative' : 'positive']">
-              {{ community.returnPct > 0 ? '+' : '' }}{{ community.returnPct }}%
-            </strong>
+            {{ period }}
+          </button>
+        </div>
+
+        <div class="return-line-chart" aria-label="커뮤니티별 mock 수익률 라인 그래프">
+          <svg viewBox="0 0 320 170" role="img" aria-labelledby="return-title">
+            <line class="chart-grid" x1="18" x2="306" y1="42" y2="42" />
+            <line class="chart-grid" x1="18" x2="306" y1="90" y2="90" />
+            <line class="chart-grid" x1="18" x2="306" y1="138" y2="138" />
+            <text class="axis-label" x="4" y="45">+6</text>
+            <text class="axis-label" x="8" y="94">0</text>
+            <text class="axis-label" x="2" y="142">-2</text>
+            <polyline
+              v-for="series in dashboardSummary.communityReturnSeries"
+              :key="`${series.community}-line`"
+              class="return-line"
+              :points="series.pointString"
+              :stroke="series.color"
+            />
+            <g v-for="series in dashboardSummary.communityReturnSeries" :key="`${series.community}-points`">
+              <circle
+                v-for="point in series.points"
+                :key="`${series.community}-${point.x}-${point.y}`"
+                class="return-dot"
+                :cx="point.x"
+                :cy="point.y"
+                r="3.5"
+                :fill="series.color"
+              />
+            </g>
+          </svg>
+        </div>
+
+        <div class="return-legend">
+          <div v-for="series in dashboardSummary.communityReturnSeries" :key="series.community" class="legend-item">
+            <span class="legend-swatch" :style="`--swatch: ${series.color}`"></span>
+            <strong>{{ series.community }}</strong>
+            <span>{{ series.returnPct > 0 ? '+' : '' }}{{ series.returnPct }}%</span>
           </div>
         </div>
         <p class="chart-note">실제 수익률이 아니라 커뮤니티별 모의 성과 화면 계약을 보기 위한 fixture입니다.</p>
