@@ -92,27 +92,64 @@ import reactionRanking from '../fixtures/reaction-ranking.json';
       </div>
     </section>
 
-    <section class="feature-rail" aria-label="후속 화면">
-      <RouterLink to="/stocks/005930" class="feature-card">
-        <span class="label">stock</span>
-        <strong>종목 상세</strong>
-        <span>특정 종목의 반응과 가격 상태를 함께 확인</span>
-      </RouterLink>
-      <RouterLink to="/communities" class="feature-card">
-        <span class="label">community</span>
-        <strong>커뮤니티 비교</strong>
-        <span>소스별 반응과 성과 후보 비교</span>
-      </RouterLink>
-      <RouterLink to="/agents" class="feature-card">
-        <span class="label">agent</span>
-        <strong>에이전트 실험</strong>
-        <span>모의 페르소나의 관찰 결과 비교</span>
-      </RouterLink>
-      <RouterLink to="/portfolio" class="feature-card disabled-link">
-        <span class="label">trade</span>
-        <strong>포트폴리오 준비 중</strong>
-        <span>trade 트랙 연동 후 활성화</span>
-      </RouterLink>
+    <section class="insight-grid">
+      <article class="panel rising-stars" aria-labelledby="rising-title">
+        <div class="panel-header">
+          <div>
+            <p class="label">early signal</p>
+            <h3 id="rising-title">라이징 스타</h3>
+          </div>
+          <span class="status-pill">mock ranking</span>
+        </div>
+
+        <div class="rising-list">
+          <article v-for="item in dashboardSummary.risingStars" :key="item.symbol" class="rising-row">
+            <div class="rank-badge">+{{ item.mentionDeltaPct }}%</div>
+            <div class="rising-copy">
+              <strong>{{ item.name }}</strong>
+              <span>{{ item.symbol }} · {{ item.market }} · {{ item.dataStatus }}</span>
+              <p>{{ item.reason }}</p>
+            </div>
+            <div class="metric-cell">
+              <strong>{{ item.heatScore }}</strong>
+              <span>열기 후보</span>
+            </div>
+          </article>
+        </div>
+      </article>
+
+      <article class="panel return-chart" aria-labelledby="return-title">
+        <div class="panel-header">
+          <div>
+            <p class="label">paper return</p>
+            <h3 id="return-title">커뮤니티 수익률 비교</h3>
+          </div>
+          <span class="status-pill warning">mock</span>
+        </div>
+
+        <div class="return-list" aria-label="커뮤니티별 mock 수익률 그래프">
+          <div
+            v-for="community in dashboardSummary.communityReturns"
+            :key="community.community"
+            class="return-row"
+          >
+            <div class="return-meta">
+              <strong>{{ community.community }}</strong>
+              <span>승률 {{ community.winRatePct }}% · 표본 {{ community.sampleTrades }}</span>
+            </div>
+            <div class="return-track">
+              <div
+                :class="['return-bar', community.returnPct < 0 ? 'negative' : 'positive']"
+                :style="`--value: ${Math.min(Math.abs(community.returnPct) * 14, 100)}%`"
+              ></div>
+            </div>
+            <strong :class="['return-value', community.returnPct < 0 ? 'negative' : 'positive']">
+              {{ community.returnPct > 0 ? '+' : '' }}{{ community.returnPct }}%
+            </strong>
+          </div>
+        </div>
+        <p class="chart-note">실제 수익률이 아니라 커뮤니티별 모의 성과 화면 계약을 보기 위한 fixture입니다.</p>
+      </article>
     </section>
 
     <section class="page-grid">

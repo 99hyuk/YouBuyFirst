@@ -4,9 +4,69 @@
   "headline": "투자자들이 먼저 떠드는 종목을 읽습니다",
   "description": "커뮤니티 반응이 커진 종목을 mock 데이터로 빠르게 훑어보고, 실제 API 계약 전까지 필요한 기획 질문을 남깁니다.",
   "notice": "투자 자문이 아니라 커뮤니티 반응을 관찰하는 참고 화면입니다.",
+  "risingStars": [
+    {
+      "symbol": "005930",
+      "name": "삼성전자",
+      "market": "KRX",
+      "reason": "반도체 실적 키워드가 빠르게 늘고 있습니다.",
+      "mentionDeltaPct": 42.3,
+      "heatScore": 82,
+      "dataStatus": "mock"
+    },
+    {
+      "symbol": "TSLA",
+      "name": "Tesla",
+      "market": "NASDAQ",
+      "reason": "실적과 가격 변동성 논쟁이 동시에 커졌습니다.",
+      "mentionDeltaPct": 18.7,
+      "heatScore": 68,
+      "dataStatus": "mock"
+    },
+    {
+      "symbol": "035420",
+      "name": "NAVER",
+      "market": "KRX",
+      "reason": "AI 서비스와 커머스 기대감이 새로 붙었습니다.",
+      "mentionDeltaPct": 15.4,
+      "heatScore": 61,
+      "dataStatus": "mock"
+    }
+  ],
+  "communityReturns": [
+    {
+      "community": "네이버 종토방",
+      "returnPct": 4.8,
+      "winRatePct": 58,
+      "sampleTrades": 24,
+      "dataStatus": "mock"
+    },
+    {
+      "community": "에펨코리아 주식",
+      "returnPct": 2.1,
+      "winRatePct": 54,
+      "sampleTrades": 18,
+      "dataStatus": "mock"
+    },
+    {
+      "community": "토스증권 커뮤니티",
+      "returnPct": 0.9,
+      "winRatePct": 51,
+      "sampleTrades": 12,
+      "dataStatus": "mock"
+    },
+    {
+      "community": "디시 주식",
+      "returnPct": -1.2,
+      "winRatePct": 43,
+      "sampleTrades": 15,
+      "dataStatus": "mock"
+    }
+  ],
   "confirmationNeeded": [
     "열기 지수 용어 확정",
     "기본 시간창 1h, 24h, 30m 중 선택",
+    "커뮤니티 수익률 비교 산식과 기간 확정",
     "AI 3줄 요약 placeholder 문구 확정"
   ]
 }

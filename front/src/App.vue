@@ -1,7 +1,7 @@
 <template>
   <div class="app-shell">
     <header class="topbar">
-      <div>
+      <div class="brand-lockup">
         <p class="eyebrow">커뮤니티 반응으로 시장의 먼저 흔들리는 지점을 관찰합니다.</p>
         <h1 data-testid="app-title">너나사 YouBuyFirst</h1>
       </div>
