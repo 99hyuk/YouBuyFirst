@@ -25,7 +25,7 @@
 
 - Modify: `front/src/__tests__/shell.spec.ts`
 
-- [ ] **Step 1: Add a failing assertion for the new first-screen direction**
+- [x] **Step 1: Add a failing assertion for the new first-screen direction**
 
 Add the assertions below to the existing `renders navigation for every planned route` test after the navigation checks.
 
@@ -36,7 +36,7 @@ expect(wrapper.text()).toContain('반응 터미널');
 expect(wrapper.text()).toContain('기획자 확인 필요');
 ```
 
-- [ ] **Step 2: Run the test and verify RED**
+- [x] **Step 2: Run the test and verify RED**
 
 Run from `front/`:
 
@@ -47,6 +47,8 @@ node $npmCli test
 
 Expected: FAIL because the current dashboard does not render `오늘 커뮤니티 브리핑` or `반응 터미널`.
 
+Observed: after installing dependencies in this worktree, Vitest failed on `오늘 커뮤니티 브리핑`, which confirmed the test was RED for the intended missing behavior.
+
 ## Task 2. Implement Briefing + Terminal Dashboard Markup
 
 **Files:**
@@ -56,7 +58,7 @@ Expected: FAIL because the current dashboard does not render `오늘 커뮤니�
 - Modify: `front/src/App.vue`
 - Modify: `front/src/pages/DashboardPage.vue`
 
-- [ ] **Step 1: Update dashboard summary fixture**
+- [x] **Step 1: Update dashboard summary fixture**
 
 Set `front/src/fixtures/dashboard-summary.json` to:
 
@@ -71,7 +73,7 @@ Set `front/src/fixtures/dashboard-summary.json` to:
 }
 ```
 
-- [ ] **Step 2: Add minimal display metadata to ranking fixture**
+- [x] **Step 2: Add minimal display metadata to ranking fixture**
 
 In each `reactionRanking.items[]`, add:
 
@@ -81,7 +83,7 @@ In each `reactionRanking.items[]`, add:
 
 For stale/mock distinction, use `"stale quote"` on the Tesla item. Do not add provider or endpoint fields.
 
-- [ ] **Step 3: Update app header copy**
+- [x] **Step 3: Update app header copy**
 
 In `front/src/App.vue`, change the eyebrow copy to:
 
@@ -91,7 +93,7 @@ In `front/src/App.vue`, change the eyebrow copy to:
 
 Keep all `data-testid` attributes and route links unchanged.
 
-- [ ] **Step 4: Replace dashboard page markup**
+- [x] **Step 4: Replace dashboard page markup**
 
 Use the existing imports and replace the template with sections for:
 
@@ -102,7 +104,7 @@ Use the existing imports and replace the template with sections for:
 
 The board must render each ranking item, direction percentages, keywords, and `priceStatus`.
 
-- [ ] **Step 5: Run test and verify GREEN**
+- [x] **Step 5: Run test and verify GREEN**
 
 Run from `front/`:
 
@@ -113,23 +115,25 @@ node $npmCli test
 
 Expected: PASS, 1 test file and 3 tests.
 
+Observed: Vitest passed with 1 test file and 3 tests.
+
 ## Task 3. Add Responsive Site-Like Styling
 
 **Files:**
 
 - Modify: `front/src/styles.css`
 
-- [ ] **Step 1: Add CSS for the briefing and terminal layout**
+- [x] **Step 1: Add CSS for the briefing and terminal layout**
 
 Add classes for `.briefing-hero`, `.briefing-copy`, `.hero-card`, `.terminal-board`, `.terminal-row`, `.direction-stack`, `.direction-bar`, `.feature-rail`, `.feature-card`, and `.planning-boundary`.
 
 Keep cards at `8px` radius or less. Avoid decorative gradients/orbs. Use restrained greens, dark text, white panels, and small pills.
 
-- [ ] **Step 2: Add mobile stacking rules**
+- [x] **Step 2: Add mobile stacking rules**
 
 Inside `@media (max-width: 760px)`, stack the briefing hero, terminal rows, direction bars, and feature rail into one column. Keep `word-break: keep-all` on headings.
 
-- [ ] **Step 3: Run tests and build**
+- [x] **Step 3: Run tests and build**
 
 Run from `front/`:
 
@@ -141,13 +145,15 @@ node $npmCli run build
 
 Expected: both commands pass.
 
+Observed: Vitest passed with 3 tests and production build passed.
+
 ## Task 4. Browser QA and PR Finish
 
 **Files:**
 
 - Modify: `docs/superpowers/plans/2026-05-15-front-site-polish.md`
 
-- [ ] **Step 1: Start or reuse a Vite server**
+- [x] **Step 1: Start or reuse a Vite server**
 
 Run from `front/`:
 
@@ -158,7 +164,7 @@ node $npmCli run dev -- --port 5174
 
 Use `5174` to avoid the older preview on `5173`.
 
-- [ ] **Step 2: Verify in browser**
+- [x] **Step 2: Verify in browser**
 
 Check:
 
@@ -167,7 +173,9 @@ Check:
 - Mobile 390px has no incoherent overlap.
 - Console error count is zero.
 
-- [ ] **Step 3: Run final verification**
+Observed: `http://127.0.0.1:5174/` redirected to `/dashboard`; desktop and 390px mobile DOM checks found the briefing hero, terminal board, ranking content, and navigation; console error count was 0. In-app screenshot capture timed out, so verification used the live browser tab plus DOM and console checks.
+
+- [x] **Step 3: Run final verification**
 
 Run:
 
@@ -177,6 +185,8 @@ node $npmCli test
 node $npmCli run build
 git diff --check origin/main...HEAD
 ```
+
+Observed after rebasing onto latest `origin/main`: Vitest passed with 1 test file and 3 tests, production build passed, and `git diff --check origin/main...HEAD` passed.
 
 - [ ] **Step 4: Commit, push, PR**
 
