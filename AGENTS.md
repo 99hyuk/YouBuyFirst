@@ -56,6 +56,10 @@ Codex는 사용자의 요구를 무조건 수용하는 실행기가 아닙니다
 - Superpowers는 기획, 설계, 구현 계획, 검증, 디버깅 게이트로 사용합니다.
 - gstack은 브라우저 QA, 시각 확인, 성능/품질 검증처럼 실제 확인 가치가 있을 때 사용합니다.
 - Superpowers와 gstack은 “썼다”는 사실보다 “왜 썼는지, 무엇을 확인했는지”가 중요합니다. 완료 보고에는 도구 사용 여부를 짧게 남깁니다. 예: `Superpowers: worktree 분리와 완료 전 검증에 사용`, `gstack: front localhost 화면/콘솔/반응형 확인에 사용`, `gstack 미사용: 문서 전용 작업이라 브라우저 확인 대상 없음`.
+- 채팅 안정성도 운영 품질로 봅니다. Codex 앱이 `AGENTS.md` 내용을 이미 대화에 주입했으면 터미널로 다시 전문을 출력하지 말고, 필요한 줄만 `rg -n`으로 확인합니다.
+- 새 채팅 시작 문서는 방향을 잡는 용도입니다. `docs/work-units/`, `docs/superpowers/`, Notion 작업 로그, 세션 로그, 브라우저 콘솔 전체는 매번 읽지 않고 필요한 키워드로 좁혀 찾습니다.
+- 도구 출력은 작게 유지합니다. 넓은 `rg` 검색, 전체 로그/JSONL 출력, 전체 Notion page/database fetch, 브라우저 콘솔 전문 붙여넣기는 먼저 범위를 좁히고 `max_output_tokens`, `Select-Object -First`, 구체 경로를 사용합니다.
+- front/gstack 검증은 스크린샷과 확인 결과를 남기되, 대화에는 핵심 오류, URL, 파일 경로, 재현 단계만 요약합니다. 긴 콘솔이나 DOM 덤프는 필요한 부분만 인용합니다.
 - 제품 개발/운영 중 겪은 문제 해결, 성능 개선, 품질 개선, 기술 의사결정은 `docs/ENGINEERING_EVIDENCE_GUIDE.md` 기준으로 Notion `개발자 기술 경험 DB`에 남깁니다.
 - Codex, Notion, GitHub PR, 문서 운영 과정에서 생긴 에이전트/도구 운영 사고는 개발자 기술 경험과 섞지 않고 Notion `에이전트 운영 로그 DB`에 남깁니다.
 - Notion 루트나 Archive 페이지를 `replace_content`로 수정할 때는 child page/database 보존 여부를 먼저 확인합니다. `allow_deleting_content`는 링크 블록을 실제 삭제할 수 있으므로, 단순 레이아웃 정리에는 쓰지 않습니다.
