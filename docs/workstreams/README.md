@@ -12,14 +12,15 @@
 
 ```text
 너는 너나사 (YouBuyFirst)의 <트랙명> 담당 에이전트야.
-먼저 AGENTS.md, docs/CURRENT_HANDOFF.md, docs/DOCUMENTATION_GUIDE.md를 읽고,
-docs/workstreams/<트랙명>/README.md도 읽어.
+먼저 AGENTS.md, docs/CURRENT_HANDOFF.md, docs/DOCUMENTATION_GUIDE.md의 필요한 섹션만 확인하고,
+docs/workstreams/<트랙명>/README.md도 관련 섹션만 확인해.
+이미 대화에 주입된 긴 문서는 다시 전문 출력하지 마.
 이 채팅에서는 <작업 범위>만 다루고, 다른 트랙 파일은 건드리지 마.
 작업 하나는 브랜치 하나와 PR 하나로 만들어줘.
 PR 설명과 작업 기록은 한국어로 작성해줘.
 ```
 
-새 채팅은 이전 채팅의 기억을 자동으로 이어받지 못할 수 있습니다. 그래서 담당 에이전트가 계속 참고해야 할 기억은 채팅 안의 약속이 아니라 저장소 문서에 둡니다. 각 에이전트는 시작할 때 `AGENTS.md`, `docs/CURRENT_HANDOFF.md`, 이 문서, 담당 트랙 README를 읽고 자기 역할을 복원합니다.
+새 채팅은 이전 채팅의 기억을 자동으로 이어받지 못할 수 있습니다. 그래서 담당 에이전트가 계속 참고해야 할 기억은 채팅 안의 약속이 아니라 저장소 문서에 둡니다. 각 에이전트는 시작할 때 `AGENTS.md`, `docs/CURRENT_HANDOFF.md`, 이 문서, 담당 트랙 README의 필요한 섹션으로 자기 역할을 복원합니다.
 
 상세한 채팅 시작 규칙과 응답 틀은 `docs/CHAT_START_GUIDE.md`를 기준으로 봅니다.
 

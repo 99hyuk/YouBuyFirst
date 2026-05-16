@@ -63,11 +63,26 @@
 Codex 앱의 `앗, 오류가 발생했습니다` 같은 일반 오류는 repo 코드 문제가 아니라 대화 컨텍스트나 도구 출력이 급격히 커질 때도 발생할 수 있습니다. 이 프로젝트는 문서와 Notion 기록이 많으므로, 새 채팅일수록 아래 규칙을 우선합니다.
 
 - 사용자가 긴 `AGENTS.md` 전문을 붙여 넣었거나 Codex 앱이 이미 주입했다면, 터미널로 `AGENTS.md` 전문을 다시 출력하지 않습니다. 필요한 항목만 `rg -n "<키워드>" AGENTS.md`로 확인합니다.
-- 시작 단계에서는 `AGENTS.md`, `CURRENT_HANDOFF.md`, 이 문서, 담당 트랙 README만 봅니다. `docs/superpowers/`, `docs/work-units/`, Notion DB, 세션 JSONL은 필요한 키워드가 생긴 뒤 검색합니다.
+- 시작 단계에서는 필요한 문서만 봅니다. 트랙이 명확하면 담당 트랙 README와 `CURRENT_HANDOFF.md`의 관련 섹션을 우선하고, `docs/superpowers/`, `docs/work-units/`, Notion DB, 세션 JSONL은 필요한 키워드가 생긴 뒤 검색합니다.
+- `CURRENT_HANDOFF.md`는 전문 읽기를 기본값으로 두지 않습니다. 현재 상태, 다음 작업 후보, 해당 트랙 관련 줄만 `rg -n`이나 짧은 구간 출력으로 확인합니다.
+- 스킬 문서는 적용할 스킬이 정해진 뒤 읽습니다. 긴 스킬은 전체를 출력하지 말고 설명, 체크리스트, 이번 작업에 필요한 절차만 확인합니다.
 - 로그나 세션 파일을 검색할 때는 반드시 경로와 키워드를 좁히고, `Select-Object -First`, `max_output_tokens`, 날짜/파일명을 함께 씁니다. `C:\Users\JYH\.codex` 전체에 넓은 `rg`를 돌리지 않습니다.
 - Notion 구조 확인은 필요한 page/database만 fetch합니다. 루트, Archive, 전체 DB를 연달아 전문 fetch하지 않고, child link 보존 여부와 바꿀 섹션만 확인합니다.
-- front/gstack 확인은 브라우저 화면, 콘솔, 반응형 결과를 요약합니다. 콘솔 전체, DOM 전체, 긴 screenshot 설명을 대화에 누적하지 않습니다.
+- front/gstack 확인은 화면 변경, 라우팅, 콘솔 오류, 반응형처럼 실제 확인 가치가 있을 때 수행합니다. 확인 결과는 요약하고, 콘솔 전체, DOM 전체, 긴 screenshot 설명을 대화에 누적하지 않습니다.
 - 컨텍스트가 이미 커졌다고 판단되면 새 채팅에서 짧게 `ops 컨텍스트 압축 모드로 이어가`처럼 시작하고, 에이전트는 최근 상태를 repo 문서와 좁은 검색으로 복원합니다.
+
+### 상황별 읽기 게이트
+
+| 대상 | 읽는 경우 | 읽는 방식 |
+| --- | --- | --- |
+| `AGENTS.md` | 주입되지 않았거나 작업 원칙이 헷갈릴 때 | 키워드 검색 또는 관련 섹션 |
+| `CURRENT_HANDOFF.md` | 현재 상태, 다음 후보, 최근 결정 확인 | 관련 섹션만 |
+| 담당 트랙 README | 새 트랙 작업을 시작할 때 | 필요한 섹션 |
+| `GIT_CONVENTION.md`, `LABEL_GUIDE.md` | PR/라벨 작업 직전 | PR 관련 섹션만 |
+| 스킬 문서 | 해당 스킬이 실제로 적용될 때 | 필요한 절차만 |
+| gstack/browse 출력 | front/UI 검증이 필요할 때 | 결과 요약, 핵심 오류만 |
+| 세션/로그 JSONL | 오류 원인 조사나 복구가 필요할 때 | 파일 하나와 키워드 하나로 제한 |
+| Notion page/database | Notion 기록/구조 변경이 필요할 때 | 대상 하나씩, 필요한 섹션만 |
 
 ## 업데이트 규칙
 

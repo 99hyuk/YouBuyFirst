@@ -13,9 +13,9 @@
 사용자가 매번 긴 역할 프롬프트를 반복할 필요는 없습니다. `crawl 작업`, `front 작업`, `ops로 Notion 정리`, `agent 트랙 맡아`처럼 짧게 말하면 에이전트가 스스로 아래 내용을 확장해 인지합니다.
 
 - 자신을 너나사 (YouBuyFirst)의 해당 트랙 담당 에이전트로 둡니다.
-- `AGENTS.md`, `docs/CURRENT_HANDOFF.md`, `docs/DOCUMENTATION_GUIDE.md`를 먼저 읽습니다.
-- 제품 방향이 필요한 작업이면 `docs/FINAL_PRODUCT_PLAN.md`를 추가로 읽습니다.
-- 병렬 작업이면 `docs/workstreams/README.md`와 담당 트랙 문서를 읽습니다.
+- `AGENTS.md`, `docs/CURRENT_HANDOFF.md`, `docs/DOCUMENTATION_GUIDE.md`는 필요한 섹션만 확인합니다. 이미 대화에 주입된 문서는 다시 전문 출력하지 않습니다.
+- 제품 방향이 필요한 작업이면 `docs/FINAL_PRODUCT_PLAN.md`의 관련 섹션을 추가로 확인합니다.
+- 병렬 작업이면 담당 트랙 문서를 우선 확인하고, 트랙 경계가 헷갈릴 때만 `docs/workstreams/README.md`를 봅니다.
 - 이 채팅에서 다룰 작업 범위, 수정 대상, 기록 위치, 주요 위험을 짧게 선언하고 시작합니다.
 - 다른 트랙 파일은 명시 요청이나 계약 변경 필요성이 없으면 건드리지 않습니다.
 - 작업 하나는 브랜치 하나와 PR 하나로 만들고, PR 설명과 작업 기록은 한국어로 작성합니다.
@@ -58,8 +58,9 @@ Codex는 사용자의 요구를 무조건 수용하는 실행기가 아닙니다
 - Superpowers와 gstack은 “썼다”는 사실보다 “왜 썼는지, 무엇을 확인했는지”가 중요합니다. 완료 보고에는 도구 사용 여부를 짧게 남깁니다. 예: `Superpowers: worktree 분리와 완료 전 검증에 사용`, `gstack: front localhost 화면/콘솔/반응형 확인에 사용`, `gstack 미사용: 문서 전용 작업이라 브라우저 확인 대상 없음`.
 - 채팅 안정성도 운영 품질로 봅니다. Codex 앱이 `AGENTS.md` 내용을 이미 대화에 주입했으면 터미널로 다시 전문을 출력하지 말고, 필요한 줄만 `rg -n`으로 확인합니다.
 - 새 채팅 시작 문서는 방향을 잡는 용도입니다. `docs/work-units/`, `docs/superpowers/`, Notion 작업 로그, 세션 로그, 브라우저 콘솔 전체는 매번 읽지 않고 필요한 키워드로 좁혀 찾습니다.
+- 스킬 문서는 필요한 상황에서만 읽습니다. 적용할 스킬을 먼저 고르고, 긴 스킬은 목적에 맞는 섹션만 확인합니다. 후보 스킬 여러 개를 한꺼번에 전문 출력하지 않습니다.
 - 도구 출력은 작게 유지합니다. 넓은 `rg` 검색, 전체 로그/JSONL 출력, 전체 Notion page/database fetch, 브라우저 콘솔 전문 붙여넣기는 먼저 범위를 좁히고 `max_output_tokens`, `Select-Object -First`, 구체 경로를 사용합니다.
-- front/gstack 검증은 스크린샷과 확인 결과를 남기되, 대화에는 핵심 오류, URL, 파일 경로, 재현 단계만 요약합니다. 긴 콘솔이나 DOM 덤프는 필요한 부분만 인용합니다.
+- gstack은 front/UI 변경이나 실제 브라우저 확인 가치가 있는 작업에서 사용합니다. 다만 대화에는 핵심 오류, URL, 파일 경로, 재현 단계만 요약하고, 긴 콘솔이나 DOM 덤프는 필요한 부분만 인용합니다.
 - 제품 개발/운영 중 겪은 문제 해결, 성능 개선, 품질 개선, 기술 의사결정은 `docs/ENGINEERING_EVIDENCE_GUIDE.md` 기준으로 Notion `개발자 기술 경험 DB`에 남깁니다.
 - Codex, Notion, GitHub PR, 문서 운영 과정에서 생긴 에이전트/도구 운영 사고는 개발자 기술 경험과 섞지 않고 Notion `에이전트 운영 로그 DB`에 남깁니다.
 - Notion 루트나 Archive 페이지를 `replace_content`로 수정할 때는 child page/database 보존 여부를 먼저 확인합니다. `allow_deleting_content`는 링크 블록을 실제 삭제할 수 있으므로, 단순 레이아웃 정리에는 쓰지 않습니다.
@@ -134,7 +135,7 @@ codex/<short-task-name>
 - `front`: 사용자 대시보드, UI 상태, mock data, API 연동, 차트
 - `ops`: 기획 조율, 문서, Notion, PR/CI, 배포 정책
 
-다른 채팅에서 작업을 시작하면 담당 트랙 문서를 먼저 읽고, 가능하면 해당 트랙 파일만 수정합니다.
+다른 채팅에서 작업을 시작하면 담당 트랙 문서의 관련 섹션을 먼저 확인하고, 가능하면 해당 트랙 파일만 수정합니다.
 PR에는 담당 트랙에 맞는 작업 트랙 `track:*` 라벨을 붙이고, Notion 작업 카드에도 `트랙` 값을 채웁니다.
 작업 타입은 `type:*` 라벨로 표시합니다. 실제로 건드린 부분은 `part:*` 라벨과 Notion `변경 파트` 값으로 표시하되, 필요할 때만 붙입니다.
 프론트 작업은 `front` 트랙으로 처리하고, `track:front` 라벨을 붙입니다. 화면 파일을 직접 바꾸면 `part:front`도 함께 붙입니다.
@@ -148,7 +149,7 @@ PR을 열기 전:
 3. `docs/DOCUMENTATION_GUIDE.md`에서 매번 읽을 문서와 검색용 기록을 구분합니다.
 4. `docs/GIT_CONVENTION.md`를 읽습니다.
 5. `docs/LABEL_GUIDE.md`에서 GitHub 라벨과 Notion 태그 의미를 확인합니다.
-6. 병렬 작업이면 `docs/workstreams/README.md`와 담당 트랙 문서를 읽습니다.
+6. 병렬 작업이면 담당 트랙 문서를 확인하고, 트랙 경계가 헷갈릴 때만 `docs/workstreams/README.md`를 봅니다.
 7. 제품 개발/운영 문제가 발생했거나 반복될 가능성이 있으면 `docs/TROUBLESHOOTING_GUIDE.md`를 읽고 Notion `개발자 기술 경험 DB`의 `문제해결` 유형으로 기록합니다. Codex/Notion/PR/문서 운영 사고는 `에이전트 운영 로그 DB`에 분리해 기록합니다.
 8. 필요한 경우 `docs/work-units/`에 작업 단위 문서를 만들거나 갱신합니다.
 9. 관련 테스트를 실행합니다.
