@@ -1,4 +1,6 @@
 import { mount } from '@vue/test-utils';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { createMemoryHistory, createRouter } from 'vue-router';
 import { describe, expect, it } from 'vitest';
 
@@ -30,6 +32,13 @@ describe('front dashboard shell', () => {
       name: '삼성전자',
       dataStatus: 'mock'
     });
+  });
+
+  it('declares a favicon to keep browser smoke checks free of asset 404s', () => {
+    const indexHtml = readFileSync(resolve(__dirname, '../../index.html'), 'utf8');
+
+    expect(indexHtml).toContain('rel="icon"');
+    expect(indexHtml).toContain('data:image/svg+xml');
   });
 
   it('renders navigation for every planned route', async () => {

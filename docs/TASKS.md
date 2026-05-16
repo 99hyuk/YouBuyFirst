@@ -53,12 +53,13 @@
 - [x] crawl `CrawlTarget` backend migration과 claim/complete API 구현
 - [x] front 화면 라우팅 인벤토리 설계
 - [x] front Vue 3 + Vite + TypeScript 와이어프레임 shell 구현
+- [x] front shell 브라우저 QA와 기획자 확인 필요 항목 정리
 
 ## 지금 가장 가까운 작업
 
 - [ ] pipeline이 backend `CrawlTarget` API를 사용하되 static target fallback을 유지하도록 연결
 - [ ] admin target pause/resume/clear-backoff API와 화면 액션 연결
-- [ ] front shell 브라우저 QA와 기획자 확인 필요 항목 정리
+- [ ] front 메인 대시보드 와이어프레임 보강
 - [ ] `market` 트랙에서 quote snapshot 계약 설계
 - [ ] `trade` 트랙에서 모의 계좌와 주문/체결 최소 도메인 설계
 - [ ] `agent` 트랙에서 역발상 페르소나 입력 contract 설계

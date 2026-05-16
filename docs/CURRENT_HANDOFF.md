@@ -24,6 +24,7 @@
 - `crawl_runs`에 `targetId`, `targetKind`, `backoffCategory`, `backoffUntil`, `backoffReason`, `skipReason` 구조화 필드를 추가했습니다. skip/backoff 이유를 더 이상 `errorMessage` 문자열만 파싱하지 않아도 됩니다.
 - data 트랙에서 별칭 중첩 매칭을 보강하고, AI mention resolver 계약과 pipeline filtering을 구현했습니다. `OPENAI_API_KEY`가 없으면 mock provider가 테스트/데모용 판단을 수행합니다.
 - front 트랙에서 화면 라우팅 인벤토리 설계와 Vue 3 + Vite + TypeScript 기반 mock 와이어프레임 shell을 추가했습니다.
+- front shell 브라우저 QA를 실행하고, `favicon.ico` 404 콘솔 오류를 data URI favicon으로 정리했습니다. 현재 남은 기획자 확인 필요 항목은 열기 지수 용어, 기본 시간창, AI 3줄 요약 placeholder 문구입니다.
 - 병렬 작업은 루트 checkout을 공유하지 않고 프로젝트 하위 `.worktrees/<task>`에서 진행하도록 정리했습니다.
 - 제품 용어는 `감성` 대신 사용자 화면에서는 `커뮤니티 반응`, 문서/기술 설명에서는 `커뮤니티 반응 데이터`를 기준으로 씁니다. 단일 분석값은 `반응 방향`, 내부 후보 필드는 `reactionDirection`입니다.
 - 크롤링 분쟁 사례와 공개 배포 리스크를 별도 문서로 정리했습니다.
@@ -133,6 +134,7 @@
 - Crawl skip run record branch: Pipeline Docker test 통과, 24 tests
 - Crawl skip run record branch: `git diff --check` 통과
 - Front Vue shell branch: `npm test --prefix front` 통과, `npm run build --prefix front` 통과
+- Front shell browser QA branch: `npm.cmd test --prefix front` 통과, `npm.cmd run build --prefix front` 통과, Chromium route smoke QA 통과
 - Crawl source policy gate branch: pipeline pytest 통과, source policy skip 테스트 통과
 - Data AI mention resolver branch: pipeline pytest 통과, mock/OpenAI provider 계약 테스트 통과
 - Data alias matcher branch: pipeline pytest 통과
@@ -172,7 +174,7 @@
 
 - pipeline이 backend `CrawlTarget` API를 사용하되 static target fallback을 유지하도록 연결
 - admin target pause/resume/clear-backoff API와 화면 액션 연결
-- front shell 브라우저 QA와 기획자 확인 필요 항목 정리
+- front 메인 대시보드 와이어프레임 보강
 - market quote snapshot 계약 설계
 - 실제 `OPENAI_API_KEY` 기반 AI mention resolver 샘플 품질 확인
 - pipeline이 backend readiness를 기다리도록 개선
