@@ -53,9 +53,14 @@
 - [x] crawl `CrawlTarget` backend migration과 claim/complete API 구현
 - [x] front 화면 라우팅 인벤토리 설계
 - [x] front Vue 3 + Vite + TypeScript 와이어프레임 shell 구현
+- [x] front 사이트형 대시보드 와이어프레임 구현
+- [x] ops 완료 보고에 Superpowers/gstack 사용 여부와 이유를 남기는 규칙 반영
 
 ## 지금 가장 가까운 작업
 
+- [ ] front PR #43을 사용자/front와 더 협의한 뒤 ready 전환 또는 추가 조정
+- [ ] Notion 작업 로그 카드를 PR 템플릿형 아이콘 섹션으로 꾸준히 정리
+- [ ] front 와이어프레임에서 고충실도 디자인으로 넘어가는 기준 정리
 - [ ] pipeline이 backend `CrawlTarget` API를 사용하되 static target fallback을 유지하도록 연결
 - [ ] admin target pause/resume/clear-backoff API와 화면 액션 연결
 - [ ] front shell 브라우저 QA와 기획자 확인 필요 항목 정리
