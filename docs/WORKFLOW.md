@@ -96,3 +96,5 @@ gstack을 쓰지 않았다면 `gstack 미사용: 문서/backend 작업이라 브
 - 오래된 완료 내역은 `docs/work-units/`나 archive 성격 문서로 보냅니다.
 - 세부 설명은 필요한 문서에 두고, 시작 루틴에는 넣지 않습니다.
 - 문서 구조와 확인 우선순위는 `docs/DOCUMENTATION_GUIDE.md`를 따릅니다.
+- 시작 문서나 트랙 문서를 바꾸는 PR은 컨텍스트 예산을 확인합니다.
+- 예산을 줄일 때도 미완료 작업, 테스트, PR/라벨, Notion/gstack 필요성 판단은 삭제하지 않습니다.
