@@ -12,9 +12,9 @@ Codex는 사용자의 요구를 무조건 수용하지 않습니다. 모순, 리
 
 ## 작업 순서
 
-1. `AGENTS.md`, `docs/CURRENT_HANDOFF.md`, `docs/DOCUMENTATION_GUIDE.md`를 읽습니다.
-2. `docs/GIT_CONVENTION.md`와 `docs/LABEL_GUIDE.md`의 제목, 라벨, 크기 규칙을 확인합니다.
-3. 병렬 작업이면 `docs/workstreams/README.md`와 담당 트랙 문서를 읽습니다.
+1. `AGENTS.md`, `docs/CURRENT_HANDOFF.md`, `docs/DOCUMENTATION_GUIDE.md`의 필요한 섹션만 확인합니다.
+2. PR을 열 때만 `docs/GIT_CONVENTION.md`와 `docs/LABEL_GUIDE.md`의 제목, 라벨, 크기 규칙을 확인합니다.
+3. 병렬 작업이면 담당 트랙 문서를 확인하고, 트랙 경계가 헷갈릴 때만 `docs/workstreams/README.md`를 봅니다.
 4. 필요한 경우에만 `docs/FINAL_PRODUCT_PLAN.md`, `docs/PROJECT_BRIEF.md`, `docs/TASKS.md`를 추가로 읽습니다.
 5. Notion 루트, 홈카드, 주요 DB 페이지, 제품 기획, 작업 진행, 기술 경험 기록, 에이전트 운영 로그, Archive를 바꾸는 작업이면 아래 `Notion 구조 변경 게이트`를 먼저 통과합니다.
 6. 작업이 크거나 병렬화될 수 있으면 `docs/work-units/`에 짧은 작업 단위 문서를 직접 추가합니다.
@@ -194,4 +194,4 @@ Notion 작업일지는 PR 본문과 같은 카드형 흐름을 따릅니다. 작
 
 ## 문서 길이 관리
 
-문서 구조와 읽기 우선순위는 `docs/DOCUMENTATION_GUIDE.md`를 따릅니다. 새 채팅은 모든 문서를 읽지 않습니다. 먼저 `AGENTS.md`, `CURRENT_HANDOFF.md`, `DOCUMENTATION_GUIDE.md`, 담당 트랙 문서를 읽고, 나머지는 필요한 키워드로 검색합니다.
+문서 구조와 확인 우선순위는 `docs/DOCUMENTATION_GUIDE.md`를 따릅니다. 새 채팅은 모든 문서를 읽지 않습니다. `AGENTS.md`, `CURRENT_HANDOFF.md`, `DOCUMENTATION_GUIDE.md`, 담당 트랙 문서도 필요한 섹션만 확인하고, 나머지는 필요한 키워드로 검색합니다.
