@@ -81,6 +81,22 @@
       "topKeywords": ["HBM", "메모리", "외국인"],
       "priceStatus": "mock quote",
       "dataStatus": "mock"
+    },
+    {
+      "symbol": "068270",
+      "name": "셀트리온",
+      "market": "KRX",
+      "mentionCount": 38,
+      "mentionDeltaPct": 21.4,
+      "reactionDirectionRatio": {
+        "bullish": 0.44,
+        "bearish": 0.34,
+        "neutral": 0.22
+      },
+      "heatScore": 59,
+      "topKeywords": ["바이오", "실적", "수급"],
+      "priceStatus": "mock quote",
+      "dataStatus": "mock"
     }
   ]
 }
