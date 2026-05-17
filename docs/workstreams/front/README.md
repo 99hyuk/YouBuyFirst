@@ -12,6 +12,8 @@
 
 초기 프론트는 최종 디자인이 아니라 `저충실도 와이어프레임`으로 시작합니다. 목표는 예쁜 화면을 먼저 만드는 것이 아니라, 사용자가 실제로 볼 정보 구조와 라우팅, mock data, API 계약 후보, 빠진 기획 질문을 드러내는 것입니다.
 
+기획 정리 구간의 기본 운영은 `front-first discovery`입니다. backend/API 구현을 기다리지 않고 관심종목 브리핑, 종목 이벤트 타임라인, 신호 신뢰도 배지 같은 핵심 사용자 흐름을 mock으로 먼저 세우고, 필요한 API 계약을 역으로 도출합니다.
+
 - 기술 선택은 `Vue 3 + Vite + TypeScript` SPA를 기본으로 둡니다.
 - 라우팅은 `Vue Router`를 기준으로 설계합니다.
 - 서버 데이터 연동 방식은 실제 API 계약이 생긴 뒤 별도 PR에서 확정합니다.
@@ -23,6 +25,8 @@
 
 현재 `front/`에는 Vue 3 + Vite + TypeScript 기반 mock 와이어프레임 shell이 있습니다. 실제 backend API 연결, 차트 라이브러리 확정, 고충실도 디자인은 아직 하지 않았습니다.
 
+현재 화면과 디자인 도구 핸드오프 기준은 `docs/workstreams/front/WIREFRAME_HANDOFF.md`를 먼저 봅니다.
+
 ## 프론트 에이전트 시작 지시
 
 사용자가 새 채팅에서 `front 작업`, `프론트 맡아줘`, `화면 와이어프레임 해줘`처럼 짧게 말하면 아래 지시를 사용자가 다시 붙여 넣지 않아도 프론트 에이전트가 스스로 적용합니다.
@@ -30,7 +34,10 @@
 ```text
 너는 너나사 (YouBuyFirst)의 front 담당 에이전트다.
 AGENTS.md, docs/CURRENT_HANDOFF.md, docs/DOCUMENTATION_GUIDE.md,
-docs/workstreams/README.md, docs/workstreams/front/README.md를 읽는다.
+docs/workstreams/README.md, docs/workstreams/front/README.md는 필요한 섹션만 확인한다.
+이미 대화에 주입된 긴 문서는 다시 전문 출력하지 않는다.
+docs/superpowers/specs, docs/superpowers/plans는 과거 archive이므로 현재 handoff가 부족할 때만 파일 1개와 키워드 1개로 좁혀 본다.
+Browser/gstack 검증은 구현 후 화면 확인 가치가 있을 때 한 번에 모아 실행하고, 스킬 문서/콘솔/DOM 전문은 출력하지 않는다.
 
 이번 front 작업의 기본값은 Vue 3 + Vite + TypeScript 기반 저충실도 와이어프레임이다.
 목표는 화면 구조, 라우팅, mock data, API 계약 후보, 기획자 확인 필요 항목을 드러내는 것이다.
@@ -43,8 +50,11 @@ docs/workstreams/README.md, docs/workstreams/front/README.md를 읽는다.
 ## 담당 범위
 
 - 사용자용 대시보드 shell
+- 관심종목 브리핑 화면
+- 종목별 기사/공시/커뮤니티/가격 이벤트 타임라인
 - 종목/커뮤니티 반응 랭킹 화면
 - 열기 지수, 반응 방향 비율, 대표 키워드 표시
+- 신호 신뢰도/주의 배지
 - 가격, 등락률, 거래량, stale quote 상태 표시
 - 커뮤니티별 수익률 비교 화면
 - 모의투자/에이전트 리더보드 화면
@@ -78,12 +88,14 @@ docs/workstreams/README.md, docs/workstreams/front/README.md를 읽는다.
 3. fixture/mock 기반 dashboard shell 구현 완료
 4. 브라우저 QA와 기획자 확인 필요 항목 정리
 5. 메인 대시보드 와이어프레임 보강
-6. 종목 상세/커뮤니티 반응 와이어프레임 보강
-7. 시세/모의투자/AI 에이전트 화면 초안
-8. analysis ranking/indicator API 계약 연결
-9. quote snapshot API 계약 연결
-10. 커뮤니티별 수익률 비교 화면 연결
-11. 모의투자/AI 에이전트 화면 연결
+6. 관심종목 브리핑 와이어프레임 추가
+7. 종목 상세의 기사/공시/커뮤니티/가격 이벤트 타임라인 보강
+8. 신호 신뢰도/주의 배지 표현 정리
+9. 시세/모의투자/AI 에이전트 화면 초안
+10. analysis ranking/indicator API 계약 연결
+11. quote snapshot API 계약 연결
+12. 커뮤니티별 수익률 비교 화면 연결
+13. 모의투자/AI 에이전트 화면 연결
 
 ## PR 규칙
 
