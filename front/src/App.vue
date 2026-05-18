@@ -38,7 +38,7 @@ const openRail = (id: string) => {
       <div class="topbar-inner">
         <div class="brand-lockup">
           <RouterLink class="brand-home" data-testid="app-title" to="/dashboard">
-            <h1>너나사<span>YouBuyFirst</span></h1>
+            <h1>너나사 <span>YouBuyFirst</span></h1>
           </RouterLink>
           <strong>MOCK</strong>
         </div>
@@ -181,7 +181,7 @@ const openRail = (id: string) => {
         aria-label="오른쪽 패널 열고 닫기"
         @click="railExpanded = !railExpanded"
       >
-        <span>{{ railExpanded ? '‹' : '›' }}</span>
+        <span>{{ railExpanded ? '»' : '«' }}</span>
         <em>{{ railExpanded ? '닫기' : '열기' }}</em>
       </button>
       <button

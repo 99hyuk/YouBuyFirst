@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1411-header-brand-rail-direction` | 2026-05-18 14:11 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1411-header-brand-rail-direction-dashboard.png) | 배포본 기준으로 헤더의 `너나사`와 `YouBuyFirst` 사이 공백을 되돌리고, 오른쪽 rail의 열기/닫기 화살표를 닫힌 상태 `«`, 열린 상태 `»`로 맞췄습니다. |
 | `FV-20260518-1359-feed-header-clean-engagement` | 2026-05-18 13:59 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1359-feed-header-clean-engagement-dashboard.png) | 실시간 뉴스, 애널리스트 리포트, 증권 영상 새 글, 블로그/커뮤니티 링크의 오른쪽 위 상태 배지를 제거했습니다. 영상과 블로그/커뮤니티 순위에는 조회수, 공감, 댓글 수 mock 지표를 붙여 순위 근거가 보이도록 했습니다. |
 | `FV-20260518-1345-feed-video-blog-ranking` | 2026-05-18 13:45 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1345-feed-video-blog-ranking-dashboard.png) | 뉴스와 리포트는 최신순 피드로 유지하고, 증권 영상 새 글과 블로그/커뮤니티 링크에만 1위~5위 순위를 다시 넣었습니다. 전문/보기 꼬리표는 제거한 상태를 유지했습니다. |
 | `FV-20260518-1339-feed-latest-time` | 2026-05-18 13:39 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1339-feed-latest-time-dashboard.png) | 피드 행의 순위와 전문/보기 꼬리표를 제거했습니다. 각 행은 카드 전체가 링크로 동작하고, 출처 옆에 방금·몇 시간 전·며칠 전 표시가 남도록 정리했습니다. |
