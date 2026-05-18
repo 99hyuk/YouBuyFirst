@@ -74,6 +74,8 @@ describe('front dashboard shell', () => {
 
   it('renders the core product pages with the expanded planning content', async () => {
     const stock = await mountAt('/stocks/005930');
+    expect(stock.text()).toContain('종목 검색과 반응 랭킹');
+    expect(stock.text()).toContain('종목명·티커·키워드 검색');
     expect(stock.text()).toContain('어제와 달라진 점');
     expect(stock.text()).toContain('반응 키워드');
     expect(stock.text()).toContain('시간대별 변화');
