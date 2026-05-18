@@ -57,13 +57,20 @@ const experiments = [
 
 <template>
   <section class="surface-page communities-page">
-    <div class="page-heading span-2">
-      <p class="eyebrow">community comparison</p>
-      <h2>커뮤니티별 반응 비교</h2>
-      <p>어느 커뮤니티가 맞춘다는 결론이 아니라, 최근 반응이 이후 흐름과 어떻게 이어졌는지 관찰합니다.</p>
-    </div>
+    <section class="panel content-feed-card surface-title-card human-title-card span-2" aria-labelledby="human-title">
+      <div class="panel-header surface-title-header">
+        <div>
+          <p class="label">human indicator</p>
+          <h2 id="human-title">인간 지표</h2>
+        </div>
+        <span class="status-pill subtle">커뮤니티 반응 비교</span>
+      </div>
+      <p class="surface-title-copy">
+        최근 커뮤니티 반응이 이후 흐름과 어떻게 이어졌는지 관찰합니다. 특정 커뮤니티가 맞춘다는 결론처럼 보이지 않게 비교합니다.
+      </p>
+    </section>
 
-    <section class="panel span-2">
+    <section class="panel content-feed-card surface-data-card human-matrix-card span-2">
       <div class="panel-header">
         <div>
           <p class="label">source matrix</p>
@@ -103,7 +110,7 @@ const experiments = [
     </section>
 
     <section class="community-lower-grid">
-      <article class="panel">
+      <article class="panel content-feed-card surface-data-card human-top-card">
         <div class="panel-header compact">
           <div>
             <p class="label">top layer</p>
@@ -119,7 +126,7 @@ const experiments = [
         </div>
       </article>
 
-      <article class="panel">
+      <article class="panel content-feed-card surface-data-card human-experiment-card">
         <div class="panel-header compact">
           <div>
             <p class="label">paper experiment</p>

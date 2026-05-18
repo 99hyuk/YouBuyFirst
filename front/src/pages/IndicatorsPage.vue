@@ -39,13 +39,20 @@ const schedules = [
 
 <template>
   <section class="surface-page indicators-page">
-    <div class="page-heading span-2">
-      <p class="eyebrow">market context</p>
-      <h2>주요 지표</h2>
-      <p>시장 전체 분위기를 보되, 너나사의 차별점은 지표와 커뮤니티 반응의 괴리를 찾는 것입니다.</p>
-    </div>
+    <section class="panel content-feed-card surface-title-card indicators-title-card span-2" aria-labelledby="indicators-title">
+      <div class="panel-header surface-title-header">
+        <div>
+          <p class="label">market context</p>
+          <h2 id="indicators-title">주요 지표</h2>
+        </div>
+        <span class="status-pill warning">실시간/지연/mock 혼재</span>
+      </div>
+      <p class="surface-title-copy">
+        시장 전체 분위기를 보되, 너나사의 차별점은 지표와 커뮤니티 반응의 괴리를 찾는 것입니다.
+      </p>
+    </section>
 
-    <section class="panel span-2">
+    <section class="panel content-feed-card surface-data-card indicators-strip-card span-2">
       <div class="panel-header">
         <div>
           <p class="label">market indicators</p>
@@ -64,7 +71,7 @@ const schedules = [
     </section>
 
     <section class="indicator-detail-grid">
-      <article class="panel">
+      <article class="panel content-feed-card surface-data-card indicators-move-card">
         <div class="panel-header compact">
           <div>
             <p class="label">co-movement</p>
@@ -83,7 +90,7 @@ const schedules = [
         </div>
       </article>
 
-      <article class="panel">
+      <article class="panel content-feed-card surface-data-card indicators-heat-card">
         <div class="panel-header compact">
           <div>
             <p class="label">theme heatmap</p>
@@ -100,7 +107,7 @@ const schedules = [
     </section>
 
     <section class="indicator-detail-grid">
-      <article class="panel">
+      <article class="panel content-feed-card surface-data-card indicators-divergence-card">
         <div class="panel-header compact">
           <div>
             <p class="label">divergence</p>
@@ -116,7 +123,7 @@ const schedules = [
         </div>
       </article>
 
-      <article class="panel">
+      <article class="panel content-feed-card surface-data-card indicators-calendar-card">
         <div class="panel-header compact">
           <div>
             <p class="label">calendar</p>

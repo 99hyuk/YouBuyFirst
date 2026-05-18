@@ -29,19 +29,74 @@ const reviews = [
   '삼성전자 보유 구간은 뉴스보다 커뮤니티 키워드가 먼저 움직였습니다.',
   'NAVER는 가격 하락보다 부정 키워드 증가가 먼저 감지됐지만 표본 수가 작았습니다.'
 ];
+
+const ocrSteps = [
+  { label: '이미지 업로드', state: '준비', detail: '잔고 화면·거래내역 캡처' },
+  { label: 'OCR 추출', state: 'mock', detail: '종목·수량·평균단가 후보' },
+  { label: '민감정보 마스킹', state: '필수', detail: '계좌번호·이름·주문번호 제외' },
+  { label: '가상 원장 매핑', state: '준비', detail: '실거래가 아닌 복기용 연결' }
+];
+
+const accountLinks = [
+  { broker: '토스증권', method: '잔고 이미지 OCR', status: '업로드 대기', scope: '보유 종목·평단' },
+  { broker: '키움증권', method: '거래내역 캡처', status: '필드 매핑 준비', scope: '체결 시간·수량' },
+  { broker: '미래에셋증권', method: 'CSV/OCR 병행', status: 'mock', scope: '평가금액·손익' }
+];
 </script>
 
 <template>
   <section class="surface-page portfolio-page">
-    <div class="page-heading span-2">
-      <p class="eyebrow">paper portfolio</p>
-      <h2>내 포트폴리오</h2>
-      <p>가상 예수금과 원장을 기준으로 체결 뒤 커뮤니티 반응·뉴스·가격 변화를 복기합니다.</p>
-    </div>
+    <section class="panel content-feed-card surface-title-card portfolio-title-card span-2" aria-labelledby="portfolio-title">
+      <div class="panel-header surface-title-header">
+        <div>
+          <p class="label">paper portfolio</p>
+          <h2 id="portfolio-title">내 포트폴리오</h2>
+        </div>
+        <span class="status-pill warning">실거래 아님</span>
+      </div>
+      <p class="surface-title-copy">
+        가상 예수금과 원장을 기준으로 체결 뒤 커뮤니티 반응, 뉴스, 가격 변화를 복기합니다.
+      </p>
+    </section>
 
     <section class="panel span-2 paper-warning">
       <strong>실거래 아님</strong>
       <p>이 화면은 모의투자와 개발 검증용 원장입니다. 실제 계좌, 실거래 주문, 투자 자문과 연결되지 않습니다.</p>
+    </section>
+
+    <section class="panel content-feed-card surface-data-card account-sync-card span-2">
+      <div class="panel-header">
+        <div>
+          <p class="label">asset sync</p>
+          <h3>자산 OCR · 주식 계좌 연결 준비</h3>
+        </div>
+        <span class="status-pill warning">mock · 민감정보 제외</span>
+      </div>
+      <div class="account-sync-grid">
+        <article class="ocr-dropzone">
+          <span>OCR</span>
+          <strong>잔고 화면을 가상 원장으로 변환</strong>
+          <p>업로드 파일은 아직 저장하지 않는 화면 설계 상태입니다. 실제 연결 전에는 계좌번호, 이름, 주문번호를 제거해야 합니다.</p>
+          <button type="button">이미지 선택 mock</button>
+        </article>
+        <div class="sync-step-list">
+          <article v-for="step in ocrSteps" :key="step.label">
+            <span>{{ step.state }}</span>
+            <strong>{{ step.label }}</strong>
+            <em>{{ step.detail }}</em>
+          </article>
+        </div>
+        <div class="account-link-list">
+          <article v-for="account in accountLinks" :key="account.broker">
+            <div>
+              <strong>{{ account.broker }}</strong>
+              <span>{{ account.method }}</span>
+            </div>
+            <em>{{ account.status }}</em>
+            <p>{{ account.scope }}</p>
+          </article>
+        </div>
+      </div>
     </section>
 
     <section class="portfolio-summary-grid">
@@ -51,7 +106,7 @@ const reviews = [
       </article>
     </section>
 
-    <section class="panel span-2">
+    <section class="panel content-feed-card surface-data-card portfolio-holdings-card span-2">
       <div class="panel-header">
         <div>
           <p class="label">holdings</p>
@@ -72,7 +127,7 @@ const reviews = [
     </section>
 
     <section class="portfolio-detail-grid">
-      <article class="panel">
+      <article class="panel content-feed-card surface-data-card portfolio-orders-card">
         <div class="panel-header compact">
           <div>
             <p class="label">orders</p>
@@ -88,7 +143,7 @@ const reviews = [
         </div>
       </article>
 
-      <article class="panel">
+      <article class="panel content-feed-card surface-data-card portfolio-ledger-card">
         <div class="panel-header compact">
           <div>
             <p class="label">ledger</p>
@@ -105,7 +160,7 @@ const reviews = [
       </article>
     </section>
 
-    <section class="panel span-2">
+    <section class="panel content-feed-card surface-data-card portfolio-review-card span-2">
       <div class="panel-header compact">
         <div>
           <p class="label">post-trade review</p>

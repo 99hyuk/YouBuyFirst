@@ -44,11 +44,18 @@ const orderStates = [
 
 <template>
   <section class="surface-page agents-page">
-    <div class="page-heading span-2">
-      <p class="eyebrow">agent simulation</p>
-      <h2>에이전트 모의 판단 기록</h2>
-      <p>AI 화면이 아니라, 입력값·판단 key·주문 후보 상태가 추적되는 금융 IT 실험 화면입니다.</p>
-    </div>
+    <section class="panel content-feed-card surface-title-card agents-title-card span-2" aria-labelledby="agents-title">
+      <div class="panel-header surface-title-header">
+        <div>
+          <p class="label">agent simulation</p>
+          <h2 id="agents-title">에이전트 모의 판단 기록</h2>
+        </div>
+        <span class="status-pill warning">모의 판단 · 실거래 아님</span>
+      </div>
+      <p class="surface-title-copy">
+        입력값, 판단 key, 주문 후보 상태가 추적되는 금융 IT 실험 화면입니다.
+      </p>
+    </section>
 
     <section class="agent-grid">
       <article v-for="persona in personas" :key="persona.name" class="panel persona-card">
@@ -60,7 +67,7 @@ const orderStates = [
     </section>
 
     <section class="agent-main-grid">
-      <article class="panel decision-log-panel">
+      <article class="panel content-feed-card surface-data-card decision-log-panel agents-log-card">
         <div class="panel-header">
           <div>
             <p class="label">decision log</p>
@@ -80,7 +87,7 @@ const orderStates = [
         </div>
       </article>
 
-      <aside class="panel agent-input-panel">
+      <aside class="panel content-feed-card surface-data-card agent-input-panel agents-input-card">
         <div class="panel-header compact">
           <div>
             <p class="label">inputs</p>

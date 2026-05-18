@@ -3908,6 +3908,204 @@ a {
   margin: 0;
 }
 
+.surface-title-card,
+.surface-data-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.surface-title-header {
+  min-height: 48px;
+}
+
+.surface-title-header h2 {
+  margin: 2px 0 0;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 880;
+  line-height: 1.2;
+}
+
+.surface-title-copy {
+  margin: 0;
+  padding: 12px 14px 13px;
+  border-top: 1px solid var(--line);
+  color: #657285;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+.surface-data-card > :not(.panel-header) {
+  margin-right: 14px;
+  margin-left: 14px;
+}
+
+.surface-data-card > .panel-header + * {
+  margin-top: 14px;
+}
+
+.surface-data-card > :not(.panel-header):last-child {
+  margin-bottom: 14px;
+}
+
+.stock-reaction-card,
+.stock-source-card,
+.stock-timeline-card,
+.stock-evidence-card,
+.indicators-title-card,
+.indicators-strip-card,
+.indicators-move-card {
+  --feed-accent: #4f7fee;
+  --feed-bg: #dde8ff;
+}
+
+.stock-delta-card,
+.stock-reliability-card,
+.human-title-card,
+.human-matrix-card,
+.agents-title-card,
+.agents-log-card,
+.portfolio-title-card,
+.portfolio-holdings-card,
+.portfolio-review-card {
+  --feed-accent: #36c27a;
+  --feed-bg: #dff5e9;
+}
+
+.human-top-card,
+.indicators-heat-card,
+.agents-input-card,
+.portfolio-orders-card,
+.account-sync-card {
+  --feed-accent: #8063e8;
+  --feed-bg: #efe7ff;
+}
+
+.human-experiment-card,
+.indicators-divergence-card,
+.indicators-calendar-card,
+.portfolio-ledger-card {
+  --feed-accent: #f08a2b;
+  --feed-bg: #fff0dc;
+}
+
+.account-sync-grid {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.9fr) minmax(240px, 1fr) minmax(260px, 1.1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+
+.ocr-dropzone,
+.sync-step-list article,
+.account-link-list article {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.ocr-dropzone {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: 16px;
+  background:
+    linear-gradient(135deg, rgba(31, 39, 54, 0.96), rgba(44, 59, 86, 0.94)),
+    var(--nav);
+  color: #ffffff;
+}
+
+.ocr-dropzone span {
+  color: #88aaff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.ocr-dropzone strong {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
+.ocr-dropzone p {
+  margin: 0;
+  color: #c7d2e5;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.ocr-dropzone button {
+  justify-self: start;
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.11);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 820;
+}
+
+.sync-step-list,
+.account-link-list {
+  display: grid;
+  gap: 8px;
+}
+
+.sync-step-list article {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 2px 10px;
+  padding: 10px;
+}
+
+.sync-step-list span,
+.account-link-list span,
+.account-link-list p {
+  color: #748197;
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.sync-step-list strong,
+.account-link-list strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sync-step-list em,
+.account-link-list em {
+  color: #8a96a6;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 720;
+}
+
+.sync-step-list em {
+  grid-column: 2;
+}
+
+.account-link-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 10px;
+  padding: 10px;
+}
+
+.account-link-list p {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
 .community-compact-panel {
   display: grid;
   gap: 12px;
@@ -4313,6 +4511,51 @@ a {
 
   .graph-legend,
   .return-legend {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel.surface-title-card,
+.panel.surface-data-card {
+  padding: 0;
+}
+
+@media (max-width: 1100px) {
+  .account-sync-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .surface-data-card > :not(.panel-header) {
+    margin-right: 12px;
+    margin-left: 12px;
+  }
+
+  .surface-title-copy {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .stock-layout-grid,
+  .community-lower-grid,
+  .indicator-detail-grid,
+  .agent-main-grid,
+  .portfolio-detail-grid,
+  .portfolio-summary-grid,
+  .indicator-strip-grid,
+  .source-reaction-grid,
+  .trend-period-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .community-table article,
+  .portfolio-table article {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-hero,
+  .stock-quote-board {
     grid-template-columns: 1fr;
   }
 }

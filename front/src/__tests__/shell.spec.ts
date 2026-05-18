@@ -81,6 +81,7 @@ describe('front dashboard shell', () => {
     expect(stock.findAll('.evidence-list a').length).toBeGreaterThanOrEqual(5);
 
     const communities = await mountAt('/communities');
+    expect(communities.text()).toContain('인간 지표');
     expect(communities.text()).toContain('커뮤니티별 반응 비교');
     expect(communities.text()).toContain('커뮤니티별 언급 급증과 반응 비율');
     expect(communities.text()).toContain('인기글·개념글 레이어');
@@ -116,6 +117,8 @@ describe('front dashboard shell', () => {
     const portfolio = await mountAt('/portfolio');
     expect(portfolio.text()).toContain('내 포트폴리오');
     expect(portfolio.text()).toContain('실거래 아님');
+    expect(portfolio.text()).toContain('자산 OCR · 주식 계좌 연결 준비');
+    expect(portfolio.text()).toContain('민감정보 마스킹');
     expect(portfolio.text()).toContain('원장 내역');
     expect(portfolio.text()).toContain('체결 후 복기');
   });
@@ -134,6 +137,7 @@ describe('front dashboard shell', () => {
     expect(styles).toContain('.theme-heatmap');
     expect(styles).toContain('.decision-log-list');
     expect(styles).toContain('.portfolio-table');
+    expect(styles).toContain('.account-sync-grid');
     expect(wrapper.text()).toContain('실제 거래 지시나 개인화 투자 권유를 제공하지 않습니다');
     expect(wrapper.text()).not.toContain('매수 추천');
     expect(wrapper.text()).not.toContain('매도 추천');

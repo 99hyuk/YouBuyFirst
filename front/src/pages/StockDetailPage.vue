@@ -81,7 +81,7 @@ const reliability = [
     </section>
 
     <section class="stock-layout-grid">
-      <article class="panel reaction-trend-panel">
+      <article class="panel content-feed-card surface-data-card reaction-trend-panel stock-reaction-card">
         <div class="panel-header">
           <div>
             <p class="label">reaction trend</p>
@@ -105,7 +105,7 @@ const reliability = [
         </div>
       </article>
 
-      <article class="panel yesterday-panel">
+      <article class="panel content-feed-card surface-data-card yesterday-panel stock-delta-card">
         <div class="panel-header compact">
           <div>
             <p class="label">daily delta</p>
@@ -118,7 +118,7 @@ const reliability = [
       </article>
     </section>
 
-    <section class="panel source-reaction-panel">
+    <section class="panel content-feed-card surface-data-card source-reaction-panel stock-source-card">
       <div class="panel-header">
         <div>
           <p class="label">source reaction</p>
@@ -142,7 +142,7 @@ const reliability = [
       </div>
     </section>
 
-    <section class="panel stock-event-panel">
+    <section class="panel content-feed-card surface-data-card stock-event-panel stock-timeline-card">
       <div class="panel-header">
         <div>
           <p class="label">event timeline</p>
@@ -163,7 +163,7 @@ const reliability = [
     </section>
 
     <section class="stock-layout-grid">
-      <article class="panel evidence-panel">
+      <article class="panel content-feed-card surface-data-card evidence-panel stock-evidence-card">
         <div class="panel-header">
           <div>
             <p class="label">evidence links</p>
@@ -180,7 +180,7 @@ const reliability = [
         </div>
       </article>
 
-      <article class="panel reliability-panel">
+      <article class="panel content-feed-card surface-data-card reliability-panel stock-reliability-card">
         <div class="panel-header compact">
           <div>
             <p class="label">signal reliability</p>
