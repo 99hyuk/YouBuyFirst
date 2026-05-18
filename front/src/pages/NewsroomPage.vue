@@ -21,15 +21,16 @@ type NewsroomItem = {
   rankLabel?: string;
 };
 
-const filterTabs: Array<{ id: NewsroomFilter; label: string; caption: string }> = [
-  { id: 'all', label: '종합', caption: '요약' },
-  { id: 'news', label: '뉴스', caption: '속보' },
-  { id: 'reports', label: '리포트', caption: '분석' },
-  { id: 'videos', label: '영상', caption: '랭킹' },
-  { id: 'links', label: '블로그 및 커뮤니티', caption: '원문' }
-];
+const filterIds: NewsroomFilter[] = ['all', 'news', 'reports', 'videos', 'links'];
+const filterLabels: Record<NewsroomFilter, string> = {
+  all: '종합',
+  news: '뉴스',
+  reports: '리포트',
+  videos: '영상',
+  links: '블로그 및 커뮤니티'
+};
 
-const pageSize = 3;
+const pageSize = 15;
 
 const directIconUrls: Record<string, string> = {
   'blog.naver.com': 'https://ssl.pstatic.net/static/blog/icon/favicon.ico',
@@ -116,6 +117,135 @@ const feedItems: NewsroomItem[] = [
     meta: `${item.publishedLabel} · ${item.engagementLabel}`,
     statusLabel: item.dataStatus,
     rankLabel: `${index + 1}위`
+  })),
+  ...[
+    {
+      id: 'news-extra-dollar-yield',
+      category: 'news' as const,
+      tone: 'news' as const,
+      title: '달러 강세 구간, 환율 민감주 언급 확대',
+      source: 'Google Finance',
+      iconDomain: 'www.google.com',
+      iconClass: 'news-macro',
+      url: 'https://www.google.com/finance/',
+      meta: '27분 전',
+      statusLabel: 'mock'
+    },
+    {
+      id: 'news-extra-ai-supply',
+      category: 'news' as const,
+      tone: 'news' as const,
+      title: 'AI 서버 공급망 이슈로 전력·반도체 키워드 동반 증가',
+      source: 'Yahoo Finance',
+      iconDomain: 'finance.yahoo.com',
+      iconClass: 'news-stock',
+      url: 'https://finance.yahoo.com/topic/stock-market-news/',
+      meta: '42분 전',
+      statusLabel: 'mock'
+    },
+    {
+      id: 'news-extra-market-close',
+      category: 'news' as const,
+      tone: 'news' as const,
+      title: '장 마감 앞두고 코스닥 변동성 확대, 커뮤니티 체감 온도 상승',
+      source: 'Investing.com',
+      iconDomain: 'www.investing.com',
+      iconClass: 'news-index',
+      url: 'https://www.investing.com/news/stock-market-news',
+      meta: '55분 전',
+      statusLabel: 'mock'
+    },
+    {
+      id: 'report-extra-bio',
+      category: 'reports' as const,
+      tone: 'report' as const,
+      title: '바이오 업종 임상 일정과 수급 이벤트 점검',
+      source: '증권사 데일리',
+      iconDomain: 'finance.naver.com',
+      iconClass: 'news-research',
+      url: 'https://finance.naver.com/research/',
+      meta: '4시간 전',
+      statusLabel: 'mock'
+    },
+    {
+      id: 'report-extra-secondary-battery',
+      category: 'reports' as const,
+      tone: 'report' as const,
+      title: '2차전지 밸류체인 재고 부담과 반등 조건 정리',
+      source: '네이버페이 증권 리서치',
+      iconDomain: 'finance.naver.com',
+      iconClass: 'news-research',
+      url: 'https://finance.naver.com/research/',
+      meta: '5시간 전',
+      statusLabel: 'mock'
+    },
+    {
+      id: 'video-extra-opening-bell',
+      category: 'videos' as const,
+      tone: 'video' as const,
+      title: '개장 전 체크할 반도체·환율·금리 변수',
+      source: '증권 방송 클립',
+      iconDomain: 'www.youtube.com',
+      iconClass: 'youtube',
+      url: 'https://www.youtube.com/results?search_query=%EC%A6%9D%EA%B6%8C+%EC%A3%BC%EC%8B%9D',
+      meta: '3일 전 · 조회 4.8만',
+      statusLabel: 'mock',
+      rankLabel: '6위'
+    },
+    {
+      id: 'video-extra-earnings',
+      category: 'videos' as const,
+      tone: 'video' as const,
+      title: '실적 발표 시즌, 커뮤니티가 먼저 반응한 업종은?',
+      source: '투자 유튜브',
+      iconDomain: 'www.youtube.com',
+      iconClass: 'youtube',
+      url: 'https://www.youtube.com/results?search_query=%EC%8B%A4%EC%A0%81+%EC%A3%BC%EC%8B%9D',
+      meta: '4일 전 · 조회 3.6만',
+      statusLabel: 'mock',
+      rankLabel: '7위'
+    },
+    {
+      id: 'video-extra-market-review',
+      category: 'videos' as const,
+      tone: 'video' as const,
+      title: '오늘 시장에서 언급량이 가장 크게 바뀐 종목 리뷰',
+      source: '마켓 리뷰',
+      iconDomain: 'www.youtube.com',
+      iconClass: 'youtube',
+      url: 'https://www.youtube.com/results?search_query=%EC%A3%BC%EC%8B%9D+%EC%8B%9C%EC%9E%A5+%EB%A6%AC%EB%B7%B0',
+      meta: '4일 전 · 조회 2.9만',
+      statusLabel: 'mock',
+      rankLabel: '8위'
+    },
+    {
+      id: 'link-extra-fm-korea',
+      category: 'links' as const,
+      tone: 'link' as const,
+      title: '반도체 장비주 토론 원문 묶음',
+      source: '에펨코리아 주식',
+      iconDomain: 'www.fmkorea.com',
+      iconClass: 'community',
+      url: 'https://www.fmkorea.com/',
+      meta: '방금 갱신 · 댓글 188',
+      statusLabel: 'mock',
+      rankLabel: '6위'
+    },
+    {
+      id: 'link-extra-naver-watch',
+      category: 'links' as const,
+      tone: 'link' as const,
+      title: '관심 종목 게시판 반응 변화 원문',
+      source: '네이버 종목토론',
+      iconDomain: 'finance.naver.com',
+      iconClass: 'naver',
+      url: 'https://finance.naver.com/',
+      meta: '방금 갱신 · 댓글 141',
+      statusLabel: 'mock',
+      rankLabel: '7위'
+    }
+  ].map((item) => ({
+    ...item
   }))
 ];
 
@@ -123,10 +253,10 @@ const route = useRoute();
 const activeFilter = computed<NewsroomFilter>(() => {
   const feed = route.query.feed;
   const value = Array.isArray(feed) ? feed[0] : feed;
-  return filterTabs.some((tab) => tab.id === value) ? (value as NewsroomFilter) : 'all';
+  return filterIds.includes(value as NewsroomFilter) ? (value as NewsroomFilter) : 'all';
 });
 
-const activeTab = computed(() => filterTabs.find((tab) => tab.id === activeFilter.value) ?? filterTabs[0]);
+const activeTab = computed(() => filterLabels[activeFilter.value]);
 const activeItems = computed(() =>
   activeFilter.value === 'all' ? feedItems : feedItems.filter((item) => item.category === activeFilter.value)
 );
@@ -171,7 +301,7 @@ const overviewColumns = computed(() => [
       { label: '뉴스', to: { path: '/newsroom', query: { feed: 'news' } } },
       { label: '리포트', to: { path: '/newsroom', query: { feed: 'reports' } } }
     ],
-    items: mergeAlternating(itemsByCategory('news'), itemsByCategory('reports')).slice(0, 6)
+    items: mergeAlternating(itemsByCategory('news'), itemsByCategory('reports')).slice(0, 15)
   },
   {
     id: 'media-links',
@@ -181,7 +311,7 @@ const overviewColumns = computed(() => [
       { label: '영상', to: { path: '/newsroom', query: { feed: 'videos' } } },
       { label: '원문', to: { path: '/newsroom', query: { feed: 'links' } } }
     ],
-    items: mergeAlternating(itemsByCategory('videos'), itemsByCategory('links')).slice(0, 6)
+    items: mergeAlternating(itemsByCategory('videos'), itemsByCategory('links')).slice(0, 15)
   }
 ]);
 
@@ -201,8 +331,6 @@ const pageRangeLabel = computed(() => {
 const listStatusLabel = computed(() =>
   activeFilter.value === 'all' ? '요약 보기' : `${pageRangeLabel.value} · 링크 원문 이동`
 );
-
-const filterTo = (id: NewsroomFilter) => (id === 'all' ? { path: '/newsroom' } : { path: '/newsroom', query: { feed: id } });
 </script>
 
 <template>
@@ -212,18 +340,6 @@ const filterTo = (id: NewsroomFilter) => (id === 'all' ? { path: '/newsroom' } :
       <h2>뉴스룸</h2>
       <p>뉴스, 리포트, 영상, 블로그와 커뮤니티 링크를 한 곳에서 확인합니다.</p>
     </section>
-
-    <nav class="newsroom-switch" aria-label="뉴스룸 필터">
-      <RouterLink
-        v-for="tab in filterTabs"
-        :key="tab.id"
-        :class="{ active: activeFilter === tab.id }"
-        :to="filterTo(tab.id)"
-      >
-        <strong>{{ tab.label }}</strong>
-        <span>{{ tab.caption }}</span>
-      </RouterLink>
-    </nav>
 
     <section v-if="activeFilter === 'all'" class="newsroom-overview-grid" aria-label="뉴스룸 종합 요약">
       <article
@@ -272,7 +388,7 @@ const filterTo = (id: NewsroomFilter) => (id === 'all' ? { path: '/newsroom' } :
       <div class="panel-header newsroom-list-header">
         <div>
           <p class="label">feed list</p>
-          <h3 id="newsroom-list-title">{{ activeTab.label }}</h3>
+          <h3 id="newsroom-list-title">{{ activeTab }}</h3>
         </div>
         <span class="status-pill subtle">{{ listStatusLabel }}</span>
       </div>

@@ -88,10 +88,11 @@ describe('front dashboard shell', () => {
 
     const newsroomAll = await mountAt('/newsroom');
     expect(newsroomAll.text()).toContain('뉴스룸');
-    expect(newsroomAll.text()).toContain('종합');
     expect(newsroomAll.text()).toContain('블로그 및 커뮤니티');
-    expect(newsroomAll.findAll('.newsroom-switch a')).toHaveLength(5);
+    expect(newsroomAll.find('.newsroom-switch').exists()).toBe(false);
     expect(newsroomAll.findAll('.newsroom-overview-card')).toHaveLength(2);
+    expect(newsroomAll.findAll('.newsroom-overview-card')[0].findAll('.newsroom-row')).toHaveLength(15);
+    expect(newsroomAll.findAll('.newsroom-overview-card')[1].findAll('.newsroom-row')).toHaveLength(15);
     expect(newsroomAll.text()).toContain('뉴스 · 리포트');
     expect(newsroomAll.text()).toContain('영상 · 블로그 및 커뮤니티');
 

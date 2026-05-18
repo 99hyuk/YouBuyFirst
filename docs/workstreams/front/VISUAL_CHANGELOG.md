@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1601-newsroom-no-switch-long-lists` | 2026-05-18 16:01 KST | [newsroom overview](../../../front/public/visual-history/2026-05-18/FV-20260518-1601-newsroom-no-switch-long-lists-1920.png) | 뉴스룸 상단 필터 스위치를 제거하고, 좌우 리스트를 각각 15개 항목으로 확장했습니다. 두 리스트 사이 간격도 48px로 넓혀 분리감을 키웠습니다. |
 | `FV-20260518-1553-newsroom-two-overview-lists` | 2026-05-18 15:53 KST | [newsroom overview](../../../front/public/visual-history/2026-05-18/FV-20260518-1553-newsroom-two-overview-lists-1920.png) | 뉴스룸 종합 화면을 네 개 카드가 아니라 두 개의 리스트로 정리했습니다. 왼쪽은 뉴스와 리포트, 오른쪽은 영상과 블로그·커뮤니티 원문이 한 리스트 안에서 섞여 보입니다. |
 | `FV-20260518-1542-newsroom-overview-pagination` | 2026-05-18 15:42 KST | [newsroom overview](../../../front/public/visual-history/2026-05-18/FV-20260518-1542-newsroom-overview-pagination-overview-1920.png) / [videos page 2](../../../front/public/visual-history/2026-05-18/FV-20260518-1542-newsroom-overview-pagination-page2-1920.png) | 뉴스룸 종합 화면에서 카운트 요약 카드를 빼고, 왼쪽에는 뉴스·리포트, 오른쪽에는 영상·블로그 및 커뮤니티를 배치했습니다. 개별 필터 화면 하단에는 이전/다음과 페이지 번호를 추가했습니다. |
 | `FV-20260518-1525-newsroom-feed-tabs` | 2026-05-18 15:25 KST | [dashboard 1920](../../../front/public/visual-history/2026-05-18/FV-20260518-1525-newsroom-feed-tabs-dashboard-1920.png) / [newsroom 1920](../../../front/public/visual-history/2026-05-18/FV-20260518-1525-newsroom-feed-tabs-newsroom-1920.png) | 상단 메뉴에 `뉴스룸`을 추가하고, 종합·뉴스·리포트·영상·블로그 및 커뮤니티 필터를 박스형 스위치로 구성했습니다. 대시보드 피드 카드의 자세히 보기는 뉴스룸의 해당 필터로 이동합니다. |
