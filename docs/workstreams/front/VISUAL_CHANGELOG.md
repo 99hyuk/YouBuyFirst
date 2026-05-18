@@ -4,7 +4,8 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
-| `FV-20260518-1005-product-surface` | 2026-05-18 10:05 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-stock-detail.png) | 대시보드에 관심종목 요약, 이벤트 체인, 데이터 기준 시각을 추가하고 종목 상세를 반응 추이, 소스별 반응, 타임라인, 근거 링크, 신뢰도, 일일 변화 요약 중심으로 확장했습니다. |
+| `FV-20260518-1042-product-surface` | 2026-05-18 10:42 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-stock-detail.png) / [communities](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-communities.png) / [indicators](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-indicators.png) / [agents](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-agents.png) / [portfolio](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-portfolio.png) | 기존 대시보드 디자인을 유지하고 관심종목 요약, 이벤트 미리보기, 데이터 기준 시각만 작은 스트립으로 추가했습니다. 종목 상세과 다른 탭은 확장된 화면 캡처를 링크로 남겼습니다. |
+| `FV-20260518-1005-product-surface` | 2026-05-18 10:05 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-stock-detail.png) | 대시보드 구조를 너무 크게 바꾼 이전 초안입니다. 현재 방향은 아니지만 비교 보존용으로 남깁니다. |
 
 프론트 UI를 바꿀 때마다 캡처와 변경 버전을 연결해 이전 화면을 다시 확인하기 위한 기록입니다.
 

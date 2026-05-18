@@ -27,14 +27,19 @@
       }
 
       main {
-        width: min(1180px, calc(100% - 40px));
+        width: min(1120px, calc(100% - 40px));
         margin: 0 auto;
         padding: 34px 0 64px;
       }
 
-      header {
+      header,
+      .version-list,
+      article {
         display: grid;
-        gap: 10px;
+        gap: 14px;
+      }
+
+      header {
         margin-bottom: 24px;
       }
 
@@ -46,6 +51,10 @@
 
       h1 {
         font-size: 28px;
+      }
+
+      h2 {
+        font-size: 18px;
       }
 
       p {
@@ -61,14 +70,15 @@
         text-decoration: none;
       }
 
-      .actions {
+      .actions,
+      .shot-links {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        margin-top: 4px;
       }
 
-      .actions a {
+      .actions a,
+      .shot-links a {
         display: inline-flex;
         align-items: center;
         min-height: 34px;
@@ -79,14 +89,9 @@
         color: #26384f;
       }
 
-      .gallery {
-        display: grid;
-        gap: 26px;
-      }
-
       article {
-        display: grid;
-        gap: 12px;
+        grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
+        align-items: start;
         padding: 16px;
         border: 1px solid #dfe5ec;
         border-radius: 12px;
@@ -94,16 +99,49 @@
         box-shadow: 0 14px 36px rgba(39, 51, 67, 0.08);
       }
 
-      h2 {
-        font-size: 18px;
+      .version-copy {
+        display: grid;
+        gap: 10px;
+        min-width: 0;
       }
 
-      img {
+      .thumb {
         display: block;
         width: 100%;
-        height: auto;
+        height: 220px;
+        object-fit: cover;
+        object-position: top left;
         border: 1px solid #dfe5ec;
         border-radius: 10px;
+      }
+
+      .meta {
+        color: #8491a3;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .rejected {
+        display: inline-flex;
+        width: fit-content;
+        min-height: 24px;
+        align-items: center;
+        padding: 0 8px;
+        border-radius: 999px;
+        background: #fff7eb;
+        color: #bd6b10;
+        font-size: 11px;
+        font-weight: 820;
+      }
+
+      @media (max-width: 760px) {
+        main {
+          width: min(100% - 24px, 1120px);
+        }
+
+        article {
+          grid-template-columns: 1fr;
+        }
       }
     </style>
   </head>
@@ -111,24 +149,43 @@
     <main>
       <header>
         <h1>2026-05-18</h1>
-        <p>제품 기획 중심으로 대시보드, 종목 상세, 커뮤니티, 주요 지표, 에이전트, 포트폴리오 화면을 확장한 버전입니다.</p>
+        <p>한 날짜 안에 여러 버전을 남깁니다. 썸네일은 대시보드만 보여주고, 탭별 화면은 링크로 확인합니다.</p>
         <div class="actions">
           <a href="../index.html">전체 날짜로 돌아가기</a>
           <a href="file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-design-polish/front/public/visual-history/2026-05-18/">로컬 이미지 폴더 열기</a>
         </div>
       </header>
 
-      <section class="gallery">
+      <section class="version-list">
         <article>
-          <h2>Dashboard · product surface</h2>
-          <p>관심종목 요약, 이벤트 타임라인 미리보기, 데이터 기준 시각을 전면에 둔 대시보드입니다.</p>
-          <img src="./FV-20260518-1005-product-surface-dashboard.png" alt="2026-05-18 dashboard product surface" />
+          <img class="thumb" src="./FV-20260518-1042-product-surface-dashboard.png" alt="2026-05-18 dashboard restored version thumbnail" />
+          <div class="version-copy">
+            <span class="meta">FV-20260518-1042-product-surface · restored dashboard</span>
+            <h2>기존 대시보드 유지 + 제품 내용 추가</h2>
+            <p>기존 대시보드의 검색, 커뮤니티 비교, 종목 반응, 오른쪽 패널 구조는 유지하고 관심종목 요약, 이벤트 미리보기, 데이터 기준 시각만 작은 스트립으로 추가했습니다.</p>
+            <div class="shot-links" aria-label="1042 version screenshots">
+              <a href="./FV-20260518-1042-product-surface-dashboard.png">대시보드</a>
+              <a href="./FV-20260518-1042-product-surface-stock-detail.png">종목 상세</a>
+              <a href="./FV-20260518-1042-product-surface-communities.png">커뮤니티</a>
+              <a href="./FV-20260518-1042-product-surface-indicators.png">주요 지표</a>
+              <a href="./FV-20260518-1042-product-surface-agents.png">에이전트</a>
+              <a href="./FV-20260518-1042-product-surface-portfolio.png">내 포트폴리오</a>
+            </div>
+          </div>
         </article>
 
         <article>
-          <h2>Stock detail · core screen</h2>
-          <p>종목 헤더, 반응 추이, 소스별 반응, 이벤트 타임라인, 근거 링크, 신뢰도, 어제와 달라진 점을 넣은 종목 상세입니다.</p>
-          <img src="./FV-20260518-1005-product-surface-stock-detail.png" alt="2026-05-18 stock detail core screen" />
+          <img class="thumb" src="./FV-20260518-1005-product-surface-dashboard.png" alt="2026-05-18 earlier dashboard draft thumbnail" />
+          <div class="version-copy">
+            <span class="meta">FV-20260518-1005-product-surface · earlier draft</span>
+            <h2>대시보드 구조를 너무 크게 바꾼 이전 초안</h2>
+            <span class="rejected">비교 보존용</span>
+            <p>이 초안은 기존 대시보드 디자인을 많이 바꿔서 현재 방향과 맞지 않습니다. 삭제하지 않고 비교용으로만 남깁니다.</p>
+            <div class="shot-links" aria-label="1005 version screenshots">
+              <a href="./FV-20260518-1005-product-surface-dashboard.png">대시보드 초안</a>
+              <a href="./FV-20260518-1005-product-surface-stock-detail.png">종목 상세 초안</a>
+            </div>
+          </div>
         </article>
       </section>
     </main>
