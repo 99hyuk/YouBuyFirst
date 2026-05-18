@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1158-dark-mode-full-label` | 2026-05-18 11:58 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1158-dark-mode-full-label-dashboard.png) | 오른쪽 아래 버튼 라벨을 `다크`에서 `다크모드`로 바꿨습니다. rail 폭 안에서 잘리지 않는 것을 확인했습니다. |
 | `FV-20260518-1134-dark-mode-rail-label` | 2026-05-18 11:34 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1134-dark-mode-rail-label-dashboard.png) | 오른쪽 아래 버튼 라벨을 `테마`에서 `다크`로 바꿨습니다. 현재 라이트 화면에서 전환 대상이 더 직접적으로 읽히도록 했습니다. |
 | `FV-20260518-1125-flat-theme-rail` | 2026-05-18 11:25 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1125-flat-theme-rail-dashboard.png) | 오른쪽 아래 테마 버튼의 안쪽 흰 박스와 inset 선을 제거해 중첩 박스 느낌을 줄였습니다. |
 | `FV-20260518-1117-theme-icon-rail` | 2026-05-18 11:17 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1117-theme-icon-rail-dashboard.png) | 오른쪽 아래 라이트/다크 모드 버튼을 알파벳 대신 반달 아이콘으로 바꿨습니다. rail 버튼 문법은 유지하고 라벨은 `테마`로 남겼습니다. |
