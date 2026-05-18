@@ -96,7 +96,7 @@ describe('front dashboard shell', () => {
 
     const stock = await mountAt('/stocks/005930');
     expect(stock.text()).toContain('종목 랭킹으로');
-    expect(stock.text()).toContain('HBM 붙었다고 다 엔비디아');
+    expect(stock.text()).toContain('HBM 붙었다고 삼전이 엔비디아');
     expect(stock.text()).toContain('오늘의 한줄평');
     expect(stock.text()).toContain('실적표 없으면 행복회로 압수');
     expect(stock.text()).toContain('실거래 판단 근거 아님');
