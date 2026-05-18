@@ -45,6 +45,7 @@ const openRail = (id: string) => {
 
         <nav class="main-nav" aria-label="주요 화면">
           <RouterLink data-testid="nav-dashboard" to="/dashboard">대시보드</RouterLink>
+          <RouterLink data-testid="nav-newsroom" to="/newsroom">뉴스룸</RouterLink>
           <RouterLink data-testid="nav-stock" to="/stocks/005930">종목 상세</RouterLink>
           <RouterLink data-testid="nav-communities" to="/communities">커뮤니티</RouterLink>
           <RouterLink data-testid="nav-indicators" to="/indicators">주요 지표</RouterLink>

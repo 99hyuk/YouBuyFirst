@@ -33,6 +33,7 @@ describe('front dashboard shell', () => {
     expect(routePaths).toEqual([
       '/',
       '/dashboard',
+      '/newsroom',
       '/stocks/:symbol',
       '/communities',
       '/indicators',
@@ -55,6 +56,7 @@ describe('front dashboard shell', () => {
     expect(wrapper.get('[data-testid="app-title"]').text()).toContain('YouBuyFirst');
     expect(wrapper.get('[data-testid="app-title"]').attributes('href')).toBe('/dashboard');
     expect(wrapper.get('[data-testid="nav-dashboard"]').text()).toContain('대시보드');
+    expect(wrapper.get('[data-testid="nav-newsroom"]').text()).toContain('뉴스룸');
     expect(wrapper.get('[data-testid="nav-stock"]').text()).toContain('종목 상세');
     expect(wrapper.get('[data-testid="nav-communities"]').text()).toContain('커뮤니티');
     expect(wrapper.get('[data-testid="nav-indicators"]').text()).toContain('주요 지표');
@@ -83,6 +85,14 @@ describe('front dashboard shell', () => {
     expect(communities.text()).toContain('커뮤니티별 언급 급증과 반응 비율');
     expect(communities.text()).toContain('인기글·개념글 레이어');
     expect(communities.text()).toContain('커뮤니티별 성과 실험');
+
+    const newsroom = await mountAt('/newsroom?feed=videos');
+    expect(newsroom.text()).toContain('뉴스룸');
+    expect(newsroom.text()).toContain('종합');
+    expect(newsroom.text()).toContain('블로그 및 커뮤니티');
+    expect(newsroom.text()).toContain('영상');
+    expect(newsroom.text()).toContain('조회 18만');
+    expect(newsroom.findAll('.newsroom-switch a')).toHaveLength(5);
 
     const indicators = await mountAt('/indicators');
     expect(indicators.text()).toContain('시장 지표와 데이터 신선도');

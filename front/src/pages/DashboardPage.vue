@@ -325,7 +325,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 <h3 id="news-title">실시간 뉴스</h3>
               </div>
               <div class="section-actions">
-                <RouterLink class="detail-link" to="/communities">자세히 보기 →</RouterLink>
+                <RouterLink class="detail-link" :to="{ path: '/newsroom', query: { feed: 'news' } }">자세히 보기 →</RouterLink>
               </div>
             </div>
             <div class="feed-list">
@@ -359,9 +359,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 <h3 id="analyst-title">애널리스트 리포트</h3>
               </div>
               <div class="section-actions">
-                <a class="detail-link" href="https://finance.naver.com/research/" target="_blank" rel="noreferrer noopener">
-                  자세히 보기 →
-                </a>
+                <RouterLink class="detail-link" :to="{ path: '/newsroom', query: { feed: 'reports' } }">자세히 보기 →</RouterLink>
               </div>
             </div>
             <div class="feed-list">
@@ -395,14 +393,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 <h3 id="external-video-title">증권 영상 새 글</h3>
               </div>
               <div class="section-actions">
-                <a
-                  class="detail-link"
-                  href="https://www.youtube.com/results?search_query=%EC%A6%9D%EA%B6%8C+%EC%A3%BC%EC%8B%9D"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  자세히 보기 →
-                </a>
+                <RouterLink class="detail-link" :to="{ path: '/newsroom', query: { feed: 'videos' } }">자세히 보기 →</RouterLink>
               </div>
             </div>
             <div class="feed-list">
@@ -437,9 +428,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 <h3 id="external-link-title">블로그와 커뮤니티 링크</h3>
               </div>
               <div class="section-actions">
-                <a class="detail-link" href="https://finance.naver.com/" target="_blank" rel="noreferrer noopener">
-                  자세히 보기 →
-                </a>
+                <RouterLink class="detail-link" :to="{ path: '/newsroom', query: { feed: 'links' } }">자세히 보기 →</RouterLink>
               </div>
             </div>
             <div class="feed-list">
