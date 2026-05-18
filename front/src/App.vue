@@ -25,6 +25,12 @@ const watchStocks = [
 const activeRailItem = ref('watch');
 const railExpanded = ref(false);
 const activeRailLabel = computed(() => railItems.find((item) => item.id === activeRailItem.value)?.label ?? '관심');
+const newsroomFeeds = [
+  { label: '뉴스', feed: 'news' },
+  { label: '리포트', feed: 'reports' },
+  { label: '영상', feed: 'videos' },
+  { label: '블로그·커뮤니티', feed: 'links' }
+];
 
 const openRail = (id: string) => {
   activeRailItem.value = id;
@@ -45,7 +51,18 @@ const openRail = (id: string) => {
 
         <nav class="main-nav" aria-label="주요 화면">
           <RouterLink data-testid="nav-dashboard" to="/dashboard">대시보드</RouterLink>
-          <RouterLink data-testid="nav-newsroom" to="/newsroom">뉴스룸</RouterLink>
+          <span class="nav-menu-parent">
+            <RouterLink data-testid="nav-newsroom" to="/newsroom">뉴스룸</RouterLink>
+            <span class="nav-submenu" aria-label="뉴스룸 하위 피드">
+              <RouterLink
+                v-for="feed in newsroomFeeds"
+                :key="feed.feed"
+                :to="{ path: '/newsroom', query: { feed: feed.feed } }"
+              >
+                {{ feed.label }}
+              </RouterLink>
+            </span>
+          </span>
           <RouterLink data-testid="nav-stock" to="/stocks">종목</RouterLink>
           <RouterLink data-testid="nav-communities" to="/communities">인간 지표</RouterLink>
           <RouterLink data-testid="nav-indicators" to="/indicators">주요 지표</RouterLink>

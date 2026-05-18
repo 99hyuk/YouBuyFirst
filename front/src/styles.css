@@ -143,6 +143,7 @@ a {
 
 .main-nav {
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 22px;
   justify-self: center;
@@ -163,6 +164,56 @@ a {
 .main-nav a.router-link-active {
   border-color: #72a0ff;
   color: #ffffff;
+}
+
+.nav-menu-parent {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+
+.nav-submenu {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  z-index: 40;
+  display: grid;
+  min-width: 158px;
+  padding: 7px;
+  border: 1px solid rgba(216, 226, 239, 0.74);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 16px 34px rgba(18, 28, 43, 0.2);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -4px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.nav-menu-parent:hover .nav-submenu,
+.nav-menu-parent:focus-within .nav-submenu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.main-nav .nav-submenu a {
+  min-height: 31px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  color: #344258;
+  font-size: 12px;
+  font-weight: 780;
+}
+
+.main-nav .nav-submenu a:hover,
+.main-nav .nav-submenu a.router-link-active {
+  background: #eef5ff;
+  color: #2f6fed;
 }
 
 .topbar-status {
@@ -2483,21 +2534,34 @@ a {
 .newsroom-overview-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 48px;
+  gap: 30px 34px;
+  align-items: start;
 }
 
 .newsroom-overview-card {
   min-width: 0;
-  min-height: 450px;
+  min-height: 514px;
   padding: 0;
   overflow: hidden;
 }
 
+.newsroom-live-feed-card,
 .newsroom-market-feed-card {
   --feed-accent: #4f7fee;
   --feed-bg: #dde8ff;
 }
 
+.newsroom-report-feed-card {
+  --feed-accent: #36a96d;
+  --feed-bg: #dff5e9;
+}
+
+.newsroom-video-feed-card {
+  --feed-accent: #ff4d5e;
+  --feed-bg: #ffe1e7;
+}
+
+.newsroom-link-feed-card,
 .newsroom-outside-feed-card {
   --feed-accent: #8063e8;
   --feed-bg: #efe7ff;
@@ -2532,11 +2596,17 @@ a {
 }
 
 .compact-newsroom-list {
-  padding-bottom: 8px;
+  padding: 3px 13px 8px;
 }
 
 .compact-newsroom-list .newsroom-row {
-  min-height: 62px;
+  min-height: 54px;
+}
+
+.newsroom-overview-card .feed-rank {
+  color: #647184;
+  font-weight: 820;
+  text-align: center;
 }
 
 .newsroom-feed-panel {

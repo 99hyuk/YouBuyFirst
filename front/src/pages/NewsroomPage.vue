@@ -180,6 +180,18 @@ const feedItems: NewsroomItem[] = [
       statusLabel: 'mock'
     },
     {
+      id: 'report-extra-semiconductor-cycle',
+      category: 'reports' as const,
+      tone: 'report' as const,
+      title: '반도체 사이클과 커뮤니티 관심도 괴리 점검',
+      source: '증권사 테마 리포트',
+      iconDomain: 'finance.naver.com',
+      iconClass: 'news-research',
+      url: 'https://finance.naver.com/research/',
+      meta: '6시간 전',
+      statusLabel: 'mock'
+    },
+    {
       id: 'video-extra-opening-bell',
       category: 'videos' as const,
       tone: 'video' as const,
@@ -243,6 +255,19 @@ const feedItems: NewsroomItem[] = [
       meta: '방금 갱신 · 댓글 141',
       statusLabel: 'mock',
       rankLabel: '7위'
+    },
+    {
+      id: 'link-extra-toss-community',
+      category: 'links' as const,
+      tone: 'link' as const,
+      title: '관심 그룹에서 많이 담긴 종목 원문',
+      source: '토스증권 커뮤니티',
+      iconDomain: 'www.tossinvest.com',
+      iconClass: 'toss',
+      url: 'https://www.tossinvest.com/',
+      meta: '방금 갱신 · 관심 96',
+      statusLabel: 'mock',
+      rankLabel: '8위'
     }
   ].map((item) => ({
     ...item
@@ -285,35 +310,42 @@ const feedTypeLabels: Record<Exclude<NewsroomFilter, 'all'>, string> = {
 const itemsByCategory = (category: Exclude<NewsroomFilter, 'all'>) =>
   feedItems.filter((item) => item.category === category);
 
-const mergeAlternating = (...lists: NewsroomItem[][]) => {
-  const maxLength = Math.max(...lists.map((list) => list.length));
-  return Array.from({ length: maxLength }).flatMap((_, index) =>
-    lists.map((list) => list[index]).filter((item): item is NewsroomItem => Boolean(item))
-  );
-};
-
 const overviewColumns = computed(() => [
   {
-    id: 'news-reports',
-    cardClass: 'newsroom-market-feed-card',
-    kicker: 'market feed',
-    label: '뉴스 · 리포트',
-    actions: [
-      { label: '뉴스', to: { path: '/newsroom', query: { feed: 'news' } } },
-      { label: '리포트', to: { path: '/newsroom', query: { feed: 'reports' } } }
-    ],
-    items: mergeAlternating(itemsByCategory('news'), itemsByCategory('reports')).slice(0, 15)
+    id: 'news',
+    cardClass: 'newsroom-live-feed-card',
+    kicker: 'live feed',
+    label: '실시간 뉴스',
+    actionLabel: '뉴스만 몰아보기',
+    to: { path: '/newsroom', query: { feed: 'news' } },
+    items: itemsByCategory('news').slice(0, 8)
   },
   {
-    id: 'media-links',
-    cardClass: 'newsroom-outside-feed-card',
+    id: 'reports',
+    cardClass: 'newsroom-report-feed-card',
+    kicker: 'research feed',
+    label: '애널리스트 리포트',
+    actionLabel: '리포트만 몰아보기',
+    to: { path: '/newsroom', query: { feed: 'reports' } },
+    items: itemsByCategory('reports').slice(0, 8)
+  },
+  {
+    id: 'videos',
+    cardClass: 'newsroom-video-feed-card',
     kicker: 'outside links',
-    label: '영상 · 블로그 및 커뮤니티',
-    actions: [
-      { label: '영상', to: { path: '/newsroom', query: { feed: 'videos' } } },
-      { label: '원문', to: { path: '/newsroom', query: { feed: 'links' } } }
-    ],
-    items: mergeAlternating(itemsByCategory('videos'), itemsByCategory('links')).slice(0, 15)
+    label: '증권 영상 새 글',
+    actionLabel: '영상만 몰아보기',
+    to: { path: '/newsroom', query: { feed: 'videos' } },
+    items: itemsByCategory('videos').slice(0, 8)
+  },
+  {
+    id: 'links',
+    cardClass: 'newsroom-link-feed-card',
+    kicker: 'columns · community',
+    label: '블로그와 커뮤니티 링크',
+    actionLabel: '원문 링크만 몰아보기',
+    to: { path: '/newsroom', query: { feed: 'links' } },
+    items: itemsByCategory('links').slice(0, 8)
   }
 ]);
 
@@ -359,9 +391,7 @@ const listStatusLabel = computed(() =>
             <h3>{{ column.label }}</h3>
           </div>
           <div class="newsroom-overview-actions">
-            <RouterLink v-for="action in column.actions" :key="action.label" class="detail-link" :to="action.to">
-              {{ action.label }}
-            </RouterLink>
+            <RouterLink class="detail-link" :to="column.to">{{ column.actionLabel }} →</RouterLink>
           </div>
         </div>
 
@@ -369,11 +399,12 @@ const listStatusLabel = computed(() =>
           <a
             v-for="item in column.items"
             :key="item.id"
-            class="feed-row newsroom-row"
+            :class="['feed-row', 'newsroom-row', { 'ranked-feed-row': item.rankLabel }]"
             :href="item.url"
             target="_blank"
             rel="noreferrer noopener"
           >
+            <span v-if="item.rankLabel" class="feed-rank">{{ item.rankLabel }}</span>
             <span
               :class="['site-icon', 'real-icon', 'source-badge', item.iconClass]"
               :aria-label="`${item.source} ${item.category}`"

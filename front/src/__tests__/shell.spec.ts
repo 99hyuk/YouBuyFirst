@@ -58,6 +58,7 @@ describe('front dashboard shell', () => {
     expect(wrapper.get('[data-testid="app-title"]').attributes('href')).toBe('/dashboard');
     expect(wrapper.get('[data-testid="nav-dashboard"]').text()).toContain('대시보드');
     expect(wrapper.get('[data-testid="nav-newsroom"]').text()).toContain('뉴스룸');
+    expect(wrapper.findAll('.nav-submenu a')).toHaveLength(4);
     expect(wrapper.get('[data-testid="nav-stock"]').text()).toContain('종목');
     expect(wrapper.get('[data-testid="nav-communities"]').text()).toContain('인간 지표');
     expect(wrapper.get('[data-testid="nav-indicators"]').text()).toContain('주요 지표');
@@ -100,13 +101,18 @@ describe('front dashboard shell', () => {
 
     const newsroomAll = await mountAt('/newsroom');
     expect(newsroomAll.text()).toContain('뉴스룸');
-    expect(newsroomAll.text()).toContain('블로그 및 커뮤니티');
+    expect(newsroomAll.text()).toContain('블로그와 커뮤니티 링크');
     expect(newsroomAll.find('.newsroom-switch').exists()).toBe(false);
-    expect(newsroomAll.findAll('.newsroom-overview-card')).toHaveLength(2);
-    expect(newsroomAll.findAll('.newsroom-overview-card')[0].findAll('.newsroom-row')).toHaveLength(15);
-    expect(newsroomAll.findAll('.newsroom-overview-card')[1].findAll('.newsroom-row')).toHaveLength(15);
-    expect(newsroomAll.text()).toContain('뉴스 · 리포트');
-    expect(newsroomAll.text()).toContain('영상 · 블로그 및 커뮤니티');
+    expect(newsroomAll.findAll('.newsroom-overview-card')).toHaveLength(4);
+    for (const card of newsroomAll.findAll('.newsroom-overview-card')) {
+      expect(card.findAll('.newsroom-row')).toHaveLength(8);
+    }
+    expect(newsroomAll.text()).toContain('실시간 뉴스');
+    expect(newsroomAll.text()).toContain('애널리스트 리포트');
+    expect(newsroomAll.text()).toContain('증권 영상 새 글');
+    expect(newsroomAll.text()).toContain('블로그와 커뮤니티 링크');
+    expect(newsroomAll.text()).toContain('뉴스만 몰아보기');
+    expect(newsroomAll.text()).toContain('원문 링크만 몰아보기');
 
     const newsroom = await mountAt('/newsroom?feed=videos&page=2');
     expect(newsroom.text()).toContain('영상');
