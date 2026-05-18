@@ -141,6 +141,15 @@
       "url": "https://dart.fss.or.kr/",
       "timeLabel": "전일 마감",
       "dataStatus": "mock"
+    },
+    {
+      "source": "증권사 데일리",
+      "iconDomain": "finance.yahoo.com",
+      "tag": "strategy",
+      "title": "외국인 수급 회복과 커뮤니티 관심이 겹친 대형주 점검",
+      "url": "https://finance.yahoo.com/topic/stock-market-news/",
+      "timeLabel": "07:55",
+      "dataStatus": "mock"
     }
   ],
   "externalContent": {
@@ -182,6 +191,16 @@
         "iconDomain": "www.youtube.com",
         "title": "삼성전자 분위기 심상치 않다. 곧 무시무시한 일 벌어진다｜박진희 부장 풀버전",
         "url": "https://www.youtube.com/watch?v=zsn4SjSZIK8",
+        "publishedLabel": "2026-05-16",
+        "dataStatus": "rss"
+      },
+      {
+        "type": "youtube",
+        "typeLabel": "유튜브",
+        "source": "미주은",
+        "iconDomain": "www.youtube.com",
+        "title": "나스닥 반등장에서 먼저 확인할 실적주와 금리 변수",
+        "url": "https://www.youtube.com/results?search_query=%EB%82%98%EC%8A%A4%EB%8B%A5+%EC%8B%A4%EC%A0%81%EC%A3%BC+%EA%B8%88%EB%A6%AC+%EB%AF%B8%EC%A3%BC%EC%9D%80",
         "publishedLabel": "2026-05-16",
         "dataStatus": "rss"
       }

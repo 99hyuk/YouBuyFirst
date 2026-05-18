@@ -331,7 +331,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
             </div>
             <div class="feed-list">
               <a
-                v-for="news in dashboardSummary.liveNews.slice(0, 4)"
+                v-for="news in dashboardSummary.liveNews.slice(0, 5)"
                 :key="news.title"
                 class="feed-row"
                 :href="news.url"
@@ -369,7 +369,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
             </div>
             <div class="feed-list">
               <a
-                v-for="report in dashboardSummary.analystReports.slice(0, 4)"
+                v-for="report in dashboardSummary.analystReports.slice(0, 5)"
                 :key="report.title"
                 class="feed-row"
                 :href="report.url"
@@ -412,7 +412,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
             </div>
             <div class="feed-list">
               <a
-                v-for="video in dashboardSummary.externalContent.videos.slice(0, 4)"
+                v-for="video in dashboardSummary.externalContent.videos.slice(0, 5)"
                 :key="video.url"
                 class="feed-row"
                 :href="video.url"
@@ -450,7 +450,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
             </div>
             <div class="feed-list">
               <a
-                v-for="link in dashboardSummary.externalContent.links.slice(0, 4)"
+                v-for="link in dashboardSummary.externalContent.links.slice(0, 5)"
                 :key="link.url"
                 class="feed-row"
                 :href="link.url"
