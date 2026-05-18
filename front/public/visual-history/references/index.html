@@ -46,6 +46,18 @@
         letter-spacing: 0;
       }
 
+      .header-copy {
+        display: grid;
+        gap: 5px;
+      }
+
+      .source-note {
+        margin: 0;
+        color: #6b7788;
+        font-size: 12px;
+        font-weight: 720;
+      }
+
       .actions {
         display: flex;
         flex-wrap: wrap;
@@ -64,6 +76,19 @@
         font-size: 12px;
         font-weight: 820;
         text-decoration: none;
+      }
+
+      .source-badge {
+        display: inline-flex;
+        min-height: 32px;
+        align-items: center;
+        padding: 0 11px;
+        border: 1px solid #f3c8c8;
+        border-radius: 999px;
+        background: #fff5f5;
+        color: #d64242;
+        font-size: 12px;
+        font-weight: 900;
       }
 
       .reference-grid {
@@ -171,8 +196,12 @@
   <body>
     <main>
       <header>
-        <h1>자료 모음집</h1>
+        <div class="header-copy">
+          <h1>자료 모음집</h1>
+          <p class="source-note">첨부 원본이 아니라, 화면을 참고해 만든 재현 레퍼런스입니다.</p>
+        </div>
         <div class="actions">
+          <span class="source-badge">원본 아님</span>
           <a href="../index.html">Visual History</a>
           <a href="file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-design-polish/front/public/visual-history/references/assets/2026-05-18/">이미지 폴더</a>
         </div>
@@ -189,8 +218,8 @@
             <span>reference-01-samsung-roast.png</span>
           </div>
           <figcaption>
-            <strong>청록 배너</strong>
-            <code>reference-01</code>
+            <strong>청록 배너 재현본</strong>
+            <code>recreated-01</code>
           </figcaption>
         </figure>
 
@@ -204,8 +233,8 @@
             <span>reference-02-nuscale-roast.png</span>
           </div>
           <figcaption>
-            <strong>갈색 팩트폭격</strong>
-            <code>reference-02</code>
+            <strong>갈색 팩트폭격 재현본</strong>
+            <code>recreated-02</code>
           </figcaption>
         </figure>
 
@@ -219,8 +248,8 @@
             <span>reference-03-ast-warning.png</span>
           </div>
           <figcaption>
-            <strong>검정 경고</strong>
-            <code>reference-03</code>
+            <strong>검정 경고 재현본</strong>
+            <code>recreated-03</code>
           </figcaption>
         </figure>
       </section>

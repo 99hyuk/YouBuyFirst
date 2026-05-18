@@ -6,7 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
-| `FV-20260518-2306-stock-detail-buffett-roast-copy` | 2026-05-18 23:06 KST | [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-2306-stock-detail-buffett-roast-copy-stock-detail-1440.png) | 한줄평을 `HBM 붙었다고 삼전이 엔비디아면 내 통장도 워런 버핏임`으로 바꿨습니다. 자료 모음집에는 로컬 레퍼런스 PNG 3개를 넣고, 한 화면에 여러 이미지를 보는 격자 구조로 정리했습니다. |
+| `FV-20260518-2306-stock-detail-buffett-roast-copy` | 2026-05-18 23:06 KST | [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-2306-stock-detail-buffett-roast-copy-stock-detail-1440.png) | 한줄평을 `HBM 붙었다고 삼전이 엔비디아면 내 통장도 워런 버핏임`으로 바꿨습니다. 자료 모음집에는 첨부 원본이 아닌 재현 레퍼런스 PNG 3개를 넣고, 한 화면에 여러 이미지를 보는 격자 구조로 정리했습니다. |
 | `FV-20260518-2254-stock-detail-education-roast-copy` | 2026-05-18 22:54 KST | [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-2254-stock-detail-education-roast-copy-stock-detail-1440.png) | 한줄평을 `HBM 붙었다고 다 엔비디아 되는 줄 알면 계좌가 교육비 냄`으로 줄였습니다. 배너 아래 키워드 줄은 글자 크기를 맞추고, 자료 모음집은 사진 격자형 페이지로 단순화했습니다. |
 | `FV-20260518-2243-stock-detail-angry-roast-copy` | 2026-05-18 22:43 KST | [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-2243-stock-detail-angry-roast-copy-stock-detail-1440.png) | 한줄평을 `HBM 세 글자 붙었다고 실적도 복사될 거라 믿는 건 양심 없는 주문임`으로 바꿨습니다. 하단 시황 문장도 뉴스와 실적표를 대비시켜 더 세게 긁히는 톤으로 정리했습니다. |
 | `FV-20260518-2236-stock-detail-market-roast-copy` | 2026-05-18 22:36 KST | [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-2236-stock-detail-market-roast-copy-stock-detail-1440.png) | 상단 배너 아래 설명을 커뮤니티 분석이 아니라 최근 시황 분석으로 바꾸고, 글자 크기를 키웠습니다. 문구도 실적 확인 전 설레발을 때리는 팩트폭격 톤으로 정리했습니다. |
