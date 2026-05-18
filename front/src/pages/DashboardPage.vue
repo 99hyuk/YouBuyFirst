@@ -410,13 +410,14 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
             </div>
             <div class="feed-list">
               <a
-                v-for="video in dashboardSummary.externalContent.videos.slice(0, 5)"
+                v-for="(video, index) in dashboardSummary.externalContent.videos.slice(0, 5)"
                 :key="video.url"
-                class="feed-row"
+                class="feed-row ranked-feed-row"
                 :href="video.url"
                 target="_blank"
                 rel="noreferrer noopener"
               >
+                <span class="feed-rank">{{ index + 1 }}위</span>
                 <span
                   :class="['site-icon', 'real-icon', 'source-badge', externalIconClass(video)]"
                   :aria-label="`${video.source} ${video.typeLabel}`"
@@ -447,13 +448,14 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
             </div>
             <div class="feed-list">
               <a
-                v-for="link in dashboardSummary.externalContent.links.slice(0, 5)"
+                v-for="(link, index) in dashboardSummary.externalContent.links.slice(0, 5)"
                 :key="link.url"
-                class="feed-row"
+                class="feed-row ranked-feed-row"
                 :href="link.url"
                 target="_blank"
                 rel="noreferrer noopener"
               >
+                <span class="feed-rank">{{ index + 1 }}위</span>
                 <span
                   :class="['site-icon', 'real-icon', 'source-badge', externalIconClass(link)]"
                   :aria-label="`${link.source} ${link.typeLabel}`"

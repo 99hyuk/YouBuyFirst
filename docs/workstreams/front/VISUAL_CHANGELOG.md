@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1345-feed-video-blog-ranking` | 2026-05-18 13:45 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1345-feed-video-blog-ranking-dashboard.png) | 뉴스와 리포트는 최신순 피드로 유지하고, 증권 영상 새 글과 블로그/커뮤니티 링크에만 1위~5위 순위를 다시 넣었습니다. 전문/보기 꼬리표는 제거한 상태를 유지했습니다. |
 | `FV-20260518-1339-feed-latest-time` | 2026-05-18 13:39 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1339-feed-latest-time-dashboard.png) | 피드 행의 순위와 전문/보기 꼬리표를 제거했습니다. 각 행은 카드 전체가 링크로 동작하고, 출처 옆에 방금·몇 시간 전·며칠 전 표시가 남도록 정리했습니다. |
 | `FV-20260518-1322-feed-five-card-height` | 2026-05-18 13:22 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1322-feed-five-card-height-dashboard.png) | 피드 row 간격은 유지하고 카드 자체 높이를 키워 실시간 뉴스, 애널리스트 리포트, 증권 영상 새 글, 블로그/커뮤니티 링크를 각각 5개씩 보이게 했습니다. |
 | `FV-20260518-1310-feed-header-compact` | 2026-05-18 13:10 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1310-feed-header-compact-dashboard.png) | 실시간 뉴스, 애널리스트 리포트, 증권 영상 새 글, 블로그/커뮤니티 링크 카드의 제목 band를 48px에서 42px로 살짝 줄였습니다. |

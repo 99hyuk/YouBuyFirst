@@ -2108,6 +2108,20 @@ a {
   border-top: 0;
 }
 
+.ranked-feed-row {
+  grid-template-columns: 28px 30px minmax(0, 1fr);
+}
+
+.feed-rank {
+  color: var(--feed-accent, var(--brand));
+  font-size: 11px;
+  font-weight: 880;
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: right;
+  white-space: nowrap;
+}
+
 .news-source {
   display: inline-grid;
   place-items: center;
