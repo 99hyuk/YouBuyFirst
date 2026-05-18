@@ -96,6 +96,9 @@ describe('front dashboard shell', () => {
 
     const stock = await mountAt('/stocks/005930');
     expect(stock.text()).toContain('종목 랭킹으로');
+    expect(stock.text()).toContain('HBM 얘기가 먼저 달렸고');
+    expect(stock.text()).toContain('커뮤니티 반응 참고 요약');
+    expect(stock.text()).toContain('실거래 판단 근거 아님');
     expect(stock.text()).toContain('어제와 달라진 점');
     expect(stock.text()).toContain('반응 키워드');
     expect(stock.text()).toContain('시간대별 변화');

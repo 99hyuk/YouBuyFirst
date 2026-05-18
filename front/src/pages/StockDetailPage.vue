@@ -15,6 +15,28 @@ const stock = {
   ]
 };
 
+const topBrief = {
+  headline: 'HBM 얘기가 먼저 달렸고, 가격은 뒤에서 확인 중',
+  summary:
+    '30분 언급이 128건으로 늘면서 긍정 54 · 부정 27 구도가 잡혔습니다. 가격은 +1.24%, 거래량은 18.4M으로 따라왔지만 시세는 지연 기준이라 원문 확인이 필요합니다.',
+  mood: '커뮤니티 반응 참고 요약',
+  riskNote: '출처 편중 42% · 가격 15분 지연 · 실거래 판단 근거 아님'
+};
+
+const topBriefMetrics = [
+  { label: '반응 점수', value: '77', meta: '+12p' },
+  { label: '언급', value: '128건', meta: '+34%' },
+  { label: '가격', value: '+1.24%', meta: stock.price },
+  { label: '거래량', value: stock.volume, meta: 'mock' }
+];
+
+const topBriefReasons = [
+  'HBM 키워드 46건',
+  '디시·에펨코리아 확산',
+  '긍정 54 / 부정 27',
+  '원문 링크 5건'
+];
+
 const reactionTrend = [
   { period: '30분', mentions: 128, positive: 54, negative: 27, neutral: 19 },
   { period: '1일', mentions: 642, positive: 48, negative: 31, neutral: 21 },
@@ -101,6 +123,25 @@ const reliability = [
           <em :class="stock.stale ? 'warn' : 'ok'">{{ stock.stale ? 'stale' : '지연' }}</em>
         </div>
       </div>
+
+      <article class="stock-takeaway-brief" aria-label="종목 반응 한줄 요약">
+        <div class="takeaway-copy">
+          <span>{{ topBrief.mood }}</span>
+          <h3>{{ topBrief.headline }}</h3>
+          <p>{{ topBrief.summary }}</p>
+        </div>
+        <div class="takeaway-metric-grid" aria-label="한줄 요약 반영 지표">
+          <div v-for="metric in topBriefMetrics" :key="metric.label">
+            <span>{{ metric.label }}</span>
+            <strong>{{ metric.value }}</strong>
+            <em>{{ metric.meta }}</em>
+          </div>
+        </div>
+        <div class="takeaway-reason-row" aria-label="요약 근거">
+          <b v-for="reason in topBriefReasons" :key="reason">{{ reason }}</b>
+        </div>
+        <p class="takeaway-risk-note">{{ topBrief.riskNote }}</p>
+      </article>
     </section>
 
     <section class="dense-summary-strip stock-density-strip" aria-label="종목 요약 지표">
