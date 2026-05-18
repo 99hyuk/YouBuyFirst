@@ -349,7 +349,6 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                   <strong :title="news.title">{{ news.title }}</strong>
                   <em>{{ news.source }} · {{ news.timeLabel }}</em>
                 </span>
-                <span class="feed-open">전문 →</span>
               </a>
             </div>
           </article>
@@ -387,7 +386,6 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                   <strong :title="report.title">{{ report.title }}</strong>
                   <em>{{ report.source }} · {{ report.timeLabel }}</em>
                 </span>
-                <span class="feed-open">전문 →</span>
               </a>
             </div>
           </article>
@@ -430,7 +428,6 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                   <strong :title="video.title">{{ video.title }}</strong>
                   <em>{{ video.source }} · {{ video.publishedLabel }}</em>
                 </span>
-                <span class="feed-open">보기 →</span>
               </a>
             </div>
           </article>
@@ -468,7 +465,6 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                   <strong :title="link.title">{{ link.title }}</strong>
                   <em>{{ link.source }} · {{ link.publishedLabel }}</em>
                 </span>
-                <span class="feed-open">보기 →</span>
               </a>
             </div>
           </article>

@@ -2095,7 +2095,7 @@ a {
 
 .feed-row {
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) auto;
+  grid-template-columns: 30px minmax(0, 1fr);
   gap: 9px;
   align-items: center;
   min-width: 0;
@@ -2149,17 +2149,8 @@ a {
   white-space: nowrap;
 }
 
-.feed-open {
-  color: #8b98a8;
-  font-size: 10.5px;
-  font-weight: 780;
-  white-space: nowrap;
-}
-
 .feed-row:hover strong,
-.feed-row:focus-visible strong,
-.feed-row:hover .feed-open,
-.feed-row:focus-visible .feed-open {
+.feed-row:focus-visible strong {
   color: var(--brand);
 }
 
@@ -4061,10 +4052,6 @@ a {
 
   .feed-row {
     grid-template-columns: 30px minmax(0, 1fr);
-  }
-
-  .feed-open {
-    display: none;
   }
 
   .rank-badge {

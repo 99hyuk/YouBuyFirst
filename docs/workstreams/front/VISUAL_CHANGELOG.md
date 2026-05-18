@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1339-feed-latest-time` | 2026-05-18 13:39 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1339-feed-latest-time-dashboard.png) | 피드 행의 순위와 전문/보기 꼬리표를 제거했습니다. 각 행은 카드 전체가 링크로 동작하고, 출처 옆에 방금·몇 시간 전·며칠 전 표시가 남도록 정리했습니다. |
 | `FV-20260518-1322-feed-five-card-height` | 2026-05-18 13:22 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1322-feed-five-card-height-dashboard.png) | 피드 row 간격은 유지하고 카드 자체 높이를 키워 실시간 뉴스, 애널리스트 리포트, 증권 영상 새 글, 블로그/커뮤니티 링크를 각각 5개씩 보이게 했습니다. |
 | `FV-20260518-1310-feed-header-compact` | 2026-05-18 13:10 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1310-feed-header-compact-dashboard.png) | 실시간 뉴스, 애널리스트 리포트, 증권 영상 새 글, 블로그/커뮤니티 링크 카드의 제목 band를 48px에서 42px로 살짝 줄였습니다. |
 | `FV-20260518-1158-dark-mode-full-label` | 2026-05-18 11:58 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1158-dark-mode-full-label-dashboard.png) | 오른쪽 아래 버튼 라벨을 `다크`에서 `다크모드`로 바꿨습니다. rail 폭 안에서 잘리지 않는 것을 확인했습니다. |
