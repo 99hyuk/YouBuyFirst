@@ -195,7 +195,10 @@ const openRail = (id: string) => {
         <span>{{ item.shortcut }}</span>
         <em>{{ item.label }}</em>
       </button>
-      <button class="theme-toggle" type="button" aria-label="라이트 다크 모드 전환">◐</button>
+      <button class="theme-toggle" type="button" aria-label="라이트 다크 모드 전환">
+        <span>T</span>
+        <em>테마</em>
+      </button>
     </aside>
   </div>
 </template>
