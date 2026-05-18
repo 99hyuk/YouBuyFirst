@@ -1520,6 +1520,12 @@ a {
   font-weight: 900;
 }
 
+@media (max-width: 1500px) {
+  .app-shell.edge-panel-open {
+    --edge-panel-width: 0px;
+  }
+}
+
 .stock-bubble-section {
   min-width: 0;
   overflow: hidden;
