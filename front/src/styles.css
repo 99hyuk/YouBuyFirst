@@ -87,6 +87,7 @@ a {
 
 .topbar-inner {
   position: relative;
+  z-index: 3;
   display: grid;
   grid-template-columns: minmax(230px, 1fr) auto minmax(230px, 1fr);
   align-items: center;
@@ -168,6 +169,7 @@ a {
 
 .nav-menu-parent {
   position: relative;
+  z-index: 5;
   display: inline-flex;
   align-items: center;
   min-height: 32px;
@@ -184,11 +186,11 @@ a {
 
 .nav-submenu {
   position: absolute;
-  top: calc(100% + 2px);
+  top: 100%;
   left: 50%;
-  z-index: 40;
+  z-index: 100;
   display: grid;
-  grid-template-columns: repeat(4, max-content);
+  grid-template-columns: repeat(4, 104px);
   gap: 4px;
   width: max-content;
   min-width: 0;
@@ -213,6 +215,7 @@ a {
 }
 
 .main-nav .nav-submenu a {
+  justify-content: center;
   min-height: 30px;
   padding: 0 12px;
   border: 0;
@@ -223,7 +226,7 @@ a {
 }
 
 .main-nav .nav-submenu a:hover,
-.main-nav .nav-submenu a.router-link-active {
+.main-nav .nav-submenu a.active {
   background: #eef5ff;
   color: #2f6fed;
 }
@@ -256,6 +259,8 @@ a {
 }
 
 .topbar-ticker {
+  position: relative;
+  z-index: 1;
   overflow: hidden;
   padding-right: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.12);

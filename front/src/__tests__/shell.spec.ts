@@ -59,6 +59,7 @@ describe('front dashboard shell', () => {
     expect(wrapper.get('[data-testid="nav-dashboard"]').text()).toContain('대시보드');
     expect(wrapper.get('[data-testid="nav-newsroom"]').text()).toContain('뉴스룸');
     expect(wrapper.findAll('.nav-submenu a')).toHaveLength(4);
+    expect(wrapper.findAll('.nav-submenu a.active')).toHaveLength(0);
     expect(wrapper.get('[data-testid="nav-stock"]').text()).toContain('종목');
     expect(wrapper.get('[data-testid="nav-communities"]').text()).toContain('인간 지표');
     expect(wrapper.get('[data-testid="nav-indicators"]').text()).toContain('주요 지표');
@@ -101,6 +102,7 @@ describe('front dashboard shell', () => {
 
     const newsroomAll = await mountAt('/newsroom');
     expect(newsroomAll.text()).toContain('뉴스룸');
+    expect(newsroomAll.findAll('.nav-submenu a.active')).toHaveLength(0);
     expect(newsroomAll.text()).toContain('블로그와 커뮤니티 링크');
     expect(newsroomAll.find('.newsroom-switch').exists()).toBe(false);
     expect(newsroomAll.findAll('.newsroom-overview-card')).toHaveLength(4);
@@ -118,6 +120,8 @@ describe('front dashboard shell', () => {
     expect(newsroom.text()).toContain('영상');
     expect(newsroom.text()).toContain('조회 7.4만');
     expect(newsroom.find('.newsroom-pager').exists()).toBe(true);
+    expect(newsroom.findAll('.nav-submenu a.active')).toHaveLength(1);
+    expect(newsroom.find('.nav-submenu a.active').text()).toContain('영상');
 
     const indicators = await mountAt('/indicators');
     expect(indicators.text()).toContain('시장 지표 자체보다 커뮤니티 반응과 엇갈리는 구간');

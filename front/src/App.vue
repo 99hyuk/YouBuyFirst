@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 const railItems = [
   { id: 'watch', label: '관심', shortcut: 'W' },
@@ -24,6 +25,7 @@ const watchStocks = [
 
 const activeRailItem = ref('watch');
 const railExpanded = ref(false);
+const route = useRoute();
 const activeRailLabel = computed(() => railItems.find((item) => item.id === activeRailItem.value)?.label ?? '관심');
 const newsroomFeeds = [
   { label: '뉴스', feed: 'news' },
@@ -31,6 +33,11 @@ const newsroomFeeds = [
   { label: '영상', feed: 'videos' },
   { label: '블로그·커뮤니티', feed: 'links' }
 ];
+const activeNewsroomFeed = computed(() => {
+  if (route.path !== '/newsroom') return '';
+  const feed = route.query.feed;
+  return Array.isArray(feed) ? feed[0] ?? '' : feed ?? '';
+});
 
 const openRail = (id: string) => {
   activeRailItem.value = id;
@@ -57,6 +64,7 @@ const openRail = (id: string) => {
               <RouterLink
                 v-for="feed in newsroomFeeds"
                 :key="feed.feed"
+                :class="{ active: activeNewsroomFeed === feed.feed }"
                 :to="{ path: '/newsroom', query: { feed: feed.feed } }"
               >
                 {{ feed.label }}
