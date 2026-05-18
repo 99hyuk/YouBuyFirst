@@ -25,184 +25,144 @@
       }
 
       main {
-        width: min(100% - 48px, 1180px);
+        width: min(100% - 36px, 1360px);
         margin: 0 auto;
-        padding: 42px 0 64px;
-      }
-
-      header,
-      article {
-        border: 1px solid #d4deea;
-        border-radius: 12px;
-        background: #ffffff;
-        box-shadow: 0 12px 32px rgba(31, 42, 60, 0.07);
+        padding: 28px 0 54px;
       }
 
       header {
-        padding: 24px;
-      }
-
-      h1,
-      h2,
-      p {
-        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 16px;
       }
 
       h1 {
-        font-size: 30px;
-        font-weight: 900;
+        margin: 0;
+        color: #172033;
+        font-size: 24px;
+        font-weight: 920;
         letter-spacing: 0;
-      }
-
-      header p {
-        margin-top: 8px;
-        color: #647184;
-        font-size: 14px;
-        font-weight: 650;
-        line-height: 1.6;
       }
 
       .actions {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        margin-top: 18px;
       }
 
       a {
         display: inline-flex;
-        min-height: 34px;
+        min-height: 32px;
         align-items: center;
-        padding: 0 12px;
+        padding: 0 11px;
         border: 1px solid #cfd9e7;
         border-radius: 999px;
+        background: #ffffff;
         color: #2f6fed;
-        font-size: 13px;
-        font-weight: 800;
+        font-size: 12px;
+        font-weight: 820;
         text-decoration: none;
       }
 
-      .reference-list {
+      .reference-grid {
         display: grid;
-        gap: 18px;
-        margin-top: 22px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 14px;
+        align-items: start;
       }
 
-      article {
-        display: grid;
-        grid-template-columns: minmax(260px, 0.52fr) minmax(0, 1fr);
-        gap: 18px;
-        padding: 18px;
+      figure {
+        margin: 0;
+        overflow: hidden;
+        border: 1px solid #d4deea;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: 0 10px 24px rgba(31, 42, 60, 0.06);
       }
 
-      .reference-preview {
+      .image-slot {
         display: grid;
         position: relative;
-        min-height: 360px;
+        min-height: 520px;
+        max-height: 760px;
         overflow: hidden;
-        border: 1px dashed #bac7d8;
-        border-radius: 10px;
-        background-image:
-          var(--reference-image),
-          linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.66)),
-          repeating-linear-gradient(0deg, #dfe7f1 0 1px, transparent 1px 28px);
-        background-color: #f7faff;
-        background-position: center, center, center;
-        background-repeat: no-repeat, repeat, repeat;
-        background-size: contain, auto, auto;
+        background: #f7faff;
         place-items: center;
       }
 
-      .reference-preview div {
-        width: min(78%, 270px);
-        padding: 18px;
-        border-radius: 10px;
-        background: #111827;
-        color: #ffffff;
+      .image-slot img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 520px;
+        object-fit: contain;
+        background: #ffffff;
+      }
+
+      .image-slot span {
+        display: none;
+        padding: 12px;
+        color: #7a8798;
+        font-size: 12px;
+        font-weight: 760;
         text-align: center;
       }
 
-      .reference-preview strong {
+      .image-slot.missing {
+        border-bottom: 1px dashed #c8d4e4;
+        background:
+          repeating-linear-gradient(0deg, #e6edf6 0 1px, transparent 1px 28px),
+          #f7faff;
+      }
+
+      .image-slot.missing img {
+        display: none;
+      }
+
+      .image-slot.missing span {
         display: block;
-        font-size: 22px;
-        font-weight: 950;
-        line-height: 1.18;
-        word-break: keep-all;
       }
 
-      .reference-preview span {
-        display: block;
-        margin-top: 10px;
-        color: #b9c5d6;
-        font-size: 12px;
-        font-weight: 760;
-      }
-
-      .reference-copy {
-        display: grid;
-        align-content: start;
-        gap: 12px;
-      }
-
-      .meta {
-        color: #6c7a8d;
-        font-size: 12px;
-        font-weight: 820;
-      }
-
-      h2 {
-        color: #172033;
-        font-size: 22px;
-        font-weight: 920;
-        line-height: 1.2;
-      }
-
-      .reference-copy p {
-        color: #526071;
-        font-size: 14px;
-        font-weight: 650;
-        line-height: 1.65;
-        word-break: keep-all;
-      }
-
-      code {
-        display: block;
-        width: fit-content;
-        max-width: 100%;
-        padding: 7px 9px;
-        overflow: auto;
-        border-radius: 8px;
-        background: #f1f5fa;
-        color: #4b5b70;
-        font-size: 12px;
-      }
-
-      .tag-row {
+      figcaption {
         display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-      }
-
-      .tag-row span {
-        display: inline-flex;
-        min-height: 24px;
         align-items: center;
-        padding: 0 9px;
-        border-radius: 999px;
-        background: #eef5ff;
-        color: #2f6fed;
-        font-size: 12px;
-        font-weight: 820;
+        justify-content: space-between;
+        gap: 8px;
+        min-height: 40px;
+        padding: 0 12px;
+        color: #172033;
+        font-size: 13px;
+        font-weight: 860;
       }
 
-      @media (max-width: 840px) {
+      figcaption code {
+        overflow: hidden;
+        color: #748197;
+        font-family:
+          "SFMono-Regular",
+          Consolas,
+          monospace;
+        font-size: 11px;
+        font-weight: 650;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 720px) {
         main {
-          width: min(100% - 24px, 1180px);
-          padding-top: 24px;
+          width: min(100% - 20px, 1360px);
         }
 
-        article {
-          grid-template-columns: 1fr;
+        header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .image-slot,
+        .image-slot img {
+          min-height: 440px;
         }
       }
     </style>
@@ -211,73 +171,57 @@
     <main>
       <header>
         <h1>자료 모음집</h1>
-        <p>프론트 화면을 만들 때 참고한 외부 스크린샷과 디자인 레퍼런스를 모아두는 공간입니다. 대시보드 버전 기록과 분리해서, 레퍼런스만 따로 빠르게 확인합니다.</p>
         <div class="actions">
-          <a href="../index.html">Visual History로 돌아가기</a>
-          <a href="file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-design-polish/front/public/visual-history/references/">자료 폴더 열기</a>
+          <a href="../index.html">Visual History</a>
+          <a href="file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-design-polish/front/public/visual-history/references/assets/2026-05-18/">이미지 폴더</a>
         </div>
       </header>
 
-      <section class="reference-list" aria-label="프론트 레퍼런스 자료">
-        <article>
-          <div class="reference-preview" style="--reference-image: url('./assets/2026-05-18/reference-01-samsung-roast.png')">
-            <div>
-              <strong>청록 한줄평 배너</strong>
-              <span>삼성전자 예시 · 상단 점수/근거 구조</span>
-            </div>
+      <section class="reference-grid" aria-label="프론트 레퍼런스 이미지">
+        <figure>
+          <div class="image-slot">
+            <img
+              src="./assets/2026-05-18/reference-01-samsung-roast.png"
+              alt="삼성전자 청록 한줄평 배너 레퍼런스"
+              onerror="this.parentElement.classList.add('missing')"
+            />
+            <span>reference-01-samsung-roast.png</span>
           </div>
-          <div class="reference-copy">
-            <span class="meta">2026-05-18 · user reference 01</span>
-            <h2>깜짝 실적 나오면 공매도 쫓아나오는 구도</h2>
-            <p>맨 위에 종목명, 큰 컬러 배너, 바로 아래 시황 문장과 점수, 그 밑에 핵심 지표가 이어지는 레이아웃 참고입니다. 너나사 종목 상세 상단 배너의 직접 기준으로 씁니다.</p>
-            <div class="tag-row">
-              <span>large roast banner</span>
-              <span>score line</span>
-              <span>metric cards</span>
-            </div>
-            <code>references/assets/2026-05-18/reference-01-samsung-roast.png</code>
-          </div>
-        </article>
+          <figcaption>
+            <strong>청록 배너</strong>
+            <code>reference-01</code>
+          </figcaption>
+        </figure>
 
-        <article>
-          <div class="reference-preview" style="--reference-image: url('./assets/2026-05-18/reference-02-nuscale-roast.png')">
-            <div>
-              <strong>갈색 팩트폭격 배너</strong>
-              <span>뉴스케일 예시 · 하락/실망 톤</span>
-            </div>
+        <figure>
+          <div class="image-slot">
+            <img
+              src="./assets/2026-05-18/reference-02-nuscale-roast.png"
+              alt="뉴스케일 갈색 팩트폭격 배너 레퍼런스"
+              onerror="this.parentElement.classList.add('missing')"
+            />
+            <span>reference-02-nuscale-roast.png</span>
           </div>
-          <div class="reference-copy">
-            <span class="meta">2026-05-18 · user reference 02</span>
-            <h2>분할매수 한다고 했는데 전부 다 물린 거 맞지?</h2>
-            <p>시황이 안 좋은 종목에서 한줄평을 더 세게 보여주는 예시입니다. 부정적인 종목 상세에서는 배너 색과 카피 톤을 바꿔 정보보다 먼저 분위기를 잡는 참고로 둡니다.</p>
-            <div class="tag-row">
-              <span>negative mood</span>
-              <span>dark brown banner</span>
-              <span>fact-bomb copy</span>
-            </div>
-            <code>references/assets/2026-05-18/reference-02-nuscale-roast.png</code>
-          </div>
-        </article>
+          <figcaption>
+            <strong>갈색 팩트폭격</strong>
+            <code>reference-02</code>
+          </figcaption>
+        </figure>
 
-        <article>
-          <div class="reference-preview" style="--reference-image: url('./assets/2026-05-18/reference-03-ast-warning.png')">
-            <div>
-              <strong>검정 경고형 배너</strong>
-              <span>AST 예시 · 고위험/손실 톤</span>
-            </div>
+        <figure>
+          <div class="image-slot">
+            <img
+              src="./assets/2026-05-18/reference-03-ast-warning.png"
+              alt="AST 검정 경고형 배너 레퍼런스"
+              onerror="this.parentElement.classList.add('missing')"
+            />
+            <span>reference-03-ast-warning.png</span>
           </div>
-          <div class="reference-copy">
-            <span class="meta">2026-05-18 · user reference 03</span>
-            <h2>이거 매수하는 건 돈에 대한 모독임</h2>
-            <p>위험도가 높은 종목에서 웃기지만 단번에 경고가 느껴지는 카피 예시입니다. 실제 서비스에서는 투자 권유가 아니라 시황/위험 요약 카드의 톤 참고로만 사용합니다.</p>
-            <div class="tag-row">
-              <span>risk warning</span>
-              <span>black banner</span>
-              <span>high contrast</span>
-            </div>
-            <code>references/assets/2026-05-18/reference-03-ast-warning.png</code>
-          </div>
-        </article>
+          <figcaption>
+            <strong>검정 경고</strong>
+            <code>reference-03</code>
+          </figcaption>
+        </figure>
       </section>
     </main>
   </body>
