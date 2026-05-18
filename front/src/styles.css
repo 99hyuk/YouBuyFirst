@@ -2200,6 +2200,34 @@ a {
   min-height: 100%;
 }
 
+.external-content-panel .feed-list {
+  padding-right: 10px;
+  padding-left: 9px;
+}
+
+.external-content-panel .ranked-feed-row {
+  grid-template-columns: 24px 28px minmax(0, 1fr);
+  gap: 7px;
+}
+
+.external-content-panel .feed-rank {
+  color: #647184;
+  font-weight: 820;
+  text-align: center;
+}
+
+.external-content-panel .source-badge {
+  justify-self: start;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+}
+
+.external-content-panel .source-badge img {
+  width: 22px;
+  height: 22px;
+}
+
 .site-icon {
   position: relative;
   display: inline-grid;
