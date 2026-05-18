@@ -1,5 +1,11 @@
 # Front Visual Changelog
 
+## 2026-05-18 Product Surface Pass
+
+| Version | Time | Screenshot | What Changed |
+| --- | --- | --- | --- |
+| `FV-20260518-1005-product-surface` | 2026-05-18 10:05 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-stock-detail.png) | 대시보드에 관심종목 요약, 이벤트 체인, 데이터 기준 시각을 추가하고 종목 상세를 반응 추이, 소스별 반응, 타임라인, 근거 링크, 신뢰도, 일일 변화 요약 중심으로 확장했습니다. |
+
 프론트 UI를 바꿀 때마다 캡처와 변경 버전을 연결해 이전 화면을 다시 확인하기 위한 기록입니다.
 
 ## 캡처 규칙
