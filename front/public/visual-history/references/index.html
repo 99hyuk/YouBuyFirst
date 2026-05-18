@@ -183,6 +183,7 @@
           <div class="image-slot">
             <img
               src="file:///C:/agents/YouBuyFirst/docs/assets/stock-detail-copy/reference-palantir-roast.webp"
+              data-server-src="/@fs/C:/agents/YouBuyFirst/docs/assets/stock-detail-copy/reference-palantir-roast.webp"
               alt="팔란티어 한줄평 배너 레퍼런스"
               onerror="this.parentElement.classList.add('missing')"
             />
@@ -198,6 +199,7 @@
           <div class="image-slot">
             <img
               src="file:///C:/agents/YouBuyFirst/docs/assets/stock-detail-copy/reference-nuscale-roast.webp"
+              data-server-src="/@fs/C:/agents/YouBuyFirst/docs/assets/stock-detail-copy/reference-nuscale-roast.webp"
               alt="뉴스케일 한줄평 배너 레퍼런스"
               onerror="this.parentElement.classList.add('missing')"
             />
@@ -213,6 +215,7 @@
           <div class="image-slot">
             <img
               src="file:///C:/agents/YouBuyFirst/docs/assets/stock-detail-copy/reference-ast-roast.webp"
+              data-server-src="/@fs/C:/agents/YouBuyFirst/docs/assets/stock-detail-copy/reference-ast-roast.webp"
               alt="AST 검정 경고형 배너 레퍼런스"
               onerror="this.parentElement.classList.add('missing')"
             />
@@ -225,5 +228,12 @@
         </figure>
       </section>
     </main>
+    <script>
+      if (location.protocol === 'http:' || location.protocol === 'https:') {
+        document.querySelectorAll('img[data-server-src]').forEach((image) => {
+          image.src = image.dataset.serverSrc;
+        });
+      }
+    </script>
   </body>
 </html>
