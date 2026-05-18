@@ -1,93 +1,55 @@
 # Front Visual Changelog
 
+프론트 화면 변경을 다시 확인하기 위한 작은 기록입니다. 대화에 이미지를 계속 붙이는 대신, 대표 버전은 `front/public/visual-history/`에 HTML 갤러리로 두고 원본 캡처는 링크로 엽니다.
+
 ## 2026-05-18 Product Surface Pass
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
-| `FV-20260518-1042-product-surface` | 2026-05-18 10:42 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-stock-detail.png) / [communities](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-communities.png) / [indicators](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-indicators.png) / [agents](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-agents.png) / [portfolio](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-portfolio.png) | 기존 대시보드 디자인을 유지하고 관심종목 요약, 이벤트 미리보기, 데이터 기준 시각만 작은 스트립으로 추가했습니다. 종목 상세과 다른 탭은 확장된 화면 캡처를 링크로 남겼습니다. |
-| `FV-20260518-1005-product-surface` | 2026-05-18 10:05 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-stock-detail.png) | 대시보드 구조를 너무 크게 바꾼 이전 초안입니다. 현재 방향은 아니지만 비교 보존용으로 남깁니다. |
+| `FV-20260518-1053-dashboard-original-product-tabs` | 2026-05-18 10:53 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1053-dashboard-original-product-tabs-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1053-dashboard-original-product-tabs-stock-detail.png) / [communities](../../../front/public/visual-history/2026-05-18/FV-20260518-1053-dashboard-original-product-tabs-communities.png) / [indicators](../../../front/public/visual-history/2026-05-18/FV-20260518-1053-dashboard-original-product-tabs-indicators.png) / [agents](../../../front/public/visual-history/2026-05-18/FV-20260518-1053-dashboard-original-product-tabs-agents.png) / [portfolio](../../../front/public/visual-history/2026-05-18/FV-20260518-1053-dashboard-original-product-tabs-portfolio.png) | 대시보드 상단에 추가했던 요약 스트립을 제거하고 기존 대시보드 구조로 되돌렸습니다. 종목 상세, 커뮤니티, 주요 지표, 에이전트, 포트폴리오 보강 화면은 1920px wide full-page 캡처로 남겼습니다. |
+| `FV-20260518-1042-product-surface` | 2026-05-18 10:42 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-stock-detail.png) / [communities](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-communities.png) / [indicators](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-indicators.png) / [agents](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-agents.png) / [portfolio](../../../front/public/visual-history/2026-05-18/FV-20260518-1042-product-surface-portfolio.png) | 비교 보존용입니다. 기존 대시보드 위에 관심종목 요약, 이벤트 미리보기, 데이터 기준 시각을 얹었던 직전 버전입니다. |
+| `FV-20260518-1005-product-surface` | 2026-05-18 10:05 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-dashboard.png) / [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-1005-product-surface-stock-detail.png) | 비교 보존용입니다. 대시보드 구조를 너무 크게 바꿨던 초안입니다. |
 
-프론트 UI를 바꿀 때마다 캡처와 변경 버전을 연결해 이전 화면을 다시 확인하기 위한 기록입니다.
+## Gallery Links
 
-## 캡처 규칙
-
-- 버전 ID는 `FV-YYYYMMDD-HHMM-짧은-변경명` 형식으로 둔다.
-- 기본 캡처는 `dashboard` desktop 기준 `1440 x 1800` 이상으로 남긴다.
-- 필요하면 mobile, scrolled, expanded drawer 캡처를 같은 버전 ID 뒤에 suffix로 추가한다.
-- 캡처 파일은 `artifacts/front-visual-history/`에 저장하고, 임시 비교 캡처는 기존 `artifacts/`에 둘 수 있다.
-- UI 피드백 반영 후에는 이 파일과 `docs/workstreams/front/WIREFRAME_HANDOFF.md`에 최신 캡처를 함께 적는다.
-
-## Latest
-
-| Version | Time | Screenshot | What Changed |
-| --- | --- | --- | --- |
-| `FV-20260517-1938-compact-feed-cards` | 2026-05-17 19:38 KST | [dashboard](../../../artifacts/front-visual-history/FV-20260517-1938-compact-feed-cards-dashboard.png) | 뉴스, 리포트, 증권 영상, 블로그 링크를 4행 동일 높이 카드로 줄이고 각 행에 전문/보기 링크를 둠 |
-| `FV-20260517-1742-subtle-breaking-ticker-unboxed-reactions` | 2026-05-17 17:42 KST | [dashboard](../../../artifacts/front-visual-history/FV-20260517-1742-subtle-breaking-ticker-unboxed-reactions-dashboard.png) | 상단 속보 띠 톤 다운, 속보 mock 문구 정리, `종목 반응 한눈에` outer box 제거 |
-
-## Notion Mirror
-
-- Home card page: [Front Visual Versions](https://www.notion.so/363df321bd898150bb70fa161f1285fa)
-- Home card DB: `홈 카드 DB`
-- Notion cannot reliably render local PNG files or `localhost`/`127.0.0.1` URLs as inline image blocks.
-- The Notion page is only a shortcut card for the HTML visual gallery.
-- Do not add databases, long toggles, full work logs, or image bodies to Notion.
-- The temporary `Front Visual Version Log` database was removed because the HTML gallery is easier to inspect.
 - Server gallery: `http://127.0.0.1:5174/visual-history/index.html`
-- Local file gallery: `file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-content/front/public/visual-history/index.html`
-- Date gallery example: `http://127.0.0.1:5174/visual-history/2026-05-17/index.html`
-- Local image folder example: `file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-content/front/public/visual-history/2026-05-17/`
-- Notion may rewrite `file:///` markdown links, so keep local file URLs as plain copyable text there.
-- If the local gallery does not open, start the front dev server and open `http://127.0.0.1:5174/dashboard`.
-- Inline Notion image previews require externally reachable URLs such as GitHub raw assets.
-- Source images are also kept in `artifacts/` and `artifacts/front-visual-history/`.
+- 2026-05-18 page: `http://127.0.0.1:5174/visual-history/2026-05-18/index.html`
+- Local gallery file: `file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-design-polish/front/public/visual-history/index.html`
+- Local 2026-05-18 image folder: `file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-design-polish/front/public/visual-history/2026-05-18/`
 
-## Local Storage
+## Capture Rules
 
-- Worktree: `C:\agents\YouBuyFirst\.worktrees\front-dashboard-content`
-- Gallery root HTML: `front/public/visual-history/index.html`
-- Date gallery HTML: `front/public/visual-history/YYYY-MM-DD/index.html`
-- Gallery image copies: `front/public/visual-history/YYYY-MM-DD/*.png`
-- Local image folder example: `file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-content/front/public/visual-history/2026-05-17/`
-- Versioned original captures: `artifacts/front-visual-history/`
-- Full capture archive: `artifacts/`
-- Handoff note: `docs/workstreams/front/WIREFRAME_HANDOFF.md`
+- Version ID format: `FV-YYYYMMDD-HHMM-short-change-name`.
+- Date index pages stay short. Use one dashboard thumbnail per version, then link the tab screenshots.
+- Default screenshot mode is `Playwright full-page` with a `1920 x 1080` viewport. This keeps the right rail visible and captures down to the page bottom.
+- Add suffixes only when the state matters: `dashboard-expanded`, `dashboard-mobile`, `drawer-open`, `scrolled`, etc.
+- Keep frequent draft screenshots in `artifacts/` when they are not useful as representative versions.
+- Keep Notion minimal. Notion should point to this HTML gallery, not duplicate every image or long work log.
 
-## 많이 쌓일 때의 운영 방식
-
-스크린샷은 두 종류로 나눕니다.
-
-- `front/public/visual-history/index.html`: 날짜 목록입니다. 화면이 많아져도 루트 페이지가 길어지지 않게 합니다.
-- `front/public/visual-history/YYYY-MM-DD/`: 해당 날짜의 대표 화면 모음입니다. "이전 버전과 지금 버전 비교"에 필요한 것만 넣습니다.
-- `artifacts/`: 작업 중 생긴 캡처를 넉넉히 보관하는 창고입니다. 작은 수정, 실패한 시도, 중간 점검 캡처도 여기에 둡니다.
-
-Notion에는 대표 화면 5-10개 정도만 남기고, 오래된 세부 캡처는 이 문서의 표와 `artifacts/` 경로로 찾습니다. 이렇게 해야 Notion과 갤러리가 너무 무거워지지 않습니다.
-
-## Key Dashboard Snapshots
+## 2026-05-17 Representative Dashboard Snapshots
 
 | Version | Time | Screenshot | What To Compare |
 | --- | --- | --- | --- |
-| `legacy-simple-redesign` | 2026-05-16 20:51 KST | [desktop](../../../artifacts/front-dashboard-after-simple-redesign-desktop.png) | 초기 단순 redesign 기준 |
-| `bubble-graph` | 2026-05-16 21:00 KST | [desktop](../../../artifacts/front-dashboard-bubble-graph-desktop.png) | 여러 종목을 원형/버블로 배치하던 시점 |
-| `before-yasun-pass` | 2026-05-16 21:07 KST | [desktop](../../../artifacts/front-dashboard-before-yasun-pass.png) | 야선 스타일 적용 전 비교용 |
-| `yasun-pass-final` | 2026-05-16 21:17 KST | [desktop](../../../artifacts/front-dashboard-yasun-pass-desktop-final.png) | Pretendard/YASUN 계열 첫 정리 |
-| `macro-news-pass` | 2026-05-16 21:50 KST | [full](../../../artifacts/front-dashboard-macro-news-pass-full.png) | 뉴스/매크로/지표 섹션 추가 |
-| `drawer-tabs-pass` | 2026-05-16 22:10 KST | [desktop](../../../artifacts/front-dashboard-drawer-tabs-pass-desktop.png) | 오른쪽 탭/주요 지표/포트폴리오 탭 추가 |
-| `wide-community-final` | 2026-05-16 22:44 KST | [desktop](../../../artifacts/front-dashboard-wide-community-final-desktop.png) | 커뮤니티 지표 비교를 넓게 배치 |
-| `area-graphs-final` | 2026-05-16 22:56 KST | [desktop](../../../artifacts/front-dashboard-area-graphs-final-desktop.png) | 지표 sparkline 면적 그래프 반영 |
-| `layout-revert-chart-axis` | 2026-05-16 23:10 KST | [desktop](../../../artifacts/front-dashboard-layout-revert-chart-axis-desktop.png) | 본문/오른쪽 패널 위치 이전 상태로 복구, 차트 축 정리 |
-| `wide-viewbox-dense` | 2026-05-16 23:34 KST | [desktop](../../../artifacts/front-dashboard-wide-viewbox-dense-desktop.png) | 인포그래픽형 조밀 레이아웃 시도 |
-| `toss-rail-final` | 2026-05-17 00:08 KST | [desktop](../../../artifacts/front-dashboard-toss-rail-final-desktop.png) | 토스증권식 오른쪽 rail 정리 |
-| `rail-excluded-centered` | 2026-05-17 00:37 KST | [collapsed](../../../artifacts/front-dashboard-rail-excluded-centered-collapsed.png) / [expanded](../../../artifacts/front-dashboard-toss-like-expanded-panel.png) | rail 제외 본문 정렬, 확장 패널 비교 |
-| `external-links-rail-reset` | 2026-05-17 00:54 KST | [dashboard](../../../artifacts/front-dashboard-external-links-rail-reset.png) | 유튜브/블로그/커뮤니티 링크 섹션 추가 전후 |
-| `real-favicon-icons` | 2026-05-17 01:07 KST | [dashboard](../../../artifacts/front-dashboard-real-favicon-icons.png) | 실제 사이트 favicon 기반 아이콘 적용 |
-| `reaction-dark-bars` | 2026-05-17 14:51 KST | [desktop](../../../artifacts/front-dashboard-reaction-dark-bars-desktop.png) | 어두운 종목 반응 카드/막대 대비 시도 |
-| `glass-feed-headers` | 2026-05-17 15:08 KST | [desktop](../../../artifacts/front-dashboard-glass-reaction-feed-headers-desktop.png) | glass 반응 카드와 feed header band 시도 |
-| `search-natural-chart-balanced` | 2026-05-17 15:33 KST | [desktop](../../../artifacts/front-dashboard-search-natural-chart-balanced.png) | 검색 keycap, 차트 비율 유지 확대, feed header contrast |
-| `search-feed-reaction-ticker-refine-2` | 2026-05-17 15:47 KST | [dashboard](../../../artifacts/front-dashboard-search-feed-reaction-ticker-refine-2.png) | 큰 검색 pill, 피드 gap 확대, 큰 dark reaction panel |
-| `alert-topics-square-reactions-full-feed` | 2026-05-17 15:58 KST | [dashboard](../../../artifacts/front-dashboard-alert-topics-square-reactions-full-feed.png) | 속보형 ticker, 3+3 정사각형 반응 카드, feed full width |
-| `subtle-breaking-ticker-unboxed-reactions` | 2026-05-17 17:42 KST | [dashboard](../../../artifacts/front-dashboard-subtle-breaking-ticker-unboxed-reactions.png) | 속보 띠 톤 다운, reaction outer box 제거 |
-| `compact-feed-cards` | 2026-05-17 19:38 KST | [dashboard](../../../artifacts/front-visual-history/FV-20260517-1938-compact-feed-cards-dashboard.png) | 뉴스/리포트/영상/블로그 카드 4행 동일 높이, 전문 링크 노출 |
+| `FV-20260517-1938-compact-feed-cards` | 2026-05-17 19:38 KST | [dashboard](../../../front/public/visual-history/2026-05-17/FV-20260517-1938-compact-feed-cards-dashboard.png) | 뉴스, 리포트, 증권 영상, 블로그 카드의 높이를 맞추고 전문 링크를 노출한 기준입니다. |
+| `FV-20260517-1742-subtle-breaking-ticker-unboxed-reactions` | 2026-05-17 17:42 KST | [dashboard](../../../front/public/visual-history/2026-05-17/FV-20260517-1742-subtle-breaking-ticker-unboxed-reactions-dashboard.png) | 상단 속보 띠를 톤 다운하고 `종목 반응 한눈에` 바깥 박스를 제거한 기준입니다. |
 
-## Full Capture Archive
+## Older Artifact References
 
-전체 캡처 원본은 `artifacts/`에 남아 있습니다. 위 표는 주요 비교 지점만 뽑은 index입니다.
+이전 디자인 비교용 원본 캡처는 `artifacts/`와 `artifacts/front-visual-history/`에 남아 있습니다.
+
+| Version | Screenshot | What To Compare |
+| --- | --- | --- |
+| `legacy-simple-redesign` | [desktop](../../../artifacts/front-dashboard-after-simple-redesign-desktop.png) | 초기 단순 redesign 기준 |
+| `bubble-graph` | [desktop](../../../artifacts/front-dashboard-bubble-graph-desktop.png) | 여러 종목을 원형/버블로 배치하던 시점 |
+| `before-yasun-pass` | [desktop](../../../artifacts/front-dashboard-before-yasun-pass.png) | 야선 스타일 적용 전 |
+| `yasun-pass-final` | [desktop](../../../artifacts/front-dashboard-yasun-pass-desktop-final.png) | Pretendard/YASUN 계열 첫 정리 |
+| `macro-news-pass` | [full](../../../artifacts/front-dashboard-macro-news-pass-full.png) | 뉴스/매크로/지표 섹션 추가 |
+| `drawer-tabs-pass` | [desktop](../../../artifacts/front-dashboard-drawer-tabs-pass-desktop.png) | 오른쪽 탭/주요 지표/포트폴리오 탭 추가 |
+| `wide-community-final` | [desktop](../../../artifacts/front-dashboard-wide-community-final-desktop.png) | 커뮤니티 지표 비교를 넓게 배치 |
+| `area-graphs-final` | [desktop](../../../artifacts/front-dashboard-area-graphs-final-desktop.png) | 지표 sparkline 면적 그래프 반영 |
+| `layout-revert-chart-axis` | [desktop](../../../artifacts/front-dashboard-layout-revert-chart-axis-desktop.png) | 본문/오른쪽 패널 위치 이전 상태로 복구, 차트 축 정리 |
+| `toss-rail-final` | [desktop](../../../artifacts/front-dashboard-toss-rail-final-desktop.png) | 토스증권식 오른쪽 rail 정리 |
+| `rail-excluded-centered` | [collapsed](../../../artifacts/front-dashboard-rail-excluded-centered-collapsed.png) / [expanded](../../../artifacts/front-dashboard-toss-like-expanded-panel.png) | rail 제외 본문 정렬과 확장 패널 비교 |
+| `real-favicon-icons` | [dashboard](../../../artifacts/front-dashboard-real-favicon-icons.png) | 실제 사이트 favicon 기반 아이콘 적용 |
+| `reaction-dark-bars` | [desktop](../../../artifacts/front-dashboard-reaction-dark-bars-desktop.png) | 어두운 종목 반응 카드/막대 대비 시도 |
+| `compact-feed-cards` | [dashboard](../../../artifacts/front-visual-history/FV-20260517-1938-compact-feed-cards-dashboard.png) | 현재 feed card 정리 기준 |

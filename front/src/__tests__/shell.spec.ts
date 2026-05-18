@@ -61,10 +61,6 @@ describe('front dashboard shell', () => {
     expect(wrapper.get('[data-testid="nav-agents"]').text()).toContain('에이전트');
     expect(wrapper.get('[data-testid="nav-portfolio"]').text()).toContain('내 포트폴리오');
     expect(wrapper.find('.topbar .live-ticker').exists()).toBe(true);
-    expect(wrapper.text()).toContain('관심종목 요약');
-    expect(wrapper.text()).toContain('이벤트 타임라인 미리보기');
-    expect(wrapper.text()).toContain('데이터 기준 시각');
-    expect(wrapper.text()).toContain('뉴스 → 커뮤니티 반응 → 가격 변화');
     expect(wrapper.text()).toContain('커뮤니티 지표 비교');
     expect(wrapper.find('.edge-rail').exists()).toBe(true);
     expect(wrapper.find('.edge-panel').exists()).toBe(true);

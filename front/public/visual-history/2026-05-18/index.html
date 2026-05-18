@@ -34,7 +34,8 @@
 
       header,
       .version-list,
-      article {
+      article,
+      .version-copy {
         display: grid;
         gap: 14px;
       }
@@ -51,10 +52,12 @@
 
       h1 {
         font-size: 28px;
+        line-height: 1.2;
       }
 
       h2 {
         font-size: 18px;
+        line-height: 1.35;
       }
 
       p {
@@ -99,12 +102,6 @@
         box-shadow: 0 14px 36px rgba(39, 51, 67, 0.08);
       }
 
-      .version-copy {
-        display: grid;
-        gap: 10px;
-        min-width: 0;
-      }
-
       .thumb {
         display: block;
         width: 100%;
@@ -119,6 +116,19 @@
         color: #8491a3;
         font-size: 12px;
         font-weight: 700;
+      }
+
+      .capture-note {
+        display: inline-flex;
+        width: fit-content;
+        min-height: 26px;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: #eef5ff;
+        color: #2f6fed;
+        font-size: 12px;
+        font-weight: 820;
       }
 
       .rejected {
@@ -149,7 +159,7 @@
     <main>
       <header>
         <h1>2026-05-18</h1>
-        <p>한 날짜 안에 여러 버전을 남깁니다. 썸네일은 대시보드만 보여주고, 탭별 화면은 링크로 확인합니다.</p>
+        <p>하루 안에 여러 버전이 생길 수 있어서 날짜 페이지 안에 버전 카드를 따로 둡니다. 썸네일은 대시보드만 작게 보이고, 나머지 화면은 링크로 열어 봅니다.</p>
         <div class="actions">
           <a href="../index.html">전체 날짜로 돌아가기</a>
           <a href="file:///C:/agents/YouBuyFirst/.worktrees/front-dashboard-design-polish/front/public/visual-history/2026-05-18/">로컬 이미지 폴더 열기</a>
@@ -158,11 +168,30 @@
 
       <section class="version-list">
         <article>
-          <img class="thumb" src="./FV-20260518-1042-product-surface-dashboard.png" alt="2026-05-18 dashboard restored version thumbnail" />
+          <img class="thumb" src="./FV-20260518-1053-dashboard-original-product-tabs-dashboard.png" alt="2026-05-18 restored dashboard thumbnail" />
           <div class="version-copy">
-            <span class="meta">FV-20260518-1042-product-surface · restored dashboard</span>
-            <h2>기존 대시보드 유지 + 제품 내용 추가</h2>
-            <p>기존 대시보드의 검색, 커뮤니티 비교, 종목 반응, 오른쪽 패널 구조는 유지하고 관심종목 요약, 이벤트 미리보기, 데이터 기준 시각만 작은 스트립으로 추가했습니다.</p>
+            <span class="meta">FV-20260518-1053-dashboard-original-product-tabs · current</span>
+            <h2>대시보드 원복 + 탭 화면 보강 캡처</h2>
+            <span class="capture-note">Playwright full-page · 1920px wide</span>
+            <p>대시보드 위에 추가했던 관심종목/이벤트/데이터 기준 스트립을 제거하고 기존 대시보드 흐름으로 되돌린 버전입니다. 종목 상세, 커뮤니티, 주요 지표, 에이전트, 포트폴리오 보강 화면은 같은 버전으로 하단까지 캡처했습니다.</p>
+            <div class="shot-links" aria-label="1053 version screenshots">
+              <a href="./FV-20260518-1053-dashboard-original-product-tabs-dashboard.png">대시보드</a>
+              <a href="./FV-20260518-1053-dashboard-original-product-tabs-stock-detail.png">종목 상세</a>
+              <a href="./FV-20260518-1053-dashboard-original-product-tabs-communities.png">커뮤니티</a>
+              <a href="./FV-20260518-1053-dashboard-original-product-tabs-indicators.png">주요 지표</a>
+              <a href="./FV-20260518-1053-dashboard-original-product-tabs-agents.png">에이전트</a>
+              <a href="./FV-20260518-1053-dashboard-original-product-tabs-portfolio.png">내 포트폴리오</a>
+            </div>
+          </div>
+        </article>
+
+        <article>
+          <img class="thumb" src="./FV-20260518-1042-product-surface-dashboard.png" alt="2026-05-18 dashboard strip draft thumbnail" />
+          <div class="version-copy">
+            <span class="meta">FV-20260518-1042-product-surface · comparison only</span>
+            <h2>대시보드 상단 스트립을 추가했던 직전 버전</h2>
+            <span class="rejected">비교 보존용</span>
+            <p>기존 대시보드 위에 관심종목 요약, 이벤트 미리보기, 데이터 기준 시각을 얹었던 버전입니다. 현재 방향은 아니지만 전후 비교를 위해 삭제하지 않고 남깁니다.</p>
             <div class="shot-links" aria-label="1042 version screenshots">
               <a href="./FV-20260518-1042-product-surface-dashboard.png">대시보드</a>
               <a href="./FV-20260518-1042-product-surface-stock-detail.png">종목 상세</a>
@@ -178,9 +207,9 @@
           <img class="thumb" src="./FV-20260518-1005-product-surface-dashboard.png" alt="2026-05-18 earlier dashboard draft thumbnail" />
           <div class="version-copy">
             <span class="meta">FV-20260518-1005-product-surface · earlier draft</span>
-            <h2>대시보드 구조를 너무 크게 바꾼 이전 초안</h2>
+            <h2>대시보드 구조를 너무 크게 바꾼 초안</h2>
             <span class="rejected">비교 보존용</span>
-            <p>이 초안은 기존 대시보드 디자인을 많이 바꿔서 현재 방향과 맞지 않습니다. 삭제하지 않고 비교용으로만 남깁니다.</p>
+            <p>기존 대시보드 디자인을 많이 바꿨던 초안입니다. 현재 방향과 맞지 않지만 어떤 변경이 과했는지 확인할 수 있게 남깁니다.</p>
             <div class="shot-links" aria-label="1005 version screenshots">
               <a href="./FV-20260518-1005-product-surface-dashboard.png">대시보드 초안</a>
               <a href="./FV-20260518-1005-product-surface-stock-detail.png">종목 상세 초안</a>

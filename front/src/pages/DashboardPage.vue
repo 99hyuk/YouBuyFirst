@@ -87,38 +87,6 @@ const widePointString = (pointString: string) =>
     })
     .join(' ');
 const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length - 1]?.x ?? 0) + 8, 1138);
-const watchBriefs = [
-  {
-    name: '삼성전자',
-    symbol: '005930',
-    change: '+18%',
-    note: '반도체·HBM 키워드가 30분 전보다 빠르게 늘었습니다.'
-  },
-  {
-    name: 'NAVER',
-    symbol: '035420',
-    change: '+11%',
-    note: '가격은 약보합인데 AI 검색 비용 우려 글이 늘었습니다.'
-  },
-  {
-    name: '두산로보틱스',
-    symbol: '454910',
-    change: '+27%',
-    note: '인기글 유입 뒤 변동성 언급이 강해졌습니다.'
-  }
-];
-const eventPreview = {
-  stock: '삼성전자',
-  time: '09:10 → 09:40',
-  news: 'HBM 공급 기대 기사',
-  reaction: '반도체 게시판 긍정 표현 증가',
-  price: '+1.24%'
-};
-const dataClockItems = [
-  { label: '마지막 수집', value: '10:05', state: 'mock' },
-  { label: '가격 기준', value: '09:50', state: '지연' },
-  { label: '표본', value: '최근 30분 1,284건', state: 'demo' }
-];
 </script>
 
 <template>
@@ -151,54 +119,6 @@ const dataClockItems = [
         <span>관찰 <strong>{{ reactionRanking.items.length }}종목</strong></span>
         <span>투자 자문 아님</span>
       </div>
-    </section>
-
-    <section class="dashboard-brief-strip" aria-label="관심종목과 데이터 기준 요약">
-      <article class="dashboard-brief-card watchlist-brief-card">
-        <div class="brief-card-heading">
-          <p class="label">watchlist brief</p>
-          <RouterLink class="detail-link" to="/stocks/005930">종목 상세 보기 →</RouterLink>
-        </div>
-        <h3>관심종목 요약</h3>
-        <div class="watch-brief-mini-list">
-          <div v-for="item in watchBriefs" :key="item.symbol">
-            <strong>{{ item.name }}</strong>
-            <span>{{ item.symbol }} · 반응 {{ item.change }}</span>
-            <p>{{ item.note }}</p>
-          </div>
-        </div>
-      </article>
-
-      <article class="dashboard-brief-card event-brief-card">
-        <div class="brief-card-heading">
-          <p class="label">event chain</p>
-          <span class="status-pill subtle">{{ eventPreview.time }}</span>
-        </div>
-        <h3>이벤트 타임라인 미리보기</h3>
-        <div class="mini-event-flow">
-          <span>{{ eventPreview.news }}</span>
-          <i></i>
-          <span>{{ eventPreview.reaction }}</span>
-          <i></i>
-          <span>{{ eventPreview.price }}</span>
-        </div>
-        <p>{{ eventPreview.stock }} · 뉴스 → 커뮤니티 반응 → 가격 변화</p>
-      </article>
-
-      <article class="dashboard-brief-card data-clock-card">
-        <div class="brief-card-heading">
-          <p class="label">data clock</p>
-          <span class="status-pill warning">mock/stale</span>
-        </div>
-        <h3>데이터 기준 시각</h3>
-        <div class="data-clock-mini-list">
-          <div v-for="item in dataClockItems" :key="item.label">
-            <span>{{ item.label }}</span>
-            <strong>{{ item.value }}</strong>
-            <em>{{ item.state }}</em>
-          </div>
-        </div>
-      </article>
     </section>
 
     <section class="dashboard-main-layout">
