@@ -15,23 +15,6 @@ const stock = {
   ]
 };
 
-const stockRankings = [
-  { rank: 1, name: '삼성전자', symbol: '005930', market: 'KRX', mentions: '128건', score: '77', change: '+1.24%', reason: 'HBM·수급' },
-  { rank: 2, name: 'SK하이닉스', symbol: '000660', market: 'KRX', mentions: '94건', score: '72', change: '+2.18%', reason: '메모리' },
-  { rank: 3, name: '한미반도체', symbol: '042700', market: 'KRX', mentions: '81건', score: '69', change: '+3.20%', reason: '장비 수주' },
-  { rank: 4, name: '에코프로', symbol: '086520', market: 'KRX', mentions: '73건', score: '61', change: '-1.10%', reason: '2차전지' },
-  { rank: 5, name: 'NAVER', symbol: '035420', market: 'KRX', mentions: '64건', score: '48', change: '+0.70%', reason: '비용 우려' },
-  { rank: 6, name: 'Tesla', symbol: 'TSLA', market: 'NASDAQ', mentions: '58건', score: '55', change: '-0.42%', reason: '해외주식' }
-];
-
-const stockFilters = [
-  { label: '언급 증가', value: '390' },
-  { label: '긍정 우세', value: '42' },
-  { label: '부정 증가', value: '18' },
-  { label: '가격 stale', value: '12' },
-  { label: '원문 확인', value: '31' }
-];
-
 const reactionTrend = [
   { period: '30분', mentions: 128, positive: 54, negative: 27, neutral: 19 },
   { period: '1일', mentions: 642, positive: 48, negative: 31, neutral: 21 },
@@ -94,52 +77,9 @@ const reliability = [
 
 <template>
   <section class="surface-page stock-detail-page">
-    <section class="stock-discovery-grid" aria-label="종목 탐색과 반응 랭킹">
-      <article class="panel content-feed-card surface-data-card stock-ranking-card">
-        <div class="panel-header compact">
-          <div>
-            <p class="label">stock finder</p>
-            <h3>종목 검색과 반응 랭킹</h3>
-          </div>
-          <span class="status-pill subtle">mock rank</span>
-        </div>
-        <div class="stock-search-bar">
-          <span aria-hidden="true">⌕</span>
-          <strong>종목명·티커·키워드 검색</strong>
-          <em>예: 삼성전자, HBM, TSLA</em>
-        </div>
-        <div class="stock-rank-table">
-          <article v-for="item in stockRankings" :key="item.symbol" :class="{ selected: item.symbol === stock.symbol }">
-            <b>{{ item.rank }}</b>
-            <div>
-              <strong>{{ item.name }}</strong>
-              <span>{{ item.symbol }} · {{ item.market }} · {{ item.reason }}</span>
-            </div>
-            <em>{{ item.mentions }}</em>
-            <span class="rank-score">{{ item.score }}</span>
-            <small :class="item.change.startsWith('-') ? 'down' : 'up'">{{ item.change }}</small>
-          </article>
-        </div>
-      </article>
-
-      <aside class="panel content-feed-card surface-data-card stock-filter-card">
-        <div class="panel-header compact">
-          <div>
-            <p class="label">quick filter</p>
-            <h3>필터 요약</h3>
-          </div>
-        </div>
-        <div class="source-state-grid stock-filter-grid">
-          <article v-for="filter in stockFilters" :key="filter.label">
-            <strong>{{ filter.value }}</strong>
-            <span>{{ filter.label }}</span>
-          </article>
-        </div>
-      </aside>
-    </section>
-
     <section class="stock-hero panel">
       <div class="stock-identity">
+        <RouterLink class="detail-link stock-back-link" to="/stocks">← 종목 랭킹으로</RouterLink>
         <p class="eyebrow">selected stock detail</p>
         <h2>{{ stock.name }} <span>{{ stock.symbol }} · {{ stock.market }}</span></h2>
         <p>뉴스, 커뮤니티 반응, 가격 변화를 시간순으로 묶어 왜 반응이 움직였는지 확인합니다.</p>

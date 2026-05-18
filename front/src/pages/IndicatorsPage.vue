@@ -1,186 +1,146 @@
 <script setup lang="ts">
 const marketIndicators = [
-  { name: 'KOSPI', value: '2,742.18', change: '+0.44%', state: '지연' },
-  { name: 'KOSDAQ', value: '874.32', change: '-0.31%', state: '지연' },
-  { name: 'NASDAQ', value: '16,340.87', change: '+0.72%', state: 'mock' },
-  { name: 'USD/KRW', value: '1,350.20', change: '-0.18%', state: '지연' },
-  { name: 'VIX', value: '14.8', change: '+2.1%', state: 'mock' },
-  { name: '미국 10Y', value: '4.41%', change: '+0.03p', state: 'mock' },
-  { name: '필라델피아 반도체', value: '5,218.4', change: '+1.12%', state: 'mock' },
-  { name: 'KRW BTC', value: '91.2M', change: '-0.8%', state: '지연' }
-];
-
-const marketSummary = [
-  { label: '상승 지표', value: '5', meta: '지수·금리 포함' },
-  { label: '하락 지표', value: '3', meta: '환율·코인 포함' },
-  { label: '반응 괴리', value: '3건', meta: '가격과 관심 불일치' },
-  { label: '주요 일정', value: '4건', meta: '이번 주' },
-  { label: 'stale/mock', value: '4개', meta: '표시 필요' }
-];
-
-const coMoves = [
-  { label: 'KOSDAQ 반등 + 2차전지 언급 증가', market: '+0.22%', reaction: '+34%', note: '가격보다 관심 증가가 큼' },
-  { label: '환율 하락 + 해외주식 글 증가', market: '-0.18%', reaction: '+16%', note: '나스닥 종목 언급 확대' },
-  { label: 'VIX 상승 + 방어주 키워드 증가', market: '+2.1%', reaction: '+11%', note: '리스크 회피 표현 증가' }
-];
-
-const themeHeatmap = [
-  { theme: '반도체', heat: 92, tone: 'hot' },
-  { theme: '2차전지', heat: 76, tone: 'hot' },
-  { theme: '바이오', heat: 48, tone: 'mid' },
-  { theme: '로봇', heat: 69, tone: 'mid' },
-  { theme: '미국주식', heat: 82, tone: 'hot' },
-  { theme: '배당', heat: 35, tone: 'cool' }
-];
-
-const divergences = [
-  { type: '가격 상승 · 부정 증가', stock: 'NAVER', detail: '클라우드 비용 우려 글 증가' },
-  { type: '가격 하락 · 관심 증가', stock: '에코프로', detail: '2차전지 수급 뉴스 뒤 인기글 상위권 도달' },
-  { type: '지수 약세 · 테마 강세', stock: '로봇', detail: '공시 일정 앞두고 언급 확산' }
-];
-
-const schedules = [
-  { date: '05.20', title: 'FOMC 의사록', state: '예정' },
-  { date: '05.22', title: '미국 CPI 수정치', state: '예정' },
-  { date: '05.23', title: '국내 주요 실적 발표', state: '확인 필요' },
-  { date: '05.24', title: '공시 일정 갱신', state: 'mock' }
+  { name: 'KOSPI', value: '2,742.18', change: '+0.44%', state: '지연', reaction: '+12%', link: '반도체 언급 증가' },
+  { name: 'KOSDAQ', value: '874.32', change: '-0.31%', state: '지연', reaction: '+24%', link: '2차전지 관심 증가' },
+  { name: 'NASDAQ', value: '16,340.87', change: '+0.72%', state: 'mock', reaction: '+16%', link: '미국주식 글 증가' },
+  { name: 'USD/KRW', value: '1,350.20', change: '-0.18%', state: '지연', reaction: '+8%', link: '환율 민감주 언급' },
+  { name: 'VIX', value: '14.8', change: '+2.1%', state: 'mock', reaction: '+11%', link: '방어주 키워드' },
+  { name: '미국 10Y', value: '4.41%', change: '+0.03p', state: 'mock', reaction: '+9%', link: '성장주 부담' },
+  { name: 'SOX', value: '5,218.4', change: '+1.12%', state: 'mock', reaction: '+31%', link: 'HBM·장비' },
+  { name: 'KRW BTC', value: '91.2M', change: '-0.8%', state: '지연', reaction: '+6%', link: '코인 관련주' },
+  { name: 'WTI', value: '78.4', change: '+0.6%', state: 'mock', reaction: '+4%', link: '정유·운송' },
+  { name: '금 선물', value: '2,380', change: '+0.2%', state: 'mock', reaction: '+7%', link: '안전자산' },
+  { name: '공포탐욕', value: '61', change: '-2p', state: 'mock', reaction: '+10%', link: '레버리지 ETF' },
+  { name: 'KRX 반도체', value: '4,912', change: '+1.4%', state: '지연', reaction: '+28%', link: '장비주 언급' }
 ];
 
 const anomalyRows = [
-  { stock: 'NAVER', price: '+0.7%', reaction: '부정 +14p', reason: '비용 우려' },
-  { stock: '에코프로', price: '-1.1%', reaction: '관심 +24%', reason: '수급 뉴스' },
-  { stock: '한미반도체', price: '+2.3%', reaction: '긍정 +18p', reason: 'HBM 키워드' },
-  { stock: '로봇 테마', price: '-0.4%', reaction: '언급 +19%', reason: '공시 일정' }
+  { stock: 'NAVER', type: '가격 상승 · 부정 증가', price: '+0.7%', reaction: '부정 +14p', reason: '비용 우려' },
+  { stock: '에코프로', type: '가격 하락 · 관심 증가', price: '-1.1%', reaction: '관심 +24%', reason: '수급 뉴스' },
+  { stock: '한미반도체', type: '가격 상승 · 긍정 확산', price: '+2.3%', reaction: '긍정 +18p', reason: 'HBM 키워드' },
+  { stock: '로봇 테마', type: '지수 약세 · 테마 강세', price: '-0.4%', reaction: '언급 +19%', reason: '공시 일정' },
+  { stock: 'SOXS', type: 'ETF 상승 · 부정 우세', price: '+1.6%', reaction: '부정 +9p', reason: '변동성 회피' },
+  { stock: '삼성SDI', type: '가격 정체 · 관심 증가', price: '+0.1%', reaction: '관심 +17%', reason: '실적 대기' }
+];
+
+const themeHeatmap = [
+  { theme: '반도체', heat: 92, change: '+18p' },
+  { theme: '미국주식', heat: 82, change: '+11p' },
+  { theme: '2차전지', heat: 76, change: '+24p' },
+  { theme: '로봇', heat: 69, change: '+9p' },
+  { theme: '바이오', heat: 48, change: '-3p' },
+  { theme: '배당', heat: 35, change: '+2p' },
+  { theme: '환율', heat: 52, change: '+6p' },
+  { theme: '금리', heat: 44, change: '+5p' }
+];
+
+const schedules = [
+  { date: '05.20', time: '03:00', title: 'FOMC 의사록', watch: '금리·나스닥 반응' },
+  { date: '05.22', time: '21:30', title: '미국 CPI 수정치', watch: '환율·성장주' },
+  { date: '05.23', time: '장중', title: '국내 주요 실적 발표', watch: '대형주 댓글 속도' },
+  { date: '05.24', time: '수시', title: '공시 일정 갱신', watch: '로봇·바이오' },
+  { date: '05.25', time: '장전', title: '기관 수급 잠정치', watch: '반도체·2차전지' },
+  { date: '05.26', time: '장후', title: '미국 PCE 대기', watch: '환율 민감 글' }
+];
+
+const freshnessRows = [
+  { source: '국내 지수', state: '15분 지연', used: '홈·주요 지표' },
+  { source: '미국 지수', state: 'mock', used: '야간 반응 테스트' },
+  { source: '환율', state: '지연', used: '해외주식 글 연결' },
+  { source: '커뮤니티 반응', state: '10:05 수집', used: '괴리 보드' },
+  { source: '공시 일정', state: 'mock', used: '이벤트 타임라인' },
+  { source: '섹터 분류', state: '수동 매핑', used: '테마 히트맵' }
 ];
 </script>
 
 <template>
-  <section class="surface-page indicators-page">
-    <section class="panel content-feed-card surface-title-card indicators-title-card span-2" aria-labelledby="indicators-title">
-      <div class="panel-header surface-title-header">
+  <section class="surface-page indicators-page market-density-page">
+    <section class="market-command-board" aria-labelledby="indicators-title">
+      <div class="terminal-title-row">
         <div>
           <p class="label">market context</p>
           <h2 id="indicators-title">주요 지표</h2>
+          <span>시장 지표 자체보다 커뮤니티 반응과 엇갈리는 구간을 먼저 봅니다.</span>
         </div>
         <span class="status-pill warning">실시간/지연/mock 혼재</span>
       </div>
-      <p class="surface-title-copy">
-        시장 전체 분위기를 보되, 너나사의 차별점은 지표와 커뮤니티 반응의 괴리를 찾는 것입니다.
-      </p>
-    </section>
 
-    <section class="dense-summary-strip indicators-density-strip" aria-label="시장 지표 요약">
-      <article v-for="item in marketSummary" :key="item.label" class="panel dense-metric-card">
-        <span>{{ item.label }}</span>
-        <strong>{{ item.value }}</strong>
-        <em>{{ item.meta }}</em>
-      </article>
-    </section>
-
-    <section class="panel content-feed-card surface-data-card indicators-strip-card span-2">
-      <div class="panel-header">
-        <div>
-          <p class="label">market indicators</p>
-          <h3>시장 지표와 데이터 신선도</h3>
-        </div>
-        <span class="status-pill warning">실시간/지연/mock 혼재</span>
-      </div>
-      <div class="indicator-strip-grid">
+      <section class="market-tape-grid" aria-label="시장 지표와 데이터 신선도">
         <article v-for="indicator in marketIndicators" :key="indicator.name">
-          <span>{{ indicator.name }}</span>
-          <strong>{{ indicator.value }}</strong>
+          <div>
+            <span>{{ indicator.name }}</span>
+            <strong>{{ indicator.value }}</strong>
+          </div>
           <em :class="indicator.change.startsWith('-') ? 'down' : 'up'">{{ indicator.change }}</em>
           <small>{{ indicator.state }}</small>
+          <p>{{ indicator.link }} · 반응 {{ indicator.reaction }}</p>
         </article>
-      </div>
-    </section>
+      </section>
 
-    <section class="panel content-feed-card surface-data-card indicators-anomaly-card span-2">
-      <div class="panel-header compact">
-        <div>
-          <p class="label">reaction anomaly</p>
-          <h3>가격과 반응이 엇갈린 종목</h3>
-        </div>
-        <span class="status-pill subtle">관찰 후보</span>
-      </div>
-      <div class="anomaly-grid">
-        <article v-for="row in anomalyRows" :key="`${row.stock}-${row.reason}`">
-          <strong>{{ row.stock }}</strong>
-          <span>가격 {{ row.price }}</span>
-          <span>반응 {{ row.reaction }}</span>
-          <em>{{ row.reason }}</em>
-        </article>
-      </div>
-    </section>
-
-    <section class="indicator-detail-grid">
-      <article class="panel content-feed-card surface-data-card indicators-move-card">
-        <div class="panel-header compact">
-          <div>
-            <p class="label">co-movement</p>
-            <h3>지표와 반응의 동시 변화</h3>
-          </div>
-        </div>
-        <div class="co-move-list">
-          <article v-for="item in coMoves" :key="item.label">
-            <strong>{{ item.label }}</strong>
+      <section class="market-split-grid">
+        <div class="market-anomaly-table">
+          <div class="table-caption">
             <div>
-              <span>지표 {{ item.market }}</span>
-              <span>반응 {{ item.reaction }}</span>
+              <p class="label">reaction anomaly</p>
+              <h3>가격과 반응이 엇갈린 종목</h3>
             </div>
-            <p>{{ item.note }}</p>
+            <span class="status-pill subtle">관찰 후보</span>
+          </div>
+          <div class="anomaly-head">
+            <span>종목</span><span>괴리</span><span>가격</span><span>반응</span><span>키워드</span>
+          </div>
+          <article v-for="row in anomalyRows" :key="`${row.stock}-${row.reason}`">
+            <strong>{{ row.stock }}</strong>
+            <span>{{ row.type }}</span>
+            <em :class="row.price.startsWith('-') ? 'down' : 'up'">{{ row.price }}</em>
+            <b>{{ row.reaction }}</b>
+            <small>{{ row.reason }}</small>
           </article>
         </div>
-      </article>
 
-      <article class="panel content-feed-card surface-data-card indicators-heat-card">
-        <div class="panel-header compact">
+        <aside class="theme-terminal">
           <div>
             <p class="label">theme heatmap</p>
             <h3>섹터·테마별 반응 히트맵</h3>
           </div>
-        </div>
-        <div class="theme-heatmap">
-          <div v-for="item in themeHeatmap" :key="item.theme" :class="item.tone">
+          <article v-for="item in themeHeatmap" :key="item.theme">
             <strong>{{ item.theme }}</strong>
+            <i><mark :style="{ width: `${item.heat}%` }"></mark></i>
             <span>{{ item.heat }}</span>
-          </div>
-        </div>
-      </article>
-    </section>
+            <em>{{ item.change }}</em>
+          </article>
+        </aside>
+      </section>
 
-    <section class="indicator-detail-grid">
-      <article class="panel content-feed-card surface-data-card indicators-divergence-card">
-        <div class="panel-header compact">
-          <div>
-            <p class="label">divergence</p>
-            <h3>가격과 반응의 괴리</h3>
+      <section class="market-bottom-grid">
+        <div class="schedule-terminal">
+          <div class="table-caption">
+            <div>
+              <p class="label">calendar</p>
+              <h3>주요 일정</h3>
+            </div>
           </div>
-        </div>
-        <div class="compact-stack">
-          <div v-for="item in divergences" :key="`${item.type}-${item.stock}`">
-            <span>{{ item.type }}</span>
-            <strong>{{ item.stock }}</strong>
-            <em>{{ item.detail }}</em>
-          </div>
-        </div>
-      </article>
-
-      <article class="panel content-feed-card surface-data-card indicators-calendar-card">
-        <div class="panel-header compact">
-          <div>
-            <p class="label">calendar</p>
-            <h3>주요 일정</h3>
-          </div>
-        </div>
-        <div class="schedule-list">
           <article v-for="schedule in schedules" :key="`${schedule.date}-${schedule.title}`">
             <time>{{ schedule.date }}</time>
+            <span>{{ schedule.time }}</span>
             <strong>{{ schedule.title }}</strong>
-            <span>{{ schedule.state }}</span>
+            <em>{{ schedule.watch }}</em>
           </article>
         </div>
-      </article>
+        <div class="freshness-terminal">
+          <div class="table-caption">
+            <div>
+              <p class="label">freshness</p>
+              <h3>지표별 데이터 신선도</h3>
+            </div>
+          </div>
+          <article v-for="row in freshnessRows" :key="row.source">
+            <strong>{{ row.source }}</strong>
+            <span>{{ row.state }}</span>
+            <em>{{ row.used }}</em>
+          </article>
+        </div>
+      </section>
     </section>
   </section>
 </template>

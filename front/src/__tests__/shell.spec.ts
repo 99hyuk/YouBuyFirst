@@ -34,6 +34,7 @@ describe('front dashboard shell', () => {
       '/',
       '/dashboard',
       '/newsroom',
+      '/stocks',
       '/stocks/:symbol',
       '/communities',
       '/indicators',
@@ -57,7 +58,7 @@ describe('front dashboard shell', () => {
     expect(wrapper.get('[data-testid="app-title"]').attributes('href')).toBe('/dashboard');
     expect(wrapper.get('[data-testid="nav-dashboard"]').text()).toContain('대시보드');
     expect(wrapper.get('[data-testid="nav-newsroom"]').text()).toContain('뉴스룸');
-    expect(wrapper.get('[data-testid="nav-stock"]').text()).toContain('종목 상세');
+    expect(wrapper.get('[data-testid="nav-stock"]').text()).toContain('종목');
     expect(wrapper.get('[data-testid="nav-communities"]').text()).toContain('인간 지표');
     expect(wrapper.get('[data-testid="nav-indicators"]').text()).toContain('주요 지표');
     expect(wrapper.get('[data-testid="nav-agents"]').text()).toContain('에이전트');
@@ -73,9 +74,13 @@ describe('front dashboard shell', () => {
   });
 
   it('renders the core product pages with the expanded planning content', async () => {
+    const stocks = await mountAt('/stocks');
+    expect(stocks.text()).toContain('종목 반응 랭킹');
+    expect(stocks.text()).toContain('목록에서 종목을 눌러 상세로 이동');
+    expect(stocks.findAll('.stock-screener-row').length).toBeGreaterThanOrEqual(8);
+
     const stock = await mountAt('/stocks/005930');
-    expect(stock.text()).toContain('종목 검색과 반응 랭킹');
-    expect(stock.text()).toContain('종목명·티커·키워드 검색');
+    expect(stock.text()).toContain('종목 랭킹으로');
     expect(stock.text()).toContain('어제와 달라진 점');
     expect(stock.text()).toContain('반응 키워드');
     expect(stock.text()).toContain('시간대별 변화');
@@ -109,10 +114,10 @@ describe('front dashboard shell', () => {
     expect(newsroom.find('.newsroom-pager').exists()).toBe(true);
 
     const indicators = await mountAt('/indicators');
-    expect(indicators.text()).toContain('시장 지표와 데이터 신선도');
+    expect(indicators.text()).toContain('시장 지표 자체보다 커뮤니티 반응과 엇갈리는 구간');
     expect(indicators.text()).toContain('가격과 반응이 엇갈린 종목');
-    expect(indicators.text()).toContain('지표와 반응의 동시 변화');
-    expect(indicators.text()).toContain('가격과 반응의 괴리');
+    expect(indicators.text()).toContain('섹터·테마별 반응 히트맵');
+    expect(indicators.text()).toContain('지표별 데이터 신선도');
     expect(indicators.text()).toContain('주요 일정');
 
     const agents = await mountAt('/agents');

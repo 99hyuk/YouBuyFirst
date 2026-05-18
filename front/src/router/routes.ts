@@ -7,6 +7,7 @@ import IndicatorsPage from '../pages/IndicatorsPage.vue';
 import NewsroomPage from '../pages/NewsroomPage.vue';
 import PortfolioPage from '../pages/PortfolioPage.vue';
 import StockDetailPage from '../pages/StockDetailPage.vue';
+import StockListPage from '../pages/StockListPage.vue';
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -22,6 +23,11 @@ export const routes: RouteRecordRaw[] = [
     path: '/newsroom',
     name: 'newsroom',
     component: NewsroomPage
+  },
+  {
+    path: '/stocks',
+    name: 'stocks',
+    component: StockListPage
   },
   {
     path: '/stocks/:symbol',
