@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1623-human-indicator-tab` | 2026-05-18 16:23 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1623-human-indicator-tab-dashboard-1920.png) | 상단 메뉴의 기존 `커뮤니티` 탭 이름을 `인간 지표`로 바꿨습니다. 주소와 커뮤니티 비교 화면 구조는 유지했습니다. |
 | `FV-20260518-1617-newsroom-overview-header-band` | 2026-05-18 16:17 KST | [newsroom overview](../../../front/public/visual-history/2026-05-18/FV-20260518-1617-newsroom-overview-header-band-1920.png) | 뉴스룸 종합 화면의 `뉴스 · 리포트`, `영상 · 블로그 및 커뮤니티` 제목칸에 대시보드 피드 카드와 같은 라벨, 색 배경, 구분선을 적용했습니다. |
 | `FV-20260518-1601-newsroom-no-switch-long-lists` | 2026-05-18 16:01 KST | [newsroom overview](../../../front/public/visual-history/2026-05-18/FV-20260518-1601-newsroom-no-switch-long-lists-1920.png) | 뉴스룸 상단 필터 스위치를 제거하고, 좌우 리스트를 각각 15개 항목으로 확장했습니다. 두 리스트 사이 간격도 48px로 넓혀 분리감을 키웠습니다. |
 | `FV-20260518-1553-newsroom-two-overview-lists` | 2026-05-18 15:53 KST | [newsroom overview](../../../front/public/visual-history/2026-05-18/FV-20260518-1553-newsroom-two-overview-lists-1920.png) | 뉴스룸 종합 화면을 네 개 카드가 아니라 두 개의 리스트로 정리했습니다. 왼쪽은 뉴스와 리포트, 오른쪽은 영상과 블로그·커뮤니티 원문이 한 리스트 안에서 섞여 보입니다. |
