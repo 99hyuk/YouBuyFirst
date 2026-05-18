@@ -90,9 +90,12 @@ describe('front dashboard shell', () => {
 
   it('renders the core product pages with the expanded planning content', async () => {
     const stocks = await mountAt('/stocks');
-    expect(stocks.text()).toContain('종목 반응 랭킹');
+    expect(stocks.text()).toContain('종목 거래량 순위');
+    expect(stocks.text()).toContain('국장 거래량 TOP 10');
+    expect(stocks.text()).toContain('해외 거래량 TOP 10');
     expect(stocks.text()).toContain('목록에서 종목을 눌러 상세로 이동');
-    expect(stocks.findAll('.stock-screener-row').length).toBeGreaterThanOrEqual(8);
+    expect(stocks.text()).toContain('정렬 기준');
+    expect(stocks.findAll('.market-ranking-row').length).toBe(20);
 
     const stock = await mountAt('/stocks/005930');
     expect(stock.text()).toContain('종목 랭킹으로');
