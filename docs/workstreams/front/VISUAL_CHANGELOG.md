@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-2228-stock-detail-reference-roast-banner` | 2026-05-18 22:28 KST | [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-2228-stock-detail-reference-roast-banner-stock-detail-1440.png) | 종목 상세 맨 위에 종목명 줄, 큰 청록 한줄평 배너, 설명·점수·근거 지표 줄을 참고 이미지와 같은 순서로 배치했습니다. 기존 종목 헤더와 상세 지표는 그 아래로 이어집니다. |
 | `FV-20260518-2219-stock-detail-witty-takeaway` | 2026-05-18 22:19 KST | [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-2219-stock-detail-witty-takeaway-stock-detail-1440.png) | 종목 상세 상단의 안전한 요약 문구를 `HBM 한마디에 게시판은 축제 모드, 주가는 뒤늦게 입장 중`처럼 더 직접적이고 재밌는 한줄평으로 바꿨습니다. 근거 지표와 출처 편중 안내는 같이 유지했습니다. |
 | `FV-20260518-2213-stock-detail-takeaway-brief` | 2026-05-18 22:13 KST | [stock detail](../../../front/public/visual-history/2026-05-18/FV-20260518-2213-stock-detail-takeaway-brief-stock-detail-1440.png) | 종목 상세 상단에 커뮤니티 반응 한줄 요약 카드를 추가했습니다. HBM 키워드, 언급 증가, 긍정/부정 비율, 가격·거래량, 출처 편중과 가격 지연을 한 화면에서 같이 확인하도록 했습니다. |
 | `FV-20260518-2108-newsroom-four-feed-overview` | 2026-05-18 21:08 KST | [newsroom](../../../front/public/visual-history/2026-05-18/FV-20260518-2108-newsroom-four-feed-overview-newsroom-1920.png) / [videos](../../../front/public/visual-history/2026-05-18/FV-20260518-2108-newsroom-four-feed-overview-videos-1920.png) | 뉴스룸 기본 화면을 대시보드 피드처럼 실시간 뉴스, 애널리스트 리포트, 증권 영상 새 글, 블로그와 커뮤니티 링크 4개 카드로 되돌렸습니다. 각 카드는 8개 항목을 보여주고, 상단 메뉴 hover와 카드 액션에서 특정 피드만 길게 보는 화면으로 바로 이동합니다. |

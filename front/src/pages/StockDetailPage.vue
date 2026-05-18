@@ -18,9 +18,12 @@ const stock = {
 const topBrief = {
   headline: 'HBM 한마디에 게시판은 축제 모드, 주가는 뒤늦게 입장 중',
   summary:
-    '30분 언급 128건, 긍정 54 · 부정 27, HBM 키워드 46건. 디시·에펨코리아까지 번졌고 가격도 +1.24%로 따라왔지만, 시세는 지연 기준이라 이 흥분이 진짜인지 원문부터 열어봐야 합니다.',
+    '30분 언급 128건 · 긍정 54 · 부정 27 · HBM 키워드 46건 · 가격 +1.24% · 거래량 18.4M',
   mood: '오늘의 한줄평',
-  riskNote: '출처 편중 42% · 가격 15분 지연 · 실거래 판단 근거 아님'
+  note:
+    '게시판은 먼저 달아올랐고 가격은 뒤에서 따라오는 모양새입니다. 다만 출처 편중 42%, 가격 15분 지연이라 원문 확인 없이는 호들갑인지 흐름인지 아직 모릅니다.',
+  scoreLine: '반응 점수 77점 · 커뮤니티 온도 ★★★★☆ · 근거 4개 소스',
+  riskNote: '참고용 mock 요약 · 실거래 판단 근거 아님'
 };
 
 const topBriefMetrics = [
@@ -99,6 +102,42 @@ const reliability = [
 
 <template>
   <section class="surface-page stock-detail-page">
+    <section class="stock-roast-panel panel" aria-label="종목 한줄평">
+      <div class="stock-roast-topline">
+        <div>
+          <strong>{{ stock.name }}</strong>
+          <span>{{ stock.symbol }} · {{ stock.market }}</span>
+        </div>
+        <RouterLink class="stock-roast-close" to="/stocks" aria-label="종목 랭킹으로 돌아가기">×</RouterLink>
+      </div>
+
+      <article class="stock-roast-banner">
+        <span>{{ topBrief.mood }}</span>
+        <h2>{{ topBrief.headline }}</h2>
+        <p>{{ topBrief.summary }}</p>
+      </article>
+
+      <div class="stock-roast-digest">
+        <p>
+          <strong>{{ topBrief.scoreLine }}</strong>
+          <span>{{ topBrief.note }}</span>
+        </p>
+        <em>{{ topBrief.riskNote }}</em>
+      </div>
+
+      <div class="stock-roast-metric-row" aria-label="한줄평 근거 지표">
+        <article v-for="metric in topBriefMetrics" :key="metric.label">
+          <span>{{ metric.label }}</span>
+          <strong>{{ metric.value }}</strong>
+          <em>{{ metric.meta }}</em>
+        </article>
+      </div>
+
+      <div class="stock-roast-reasons" aria-label="요약 근거">
+        <b v-for="reason in topBriefReasons" :key="reason">{{ reason }}</b>
+      </div>
+    </section>
+
     <section class="stock-hero panel">
       <div class="stock-identity">
         <RouterLink class="detail-link stock-back-link" to="/stocks">← 종목 랭킹으로</RouterLink>
@@ -123,25 +162,6 @@ const reliability = [
           <em :class="stock.stale ? 'warn' : 'ok'">{{ stock.stale ? 'stale' : '지연' }}</em>
         </div>
       </div>
-
-      <article class="stock-takeaway-brief" aria-label="종목 반응 한줄 요약">
-        <div class="takeaway-copy">
-          <span>{{ topBrief.mood }}</span>
-          <h3>{{ topBrief.headline }}</h3>
-          <p>{{ topBrief.summary }}</p>
-        </div>
-        <div class="takeaway-metric-grid" aria-label="한줄 요약 반영 지표">
-          <div v-for="metric in topBriefMetrics" :key="metric.label">
-            <span>{{ metric.label }}</span>
-            <strong>{{ metric.value }}</strong>
-            <em>{{ metric.meta }}</em>
-          </div>
-        </div>
-        <div class="takeaway-reason-row" aria-label="요약 근거">
-          <b v-for="reason in topBriefReasons" :key="reason">{{ reason }}</b>
-        </div>
-        <p class="takeaway-risk-note">{{ topBrief.riskNote }}</p>
-      </article>
     </section>
 
     <section class="dense-summary-strip stock-density-strip" aria-label="종목 요약 지표">
