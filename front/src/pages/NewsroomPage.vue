@@ -295,6 +295,7 @@ const mergeAlternating = (...lists: NewsroomItem[][]) => {
 const overviewColumns = computed(() => [
   {
     id: 'news-reports',
+    cardClass: 'newsroom-market-feed-card',
     kicker: 'market feed',
     label: '뉴스 · 리포트',
     actions: [
@@ -305,6 +306,7 @@ const overviewColumns = computed(() => [
   },
   {
     id: 'media-links',
+    cardClass: 'newsroom-outside-feed-card',
     kicker: 'outside links',
     label: '영상 · 블로그 및 커뮤니티',
     actions: [
@@ -335,17 +337,21 @@ const listStatusLabel = computed(() =>
 
 <template>
   <section class="newsroom-page">
-    <section class="page-heading newsroom-heading">
-      <p class="eyebrow">newsroom</p>
-      <h2>뉴스룸</h2>
-      <p>뉴스, 리포트, 영상, 블로그와 커뮤니티 링크를 한 곳에서 확인합니다.</p>
+    <section class="panel content-feed-card newsroom-title-card" aria-labelledby="newsroom-title">
+      <div class="panel-header newsroom-title-header">
+        <div>
+          <p class="label">newsroom</p>
+          <h2 id="newsroom-title">뉴스룸</h2>
+        </div>
+        <span class="status-pill subtle">뉴스 · 리포트 · 영상 · 원문</span>
+      </div>
     </section>
 
     <section v-if="activeFilter === 'all'" class="newsroom-overview-grid" aria-label="뉴스룸 종합 요약">
       <article
         v-for="column in overviewColumns"
         :key="column.id"
-        class="panel newsroom-overview-card"
+        :class="['panel', 'content-feed-card', 'newsroom-overview-card', column.cardClass]"
       >
         <div class="panel-header newsroom-overview-header">
           <div>

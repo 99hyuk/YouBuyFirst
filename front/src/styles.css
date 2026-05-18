@@ -2432,13 +2432,24 @@ a {
   gap: 22px;
 }
 
-.newsroom-heading {
-  max-width: none;
-  text-align: left;
+.newsroom-title-card {
+  --feed-accent: #4f7fee;
+  --feed-bg: #dde8ff;
+
+  padding: 0;
+  overflow: hidden;
 }
 
-.newsroom-heading h2 {
-  margin-top: 6px;
+.newsroom-title-header {
+  min-height: 48px;
+}
+
+.newsroom-title-header h2 {
+  margin: 2px 0 0;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 860;
+  line-height: 1.2;
 }
 
 .newsroom-overview-grid {
@@ -2454,14 +2465,28 @@ a {
   overflow: hidden;
 }
 
+.newsroom-market-feed-card {
+  --feed-accent: #4f7fee;
+  --feed-bg: #dde8ff;
+}
+
+.newsroom-outside-feed-card {
+  --feed-accent: #8063e8;
+  --feed-bg: #efe7ff;
+}
+
 .newsroom-overview-header {
-  min-height: 50px;
+  min-height: 46px;
   margin: 0;
-  padding: 9px 14px;
+  padding: 7px 14px;
   border-bottom: 1px solid var(--line);
   background:
-    linear-gradient(90deg, #f7faff, #ffffff 72%),
+    linear-gradient(90deg, var(--feed-bg), #ffffff 116%),
     var(--surface);
+}
+
+.newsroom-overview-header .label {
+  color: var(--feed-accent);
 }
 
 .newsroom-overview-header h3 {
