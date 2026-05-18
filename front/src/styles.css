@@ -2033,9 +2033,9 @@ a {
 }
 
 .panel.content-feed-card .panel-header {
-  min-height: 48px;
+  min-height: 42px;
   margin: 0;
-  padding: 9px 13px;
+  padding: 7px 13px;
   border-bottom: 1px solid var(--line);
 }
 

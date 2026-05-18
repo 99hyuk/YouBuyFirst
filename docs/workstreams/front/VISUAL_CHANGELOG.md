@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1310-feed-header-compact` | 2026-05-18 13:10 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1310-feed-header-compact-dashboard.png) | 실시간 뉴스, 애널리스트 리포트, 증권 영상 새 글, 블로그/커뮤니티 링크 카드의 제목 band를 48px에서 42px로 살짝 줄였습니다. |
 | `FV-20260518-1158-dark-mode-full-label` | 2026-05-18 11:58 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1158-dark-mode-full-label-dashboard.png) | 오른쪽 아래 버튼 라벨을 `다크`에서 `다크모드`로 바꿨습니다. rail 폭 안에서 잘리지 않는 것을 확인했습니다. |
 | `FV-20260518-1134-dark-mode-rail-label` | 2026-05-18 11:34 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1134-dark-mode-rail-label-dashboard.png) | 오른쪽 아래 버튼 라벨을 `테마`에서 `다크`로 바꿨습니다. 현재 라이트 화면에서 전환 대상이 더 직접적으로 읽히도록 했습니다. |
 | `FV-20260518-1125-flat-theme-rail` | 2026-05-18 11:25 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1125-flat-theme-rail-dashboard.png) | 오른쪽 아래 테마 버튼의 안쪽 흰 박스와 inset 선을 제거해 중첩 박스 느낌을 줄였습니다. |
