@@ -21,6 +21,28 @@ const reactionTrend = [
   { period: '1주', mentions: 3184, positive: 43, negative: 34, neutral: 23 }
 ];
 
+const quickStats = [
+  { label: '반응 점수', value: '77', meta: '+12p · 30분' },
+  { label: '언급 변화', value: '+34%', meta: '09:10 이후' },
+  { label: '긍정/부정', value: '54 / 27', meta: '중립 19' },
+  { label: '출처 수', value: '4개', meta: '편중 42%' },
+  { label: '원문 링크', value: '5건', meta: '제목 링크' }
+];
+
+const keywordPulse = [
+  { keyword: 'HBM', count: 46, tone: '긍정', delta: '+18' },
+  { keyword: '수급', count: 31, tone: '중립', delta: '+9' },
+  { keyword: '고가 부담', count: 19, tone: '부정', delta: '+7' },
+  { keyword: '서버 수요', count: 17, tone: '긍정', delta: '+6' }
+];
+
+const intradaySnapshots = [
+  { time: '09:00', mention: '42건', reaction: '+6p', price: '+0.2%' },
+  { time: '09:15', mention: '81건', reaction: '+15p', price: '+0.5%' },
+  { time: '09:30', mention: '119건', reaction: '+21p', price: '+1.0%' },
+  { time: '09:45', mention: '128건', reaction: '+18p', price: '+1.2%' }
+];
+
 const sources = [
   { name: '네이버 종토방', mentions: 84, positive: 41, negative: 33, note: '보합·관망 표현이 많음' },
   { name: '디시 주식', mentions: 47, positive: 56, negative: 24, note: 'HBM 수요 키워드 강함' },
@@ -78,6 +100,50 @@ const reliability = [
           <em :class="stock.stale ? 'warn' : 'ok'">{{ stock.stale ? 'stale' : '지연' }}</em>
         </div>
       </div>
+    </section>
+
+    <section class="dense-summary-strip stock-density-strip" aria-label="종목 요약 지표">
+      <article v-for="item in quickStats" :key="item.label" class="panel dense-metric-card">
+        <span>{{ item.label }}</span>
+        <strong>{{ item.value }}</strong>
+        <em>{{ item.meta }}</em>
+      </article>
+    </section>
+
+    <section class="stock-compact-grid">
+      <article class="panel content-feed-card surface-data-card stock-keyword-card">
+        <div class="panel-header compact">
+          <div>
+            <p class="label">keyword pulse</p>
+            <h3>반응 키워드</h3>
+          </div>
+          <span class="status-pill subtle">30분</span>
+        </div>
+        <div class="keyword-pulse-grid">
+          <article v-for="keyword in keywordPulse" :key="keyword.keyword">
+            <strong>{{ keyword.keyword }}</strong>
+            <span>{{ keyword.tone }}</span>
+            <em>{{ keyword.count }}건 · {{ keyword.delta }}</em>
+          </article>
+        </div>
+      </article>
+
+      <article class="panel content-feed-card surface-data-card stock-snapshot-card">
+        <div class="panel-header compact">
+          <div>
+            <p class="label">intraday snapshot</p>
+            <h3>시간대별 변화</h3>
+          </div>
+        </div>
+        <div class="mini-table-list">
+          <article v-for="snapshot in intradaySnapshots" :key="snapshot.time">
+            <time>{{ snapshot.time }}</time>
+            <span>언급 {{ snapshot.mention }}</span>
+            <strong>{{ snapshot.reaction }}</strong>
+            <em>{{ snapshot.price }}</em>
+          </article>
+        </div>
+      </article>
     </section>
 
     <section class="stock-layout-grid">

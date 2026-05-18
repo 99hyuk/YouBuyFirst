@@ -53,6 +53,28 @@ const experiments = [
   { community: '디시 주식', style: '반응 역추적', returnPct: '+0.6%', hitRate: '49%', drawdown: '-5.1%' },
   { community: '에펨코리아', style: '급증 관찰', returnPct: '+2.4%', hitRate: '55%', drawdown: '-3.6%' }
 ];
+
+const humanStats = [
+  { label: '수집 소스', value: '4개', meta: 'enabled 1 · demo 2' },
+  { label: '급증 종목', value: '6개', meta: '상위 N% 기준' },
+  { label: '인기글 후보', value: '18건', meta: '원문 링크만' },
+  { label: '테마', value: '5개', meta: '반도체·2차전지' },
+  { label: '주의 소스', value: '2개', meta: 'skip 사유 있음' }
+];
+
+const surgeStocks = [
+  { stock: '삼성전자', community: '네이버 종토방', delta: '+34%', tone: '긍정 우세' },
+  { stock: '두산로보틱스', community: '에펨코리아', delta: '+29%', tone: '긍정 우세' },
+  { stock: '에코프로', community: '디시 주식', delta: '+24%', tone: '혼재' },
+  { stock: 'NAVER', community: '뽐뿌 증권포럼', delta: '+18%', tone: '부정 증가' }
+];
+
+const sourceStates = [
+  { status: 'enabled', count: 1, note: '정상 수집' },
+  { status: 'public-demo-only', count: 2, note: '공개 화면 기준' },
+  { status: 'local-research-only', count: 1, note: '로컬 연구용' },
+  { status: 'disabled', count: 0, note: '현재 없음' }
+];
 </script>
 
 <template>
@@ -68,6 +90,51 @@ const experiments = [
       <p class="surface-title-copy">
         최근 커뮤니티 반응이 이후 흐름과 어떻게 이어졌는지 관찰합니다. 특정 커뮤니티가 맞춘다는 결론처럼 보이지 않게 비교합니다.
       </p>
+    </section>
+
+    <section class="dense-summary-strip human-density-strip" aria-label="인간 지표 요약">
+      <article v-for="item in humanStats" :key="item.label" class="panel dense-metric-card">
+        <span>{{ item.label }}</span>
+        <strong>{{ item.value }}</strong>
+        <em>{{ item.meta }}</em>
+      </article>
+    </section>
+
+    <section class="human-compact-grid">
+      <article class="panel content-feed-card surface-data-card human-surge-card">
+        <div class="panel-header compact">
+          <div>
+            <p class="label">surge board</p>
+            <h3>커뮤니티별 언급 급증 종목</h3>
+          </div>
+        </div>
+        <div class="rank-mini-list">
+          <article v-for="(stock, index) in surgeStocks" :key="`${stock.stock}-${stock.community}`">
+            <b>{{ index + 1 }}</b>
+            <div>
+              <strong>{{ stock.stock }}</strong>
+              <span>{{ stock.community }} · {{ stock.tone }}</span>
+            </div>
+            <em>{{ stock.delta }}</em>
+          </article>
+        </div>
+      </article>
+
+      <article class="panel content-feed-card surface-data-card human-state-card">
+        <div class="panel-header compact">
+          <div>
+            <p class="label">source state</p>
+            <h3>수집 상태</h3>
+          </div>
+        </div>
+        <div class="source-state-grid">
+          <article v-for="state in sourceStates" :key="state.status">
+            <strong>{{ state.count }}</strong>
+            <span>{{ state.status }}</span>
+            <em>{{ state.note }}</em>
+          </article>
+        </div>
+      </article>
     </section>
 
     <section class="panel content-feed-card surface-data-card human-matrix-card span-2">

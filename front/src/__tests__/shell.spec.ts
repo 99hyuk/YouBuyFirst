@@ -75,6 +75,8 @@ describe('front dashboard shell', () => {
   it('renders the core product pages with the expanded planning content', async () => {
     const stock = await mountAt('/stocks/005930');
     expect(stock.text()).toContain('어제와 달라진 점');
+    expect(stock.text()).toContain('반응 키워드');
+    expect(stock.text()).toContain('시간대별 변화');
     expect(stock.text()).toContain('커뮤니티 반응 추이');
     expect(stock.text()).toContain('신호 신뢰도');
     expect(stock.findAll('.vertical-timeline article')).toHaveLength(5);
@@ -82,6 +84,8 @@ describe('front dashboard shell', () => {
 
     const communities = await mountAt('/communities');
     expect(communities.text()).toContain('인간 지표');
+    expect(communities.text()).toContain('수집 상태');
+    expect(communities.text()).toContain('커뮤니티별 언급 급증 종목');
     expect(communities.text()).toContain('커뮤니티별 반응 비교');
     expect(communities.text()).toContain('커뮤니티별 언급 급증과 반응 비율');
     expect(communities.text()).toContain('인기글·개념글 레이어');
@@ -104,12 +108,14 @@ describe('front dashboard shell', () => {
 
     const indicators = await mountAt('/indicators');
     expect(indicators.text()).toContain('시장 지표와 데이터 신선도');
+    expect(indicators.text()).toContain('가격과 반응이 엇갈린 종목');
     expect(indicators.text()).toContain('지표와 반응의 동시 변화');
     expect(indicators.text()).toContain('가격과 반응의 괴리');
     expect(indicators.text()).toContain('주요 일정');
 
     const agents = await mountAt('/agents');
     expect(agents.text()).toContain('에이전트 모의 판단 기록');
+    expect(agents.text()).toContain('전략 버전과 판단 key 기준');
     expect(agents.text()).toContain('최근 판단 로그');
     expect(agents.text()).toContain('판단 입력값');
     expect(agents.text()).toContain('판단 key');
@@ -118,6 +124,7 @@ describe('front dashboard shell', () => {
     expect(portfolio.text()).toContain('내 포트폴리오');
     expect(portfolio.text()).toContain('실거래 아님');
     expect(portfolio.text()).toContain('자산 OCR · 주식 계좌 연결 준비');
+    expect(portfolio.text()).toContain('OCR/거래내역 후보');
     expect(portfolio.text()).toContain('민감정보 마스킹');
     expect(portfolio.text()).toContain('원장 내역');
     expect(portfolio.text()).toContain('체결 후 복기');

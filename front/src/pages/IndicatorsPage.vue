@@ -5,7 +5,17 @@ const marketIndicators = [
   { name: 'NASDAQ', value: '16,340.87', change: '+0.72%', state: 'mock' },
   { name: 'USD/KRW', value: '1,350.20', change: '-0.18%', state: '지연' },
   { name: 'VIX', value: '14.8', change: '+2.1%', state: 'mock' },
-  { name: '미국 10Y', value: '4.41%', change: '+0.03p', state: 'mock' }
+  { name: '미국 10Y', value: '4.41%', change: '+0.03p', state: 'mock' },
+  { name: '필라델피아 반도체', value: '5,218.4', change: '+1.12%', state: 'mock' },
+  { name: 'KRW BTC', value: '91.2M', change: '-0.8%', state: '지연' }
+];
+
+const marketSummary = [
+  { label: '상승 지표', value: '5', meta: '지수·금리 포함' },
+  { label: '하락 지표', value: '3', meta: '환율·코인 포함' },
+  { label: '반응 괴리', value: '3건', meta: '가격과 관심 불일치' },
+  { label: '주요 일정', value: '4건', meta: '이번 주' },
+  { label: 'stale/mock', value: '4개', meta: '표시 필요' }
 ];
 
 const coMoves = [
@@ -35,6 +45,13 @@ const schedules = [
   { date: '05.23', title: '국내 주요 실적 발표', state: '확인 필요' },
   { date: '05.24', title: '공시 일정 갱신', state: 'mock' }
 ];
+
+const anomalyRows = [
+  { stock: 'NAVER', price: '+0.7%', reaction: '부정 +14p', reason: '비용 우려' },
+  { stock: '에코프로', price: '-1.1%', reaction: '관심 +24%', reason: '수급 뉴스' },
+  { stock: '한미반도체', price: '+2.3%', reaction: '긍정 +18p', reason: 'HBM 키워드' },
+  { stock: '로봇 테마', price: '-0.4%', reaction: '언급 +19%', reason: '공시 일정' }
+];
 </script>
 
 <template>
@@ -52,6 +69,14 @@ const schedules = [
       </p>
     </section>
 
+    <section class="dense-summary-strip indicators-density-strip" aria-label="시장 지표 요약">
+      <article v-for="item in marketSummary" :key="item.label" class="panel dense-metric-card">
+        <span>{{ item.label }}</span>
+        <strong>{{ item.value }}</strong>
+        <em>{{ item.meta }}</em>
+      </article>
+    </section>
+
     <section class="panel content-feed-card surface-data-card indicators-strip-card span-2">
       <div class="panel-header">
         <div>
@@ -66,6 +91,24 @@ const schedules = [
           <strong>{{ indicator.value }}</strong>
           <em :class="indicator.change.startsWith('-') ? 'down' : 'up'">{{ indicator.change }}</em>
           <small>{{ indicator.state }}</small>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel content-feed-card surface-data-card indicators-anomaly-card span-2">
+      <div class="panel-header compact">
+        <div>
+          <p class="label">reaction anomaly</p>
+          <h3>가격과 반응이 엇갈린 종목</h3>
+        </div>
+        <span class="status-pill subtle">관찰 후보</span>
+      </div>
+      <div class="anomaly-grid">
+        <article v-for="row in anomalyRows" :key="`${row.stock}-${row.reason}`">
+          <strong>{{ row.stock }}</strong>
+          <span>가격 {{ row.price }}</span>
+          <span>반응 {{ row.reaction }}</span>
+          <em>{{ row.reason }}</em>
         </article>
       </div>
     </section>

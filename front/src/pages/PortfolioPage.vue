@@ -3,7 +3,9 @@ const summary = [
   { label: '가상 예수금', value: '5,420,000원' },
   { label: '평가금액', value: '14,860,000원' },
   { label: '총 손익', value: '+280,000원' },
-  { label: '30일 수익률', value: '+2.4%' }
+  { label: '30일 수익률', value: '+2.4%' },
+  { label: 'OCR 후보', value: '7건' },
+  { label: '미확인 원문', value: '3건' }
 ];
 
 const holdings = [
@@ -41,6 +43,20 @@ const accountLinks = [
   { broker: '토스증권', method: '잔고 이미지 OCR', status: '업로드 대기', scope: '보유 종목·평단' },
   { broker: '키움증권', method: '거래내역 캡처', status: '필드 매핑 준비', scope: '체결 시간·수량' },
   { broker: '미래에셋증권', method: 'CSV/OCR 병행', status: 'mock', scope: '평가금액·손익' }
+];
+
+const importPreview = [
+  { source: '토스증권 OCR', stock: '삼성전자', qty: '80주', avg: '76,900원', confidence: '92%' },
+  { source: '키움 거래내역', stock: '두산로보틱스', qty: '20주', avg: '126,200원', confidence: '88%' },
+  { source: '미래에셋 CSV', stock: 'NAVER', qty: '30주', avg: '184,000원', confidence: '96%' },
+  { source: 'OCR 후보', stock: '한미반도체', qty: '?', avg: '확인 필요', confidence: '61%' }
+];
+
+const portfolioSignals = [
+  { label: '보유 중 반응 증가', value: '2종목', meta: '삼성전자·두산로보틱스' },
+  { label: '부정 키워드 증가', value: '1종목', meta: 'NAVER' },
+  { label: '원장 불일치', value: '0건', meta: 'mock 기준' },
+  { label: '마스킹 필요', value: '4필드', meta: '계좌·이름·주문번호' }
 ];
 </script>
 
@@ -97,6 +113,42 @@ const accountLinks = [
           </article>
         </div>
       </div>
+    </section>
+
+    <section class="portfolio-compact-grid">
+      <article class="panel content-feed-card surface-data-card portfolio-import-card">
+        <div class="panel-header compact">
+          <div>
+            <p class="label">import preview</p>
+            <h3>OCR/거래내역 후보</h3>
+          </div>
+          <span class="status-pill warning">확인 후 반영</span>
+        </div>
+        <div class="mini-table-list">
+          <article v-for="item in importPreview" :key="`${item.source}-${item.stock}`">
+            <span>{{ item.source }}</span>
+            <strong>{{ item.stock }}</strong>
+            <em>{{ item.qty }} · {{ item.avg }}</em>
+            <b>{{ item.confidence }}</b>
+          </article>
+        </div>
+      </article>
+
+      <article class="panel content-feed-card surface-data-card portfolio-signal-card">
+        <div class="panel-header compact">
+          <div>
+            <p class="label">holding signals</p>
+            <h3>보유 종목 반응 상태</h3>
+          </div>
+        </div>
+        <div class="source-state-grid">
+          <article v-for="signal in portfolioSignals" :key="signal.label">
+            <strong>{{ signal.value }}</strong>
+            <span>{{ signal.label }}</span>
+            <em>{{ signal.meta }}</em>
+          </article>
+        </div>
+      </article>
     </section>
 
     <section class="portfolio-summary-grid">
