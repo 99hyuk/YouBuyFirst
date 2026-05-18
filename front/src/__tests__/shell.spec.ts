@@ -86,13 +86,17 @@ describe('front dashboard shell', () => {
     expect(communities.text()).toContain('인기글·개념글 레이어');
     expect(communities.text()).toContain('커뮤니티별 성과 실험');
 
-    const newsroom = await mountAt('/newsroom?feed=videos');
-    expect(newsroom.text()).toContain('뉴스룸');
-    expect(newsroom.text()).toContain('종합');
-    expect(newsroom.text()).toContain('블로그 및 커뮤니티');
+    const newsroomAll = await mountAt('/newsroom');
+    expect(newsroomAll.text()).toContain('뉴스룸');
+    expect(newsroomAll.text()).toContain('종합');
+    expect(newsroomAll.text()).toContain('블로그 및 커뮤니티');
+    expect(newsroomAll.findAll('.newsroom-switch a')).toHaveLength(5);
+    expect(newsroomAll.findAll('.newsroom-overview-card')).toHaveLength(4);
+
+    const newsroom = await mountAt('/newsroom?feed=videos&page=2');
     expect(newsroom.text()).toContain('영상');
-    expect(newsroom.text()).toContain('조회 18만');
-    expect(newsroom.findAll('.newsroom-switch a')).toHaveLength(5);
+    expect(newsroom.text()).toContain('조회 7.4만');
+    expect(newsroom.find('.newsroom-pager').exists()).toBe(true);
 
     const indicators = await mountAt('/indicators');
     expect(indicators.text()).toContain('시장 지표와 데이터 신선도');

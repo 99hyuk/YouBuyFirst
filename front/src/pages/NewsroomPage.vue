@@ -22,12 +22,25 @@ type NewsroomItem = {
 };
 
 const filterTabs: Array<{ id: NewsroomFilter; label: string; caption: string }> = [
-  { id: 'all', label: '종합', caption: '전체' },
-  { id: 'news', label: '뉴스', caption: `${dashboardSummary.liveNews.length}개` },
-  { id: 'reports', label: '리포트', caption: `${dashboardSummary.analystReports.length}개` },
-  { id: 'videos', label: '영상', caption: `${dashboardSummary.externalContent.videos.length}개` },
-  { id: 'links', label: '블로그 및 커뮤니티', caption: `${dashboardSummary.externalContent.links.length}개` }
+  { id: 'all', label: '종합', caption: '요약' },
+  { id: 'news', label: '뉴스', caption: '속보' },
+  { id: 'reports', label: '리포트', caption: '분석' },
+  { id: 'videos', label: '영상', caption: '랭킹' },
+  { id: 'links', label: '블로그 및 커뮤니티', caption: '원문' }
 ];
+
+const overviewOrder: Array<{
+  id: Exclude<NewsroomFilter, 'all'>;
+  label: string;
+  kicker: string;
+}> = [
+  { id: 'news', label: '뉴스', kicker: '빠른 이슈' },
+  { id: 'reports', label: '리포트', kicker: '분석 노트' },
+  { id: 'videos', label: '영상', kicker: '조회 반응' },
+  { id: 'links', label: '블로그 및 커뮤니티', kicker: '원문 링크' }
+];
+
+const pageSize = 3;
 
 const directIconUrls: Record<string, string> = {
   'blog.naver.com': 'https://ssl.pstatic.net/static/blog/icon/favicon.ico',
@@ -129,14 +142,57 @@ const activeItems = computed(() =>
   activeFilter.value === 'all' ? feedItems : feedItems.filter((item) => item.category === activeFilter.value)
 );
 
-const newsroomGroups = computed(() =>
-  filterTabs
-    .filter((tab) => tab.id !== 'all')
-    .map((tab) => ({
-      ...tab,
-      items: feedItems.filter((item) => item.category === tab.id),
-      to: { path: '/newsroom', query: { feed: tab.id } }
-    }))
+const totalPages = computed(() => Math.max(1, Math.ceil(activeItems.value.length / pageSize)));
+const activePage = computed(() => {
+  const page = route.query.page;
+  const rawValue = Array.isArray(page) ? page[0] : page;
+  const parsed = Number(rawValue ?? 1);
+  const safePage = Number.isFinite(parsed) ? Math.max(1, Math.floor(parsed)) : 1;
+  return Math.min(safePage, totalPages.value);
+});
+const pagedItems = computed(() => {
+  const start = (activePage.value - 1) * pageSize;
+  return activeItems.value.slice(start, start + pageSize);
+});
+const pageNumbers = computed(() => Array.from({ length: totalPages.value }, (_, index) => index + 1));
+
+const overviewGroups = computed(() =>
+  overviewOrder.map((group) => {
+    const items = feedItems.filter((item) => item.category === group.id);
+    return {
+      ...group,
+      items: items.slice(0, 3),
+      to: { path: '/newsroom', query: { feed: group.id } }
+    };
+  })
+);
+
+const overviewColumns = computed(() => [
+  {
+    id: 'left',
+    groups: overviewGroups.value.filter((group) => group.id === 'news' || group.id === 'reports')
+  },
+  {
+    id: 'right',
+    groups: overviewGroups.value.filter((group) => group.id === 'videos' || group.id === 'links')
+  }
+]);
+
+const pageTo = (page: number) =>
+  activeFilter.value === 'all'
+    ? { path: '/newsroom', query: { page: String(page) } }
+    : { path: '/newsroom', query: { feed: activeFilter.value, page: String(page) } };
+
+const clampedPageTo = (page: number) => pageTo(Math.min(Math.max(page, 1), totalPages.value));
+
+const pageRangeLabel = computed(() => {
+  const start = activeItems.value.length === 0 ? 0 : (activePage.value - 1) * pageSize + 1;
+  const end = Math.min(activePage.value * pageSize, activeItems.value.length);
+  return `${start}-${end} / ${activeItems.value.length}`;
+});
+
+const listStatusLabel = computed(() =>
+  activeFilter.value === 'all' ? '요약 보기' : `${pageRangeLabel.value} · 링크 원문 이동`
 );
 
 const filterTo = (id: NewsroomFilter) => (id === 'all' ? { path: '/newsroom' } : { path: '/newsroom', query: { feed: id } });
@@ -162,31 +218,60 @@ const filterTo = (id: NewsroomFilter) => (id === 'all' ? { path: '/newsroom' } :
       </RouterLink>
     </nav>
 
-    <section v-if="activeFilter === 'all'" class="newsroom-category-grid" aria-label="뉴스룸 분류 요약">
-      <RouterLink
-        v-for="group in newsroomGroups"
-        :key="group.id"
-        class="newsroom-category-card"
-        :to="group.to"
-      >
-        <span>{{ group.caption }}</span>
-        <strong>{{ group.label }}</strong>
-        <em>{{ group.items[0]?.source ?? 'mock feed' }}</em>
-      </RouterLink>
+    <section v-if="activeFilter === 'all'" class="newsroom-overview-grid" aria-label="뉴스룸 종합 요약">
+      <div v-for="column in overviewColumns" :key="column.id" class="newsroom-overview-column">
+        <article
+          v-for="group in column.groups"
+          :key="group.id"
+          class="panel newsroom-overview-card"
+        >
+          <div class="panel-header newsroom-overview-header">
+            <div>
+              <p class="label">{{ group.kicker }}</p>
+              <h3>{{ group.label }}</h3>
+            </div>
+            <RouterLink class="detail-link" :to="group.to">전체 보기 →</RouterLink>
+          </div>
+
+          <div class="newsroom-list compact-newsroom-list">
+            <a
+              v-for="item in group.items"
+              :key="item.id"
+              :class="['feed-row', 'newsroom-row', { 'ranked-feed-row': item.rankLabel }]"
+              :href="item.url"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              <span v-if="item.rankLabel" class="feed-rank">{{ item.rankLabel }}</span>
+              <span
+                :class="['site-icon', 'real-icon', 'source-badge', item.iconClass]"
+                :aria-label="`${item.source} ${item.category}`"
+                role="img"
+              >
+                <img :src="faviconUrl(item.iconDomain)" alt="" loading="lazy" @error="hideBrokenIcon" />
+              </span>
+              <span class="feed-copy">
+                <strong :title="item.title">{{ item.title }}</strong>
+                <em>{{ item.source }} · {{ item.meta }}</em>
+              </span>
+            </a>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <article class="panel newsroom-feed-panel" aria-labelledby="newsroom-list-title">
+    <article v-else class="panel newsroom-feed-panel" aria-labelledby="newsroom-list-title">
       <div class="panel-header newsroom-list-header">
         <div>
           <p class="label">feed list</p>
           <h3 id="newsroom-list-title">{{ activeTab.label }}</h3>
         </div>
-        <span class="status-pill subtle">{{ activeItems.length }}개 · 링크 원문 이동</span>
+        <span class="status-pill subtle">{{ listStatusLabel }}</span>
       </div>
 
       <div class="newsroom-list">
         <a
-          v-for="item in activeItems"
+          v-for="item in pagedItems"
           :key="item.id"
           :class="['feed-row', 'newsroom-row', { 'ranked-feed-row': item.rankLabel }]"
           :href="item.url"
@@ -207,6 +292,33 @@ const filterTo = (id: NewsroomFilter) => (id === 'all' ? { path: '/newsroom' } :
           </span>
         </a>
       </div>
+
+      <nav class="newsroom-pager" aria-label="뉴스룸 페이지">
+        <RouterLink
+          :class="{ disabled: activePage === 1 }"
+          :to="activePage === 1 ? pageTo(activePage) : clampedPageTo(activePage - 1)"
+          :aria-disabled="activePage === 1"
+        >
+          이전
+        </RouterLink>
+        <div>
+          <RouterLink
+            v-for="page in pageNumbers"
+            :key="page"
+            :class="{ active: page === activePage }"
+            :to="pageTo(page)"
+          >
+            {{ page }}
+          </RouterLink>
+        </div>
+        <RouterLink
+          :class="{ disabled: activePage === totalPages }"
+          :to="activePage === totalPages ? pageTo(activePage) : clampedPageTo(activePage + 1)"
+          :aria-disabled="activePage === totalPages"
+        >
+          다음
+        </RouterLink>
+      </nav>
     </article>
   </section>
 </template>
