@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1506-reaction-graph-ratio` | 2026-05-18 15:06 KST | [dashboard 1920](../../../front/public/visual-history/2026-05-18/FV-20260518-1506-reaction-graph-ratio-dashboard-1920.png) / [dashboard 960](../../../front/public/visual-history/2026-05-18/FV-20260518-1506-reaction-graph-ratio-dashboard-960.png) | 16:9와 8:9 화면에서 `종목 반응 한눈에` 카드 묶음이 커뮤니티 지표 그래프와 다른 세로 비율로 보이지 않도록 반응 패널 내부를 같은 높이 흐름으로 맞췄습니다. |
 | `FV-20260518-1449-zoom-stable-layout` | 2026-05-18 14:49 KST | [dashboard 960 rail open](../../../front/public/visual-history/2026-05-18/FV-20260518-1449-zoom-stable-layout-dashboard-open-960.png) | 브라우저 확대나 반쪽 창에서 데스크톱 구조가 갑자기 1열로 바뀌지 않도록 최소 본문 폭과 가로 스크롤을 적용했습니다. 960px rail-open 상태에서도 대시보드 본문과 피드가 기존 컬럼 구조를 유지합니다. |
 | `FV-20260518-1442-rail-overlay-all` | 2026-05-18 14:42 KST | [dashboard 1920 rail open](../../../front/public/visual-history/2026-05-18/FV-20260518-1442-rail-overlay-all-dashboard-open-1920.png) | 오른쪽 패널이 열려도 1920px 화면과 좁은 화면 모두 본문 폭과 위치가 변하지 않도록 했습니다. 패널은 본문을 밀지 않고 오른쪽 위에 올라오는 방식으로 통일했습니다. |
 | `FV-20260518-1420-rail-overlay-narrow` | 2026-05-18 14:20 KST | [dashboard 1280 rail open](../../../front/public/visual-history/2026-05-18/FV-20260518-1420-rail-overlay-narrow-dashboard-open-1280.png) | 1500px 이하 화면에서는 오른쪽 패널이 열려도 본문 폭에서 320px을 빼지 않도록 바꿨습니다. 반쪽 브라우저에서는 본문을 찌그러뜨리지 않고 패널이 오른쪽 위에 올라오는 방식으로 동작합니다. |
