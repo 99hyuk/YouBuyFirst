@@ -29,17 +29,6 @@ const filterTabs: Array<{ id: NewsroomFilter; label: string; caption: string }> 
   { id: 'links', label: '블로그 및 커뮤니티', caption: '원문' }
 ];
 
-const overviewOrder: Array<{
-  id: Exclude<NewsroomFilter, 'all'>;
-  label: string;
-  kicker: string;
-}> = [
-  { id: 'news', label: '뉴스', kicker: '빠른 이슈' },
-  { id: 'reports', label: '리포트', kicker: '분석 노트' },
-  { id: 'videos', label: '영상', kicker: '조회 반응' },
-  { id: 'links', label: '블로그 및 커뮤니티', kicker: '원문 링크' }
-];
-
 const pageSize = 3;
 
 const directIconUrls: Record<string, string> = {
@@ -156,25 +145,43 @@ const pagedItems = computed(() => {
 });
 const pageNumbers = computed(() => Array.from({ length: totalPages.value }, (_, index) => index + 1));
 
-const overviewGroups = computed(() =>
-  overviewOrder.map((group) => {
-    const items = feedItems.filter((item) => item.category === group.id);
-    return {
-      ...group,
-      items: items.slice(0, 3),
-      to: { path: '/newsroom', query: { feed: group.id } }
-    };
-  })
-);
+const feedTypeLabels: Record<Exclude<NewsroomFilter, 'all'>, string> = {
+  news: '뉴스',
+  reports: '리포트',
+  videos: '영상',
+  links: '블로그·커뮤니티'
+};
+
+const itemsByCategory = (category: Exclude<NewsroomFilter, 'all'>) =>
+  feedItems.filter((item) => item.category === category);
+
+const mergeAlternating = (...lists: NewsroomItem[][]) => {
+  const maxLength = Math.max(...lists.map((list) => list.length));
+  return Array.from({ length: maxLength }).flatMap((_, index) =>
+    lists.map((list) => list[index]).filter((item): item is NewsroomItem => Boolean(item))
+  );
+};
 
 const overviewColumns = computed(() => [
   {
-    id: 'left',
-    groups: overviewGroups.value.filter((group) => group.id === 'news' || group.id === 'reports')
+    id: 'news-reports',
+    kicker: 'market feed',
+    label: '뉴스 · 리포트',
+    actions: [
+      { label: '뉴스', to: { path: '/newsroom', query: { feed: 'news' } } },
+      { label: '리포트', to: { path: '/newsroom', query: { feed: 'reports' } } }
+    ],
+    items: mergeAlternating(itemsByCategory('news'), itemsByCategory('reports')).slice(0, 6)
   },
   {
-    id: 'right',
-    groups: overviewGroups.value.filter((group) => group.id === 'videos' || group.id === 'links')
+    id: 'media-links',
+    kicker: 'outside links',
+    label: '영상 · 블로그 및 커뮤니티',
+    actions: [
+      { label: '영상', to: { path: '/newsroom', query: { feed: 'videos' } } },
+      { label: '원문', to: { path: '/newsroom', query: { feed: 'links' } } }
+    ],
+    items: mergeAlternating(itemsByCategory('videos'), itemsByCategory('links')).slice(0, 6)
   }
 ]);
 
@@ -219,45 +226,46 @@ const filterTo = (id: NewsroomFilter) => (id === 'all' ? { path: '/newsroom' } :
     </nav>
 
     <section v-if="activeFilter === 'all'" class="newsroom-overview-grid" aria-label="뉴스룸 종합 요약">
-      <div v-for="column in overviewColumns" :key="column.id" class="newsroom-overview-column">
-        <article
-          v-for="group in column.groups"
-          :key="group.id"
-          class="panel newsroom-overview-card"
-        >
-          <div class="panel-header newsroom-overview-header">
-            <div>
-              <p class="label">{{ group.kicker }}</p>
-              <h3>{{ group.label }}</h3>
-            </div>
-            <RouterLink class="detail-link" :to="group.to">전체 보기 →</RouterLink>
+      <article
+        v-for="column in overviewColumns"
+        :key="column.id"
+        class="panel newsroom-overview-card"
+      >
+        <div class="panel-header newsroom-overview-header">
+          <div>
+            <p class="label">{{ column.kicker }}</p>
+            <h3>{{ column.label }}</h3>
           </div>
+          <div class="newsroom-overview-actions">
+            <RouterLink v-for="action in column.actions" :key="action.label" class="detail-link" :to="action.to">
+              {{ action.label }}
+            </RouterLink>
+          </div>
+        </div>
 
-          <div class="newsroom-list compact-newsroom-list">
-            <a
-              v-for="item in group.items"
-              :key="item.id"
-              :class="['feed-row', 'newsroom-row', { 'ranked-feed-row': item.rankLabel }]"
-              :href="item.url"
-              target="_blank"
-              rel="noreferrer noopener"
+        <div class="newsroom-list compact-newsroom-list">
+          <a
+            v-for="item in column.items"
+            :key="item.id"
+            class="feed-row newsroom-row"
+            :href="item.url"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            <span
+              :class="['site-icon', 'real-icon', 'source-badge', item.iconClass]"
+              :aria-label="`${item.source} ${item.category}`"
+              role="img"
             >
-              <span v-if="item.rankLabel" class="feed-rank">{{ item.rankLabel }}</span>
-              <span
-                :class="['site-icon', 'real-icon', 'source-badge', item.iconClass]"
-                :aria-label="`${item.source} ${item.category}`"
-                role="img"
-              >
-                <img :src="faviconUrl(item.iconDomain)" alt="" loading="lazy" @error="hideBrokenIcon" />
-              </span>
-              <span class="feed-copy">
-                <strong :title="item.title">{{ item.title }}</strong>
-                <em>{{ item.source }} · {{ item.meta }}</em>
-              </span>
-            </a>
-          </div>
-        </article>
-      </div>
+              <img :src="faviconUrl(item.iconDomain)" alt="" loading="lazy" @error="hideBrokenIcon" />
+            </span>
+            <span class="feed-copy">
+              <strong :title="item.title">{{ item.title }}</strong>
+              <em>{{ feedTypeLabels[item.category] }} · {{ item.source }} · {{ item.meta }}</em>
+            </span>
+          </a>
+        </div>
+      </article>
     </section>
 
     <article v-else class="panel newsroom-feed-panel" aria-labelledby="newsroom-list-title">

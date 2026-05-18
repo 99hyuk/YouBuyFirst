@@ -91,7 +91,9 @@ describe('front dashboard shell', () => {
     expect(newsroomAll.text()).toContain('종합');
     expect(newsroomAll.text()).toContain('블로그 및 커뮤니티');
     expect(newsroomAll.findAll('.newsroom-switch a')).toHaveLength(5);
-    expect(newsroomAll.findAll('.newsroom-overview-card')).toHaveLength(4);
+    expect(newsroomAll.findAll('.newsroom-overview-card')).toHaveLength(2);
+    expect(newsroomAll.text()).toContain('뉴스 · 리포트');
+    expect(newsroomAll.text()).toContain('영상 · 블로그 및 커뮤니티');
 
     const newsroom = await mountAt('/newsroom?feed=videos&page=2');
     expect(newsroom.text()).toContain('영상');

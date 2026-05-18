@@ -2494,15 +2494,9 @@ a {
   gap: 24px;
 }
 
-.newsroom-overview-column {
-  display: grid;
-  gap: 22px;
-  min-width: 0;
-}
-
 .newsroom-overview-card {
   min-width: 0;
-  min-height: 250px;
+  min-height: 450px;
   padding: 0;
   overflow: hidden;
 }
@@ -2524,12 +2518,19 @@ a {
   font-weight: 840;
 }
 
+.newsroom-overview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .compact-newsroom-list {
   padding-bottom: 8px;
 }
 
 .compact-newsroom-list .newsroom-row {
-  min-height: 56px;
+  min-height: 62px;
 }
 
 .newsroom-feed-panel {
