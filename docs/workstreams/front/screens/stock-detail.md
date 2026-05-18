@@ -5,61 +5,64 @@
 - Parent: `stocks`
 - Route 후보: `/stocks/:symbol`
 - Child screens:
-  - `stock-news-detail`: 뉴스/공시/리포트 링크에서 들어가는 상세 또는 drawer
-  - `stock-filing-detail`: 공시 상세
-  - `stock-community-post`: 커뮤니티 글 snippet/출처 상세
+  - `stock-news-detail`: 뉴스/공시/리포트 링크 상세 또는 drawer
+  - `stock-community-post`: 커뮤니티 원문 snippet/출처 상세
   - `stock-indicator-detail`: 기술/재무 지표 개별 설명 panel
 
 ## 화면 목적
 
-사용자가 한 종목의 현재 상태를 가격, 시황, 기술 지표, 재무, 뉴스/공시, 커뮤니티 반응, 컨센서스 근거로 빠르게 판단합니다. 이 화면은 투자 행동을 지시하지 않고, 관찰 가능한 상태와 근거를 압축해서 보여줍니다.
+사용자가 종목 랭킹에서 한 종목을 눌렀을 때, 가격·시황·커뮤니티 반응·근거 링크·신뢰도까지 한 화면에서 빠르게 확인합니다. 상단 한줄평은 `STOCK_DETAIL_COPY_GUIDE.md` 기준의 종목 상태 카피이며, 투자 행동 지시가 아니라 공개 데이터 기반 상태 요약입니다.
 
 ## 현재 섹션
 
-- 종목 메타: 이름, 티커, 시장, 기준 시각, stale/mock 상태
-- 팩트폭격 헤드라인 배너: 검은 상단 배너, `headlineTone`, `headline`, `subtitle`
-- 핵심 요약 카드: 점수, 위험/강점, 주요 변동
-- 가격 차트: 가격, 이동평균, 거래량
-- CAN SLIM/분석 카드: 종목 상태를 점수와 근거로 분해
-- 기술 지표: RSI, ADX, ATR, VWAP, RS 등급 등
-- 재무 지표: PER, PBR, ROE, EPS 성장, 부채비율 등
-- 뉴스/공시/애널리스트 근거: 외부 링크와 관련 키워드
-- 커뮤니티 반응: 별도 섹션에서 원문/출처/반응 방향을 표시
+- 팩트폭격 상단 패널: 종목명, 티커, 닫기/랭킹 복귀, `오늘의 한줄평`, 큰 헤드라인, 보조 시황 문장
+- 한줄평 근거: 시황 점수, 등락률, 거래량, 시세 기준, 짧은 근거 keyword chips
+- 종목 헤더: 현재가, 등락률, 거래량, 시세 기준 시각, stale/지연 상태
+- 요약 지표 strip: 반응 점수, 언급 변화, 긍정/부정, 출처 수, 원문 링크 수
+- 반응 키워드와 시간대별 변화: 30분 키워드 pulse, 09:00~09:45 snapshot
+- 커뮤니티 반응 추이: 30분/1일/1주 언급량과 긍정/부정/중립 비율
+- 어제와 달라진 점: 매일 들어왔을 때 볼 짧은 변화 요약
+- 소스별 반응: 네이버 종토방, 디시, 뽐뿌, 에펨코리아 별 언급/반응/메모
+- 이벤트 타임라인: 뉴스, 커뮤니티, 가격, 인기글, 리포트를 시간순으로 묶음
+- 근거 링크: 뉴스, 리포트, 영상, 블로그, 커뮤니티 제목 링크
+- 신호 신뢰도: 표본 수, 커뮤니티 편중, 출처 다양성, 가격 지연, 원문 확인 필요
 
 ## 상태와 빈 화면
 
-- loading: 종목 메타와 skeleton chart를 먼저 보여줍니다.
-- empty: 아직 분석 가능한 지표가 부족하다고 표시하고, 팩트폭격 배너는 `normal` 톤으로 낮춥니다.
-- error: 가격/지표/뉴스 중 실패한 묶음을 분리해 표시합니다.
-- stale/mock: `asOf`, `dataQuality`, mock 여부를 배너 또는 근거 영역에 노출합니다.
+- loading: 종목 메타, 한줄평 배너, quote board skeleton을 먼저 보여줍니다.
+- empty: 근거가 부족하면 `headlineTone`을 `normal`로 낮추고, 원문/표본 부족을 신뢰도 영역에 표시합니다.
+- error: 가격, 커뮤니티 반응, 근거 링크 실패를 분리해서 표시합니다.
+- stale/mock: `quoteTime`, `dataQuality`, mock 여부를 배너와 신뢰도 영역에 함께 노출합니다.
 
 ## API 후보
 
 | 필드 | 소유 트랙 | 설명 |
 | --- | --- | --- |
-| `symbol` | backend/data | 종목 식별자 |
-| `asOf` | backend/market/data | 분석 기준 시각 |
-| `headlineTone` | agent/backend | `normal`, `spicy`, `roast` |
-| `headline` | agent/backend | 상단 한줄평 |
-| `subtitle` | agent/backend | 근거 지표 3-5개 요약 |
-| `evidence` | market/data/agent | 헤드라인 근거 배열 |
+| `symbol`, `name`, `market` | backend/data | 종목 식별과 표시명 |
+| `price`, `change`, `volume`, `quoteTime`, `stale` | market | 현재가, 등락률, 거래량, 시세 기준 상태 |
+| `headlineTone`, `headline`, `subtitle`, `scoreLine`, `riskNote` | agent/backend | 상단 한줄평과 보조 문구 |
+| `headlineEvidence` | market/data/agent | 한줄평 근거 chip 배열 |
+| `quickStats` | data | 반응 점수, 언급 변화, 출처 수, 링크 수 |
+| `keywordPulse` | data | 30분 반응 키워드와 증감 |
+| `intradaySnapshots` | data/market | 시간대별 언급, 반응, 가격 변화 |
+| `reactionTrend` | data | 30분/1일/1주 언급량과 반응 비율 |
+| `sourceReaction` | data/crawl | 커뮤니티별 언급, 긍정/부정, 메모 |
+| `events` | backend/data/market | 뉴스, 공시, 가격, 커뮤니티 이벤트 타임라인 |
+| `evidenceLinks` | crawl/data | 제목 링크와 출처, 원문 URL |
+| `reliability` | backend/data | 표본 수, 편중, 출처 다양성, 가격 지연, 원문 확인 |
 | `dataQuality` | backend | `complete`, `stale`, `partial`, `mock`, `insufficient` |
-| `personalizedSafe` | agent/front | 보유 종목 개인화 화면에 그대로 노출 가능한지 |
-| `priceSeries` | market | 차트 데이터 |
-| `technicalIndicators` | market/data | 기술 지표 |
-| `fundamentalIndicators` | data | 재무/밸류에이션 지표 |
-| `events` | backend/data | 뉴스, 공시, 가격 변화, 커뮤니티 이벤트 |
-| `communityReaction` | data | 커뮤니티 반응 요약 |
+| `personalizedSafe` | agent/front | 보유 종목/개인화 화면에 그대로 노출 가능한지 |
 
 ## 기획자 확인 필요
 
 - `roast` 톤을 공개 종목 상세의 기본 옵션으로 둘지, 데모/실험 플래그 뒤에 둘지.
-- 보유 종목/관심종목 개인화 화면에서는 어느 수준까지 순화할지.
+- 보유 종목/관심종목 개인화 화면에서는 한줄평을 어느 수준까지 순화할지.
 - 뉴스/공시/커뮤니티 글 상세를 별도 route로 둘지, drawer/panel로 둘지.
-- CAN SLIM 분석을 실제 산식으로 구현할지, 종목 상태 점수의 보조 설명으로만 둘지.
-- 팩트폭격 헤드라인을 backend가 생성할지, agent가 생성하고 backend가 캐시할지.
+- 차트, CAN SLIM, 재무/기술 지표 전체 표를 이 화면 하단에 확장할지, 별도 indicator detail로 분리할지.
+- 팩트폭격 헤드라인을 backend가 캐시할지, agent가 생성하고 backend가 검증할지.
 
 ## 변경 로그
 
+- 2026-05-18: Screen Brief를 현재 `/stocks/:symbol` 화면 구조와 `STOCK_DETAIL_COPY_GUIDE.md` 기준으로 갱신.
 - 2026-05-18: 종목 상세 팩트폭격 헤드라인을 커뮤니티 요약이 아니라 시황/기술/재무 기반 종목 상태 카피로 분리.
 - 2026-05-18: 하위 상세 화면 후보를 route/drawer 후보로 분리.

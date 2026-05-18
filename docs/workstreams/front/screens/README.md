@@ -31,15 +31,18 @@ Screen Brief가 커지면 새 채팅이 느려지고, 화면 기준도 흐려집
 
 | Screen ID | Route 후보 | Brief | 상태 | 비고 |
 | --- | --- | --- | --- | --- |
-| `dashboard` | `/dashboard` | 예정 | active | 메인 대시보드, 종목/커뮤니티/뉴스 요약 |
-| `stock-detail` | `/stocks/:symbol` | `stock-detail.md` | active | 종목 상세, 팩트폭격 배너, 차트, 지표, 근거 |
+| `dashboard` | `/dashboard` | `dashboard.md` | active | 메인 대시보드, 종목/커뮤니티/뉴스 요약 |
+| `newsroom` | `/newsroom?feed=&page=` | `newsroom.md` | active | 뉴스, 리포트, 영상, 블로그/커뮤니티 링크 |
+| `stocks` | `/stocks` | `stocks.md` | active | 종목 반응 랭킹, 검색/필터, 상세 진입 |
+| `stock-detail` | `/stocks/:symbol` | `stock-detail.md` | active | 종목 상세, 팩트폭격 배너, 반응, 근거, 신뢰도 |
 | `stock-news-detail` | `/stocks/:symbol/news/:newsId` 또는 drawer | 예정 | candidate | 뉴스/공시 상세 링크와 원문 이동 전 요약 |
 | `stock-filing-detail` | `/stocks/:symbol/filings/:filingId` 또는 drawer | 예정 | candidate | 공시 상세, 관련 지표 영향 |
 | `stock-community-post` | `/stocks/:symbol/community/:postId` 또는 drawer | 예정 | candidate | 커뮤니티 원문 snippet, 출처, 관련 종목 |
 | `stock-indicator-detail` | `/stocks/:symbol/indicators/:indicatorId` 또는 panel | 예정 | candidate | RSI, VWAP, PER 등 개별 지표 설명 |
-| `community` | `/community` | 예정 | candidate | 커뮤니티별 반응/성과 비교 |
-| `agents` | `/agents` | 예정 | candidate | 에이전트 판단 로그와 리더보드 |
-| `portfolio` | `/portfolio` | 예정 | candidate | 모의 포트폴리오와 원장 기반 손익 |
+| `human-indicator` | `/communities` | `human-indicator.md` | active | 커뮤니티별 반응/성과 비교 |
+| `indicators` | `/indicators` | `indicators.md` | active | 시장 지표와 커뮤니티 반응 괴리 |
+| `agents` | `/agents` | `agents.md` | active | 에이전트 판단 로그와 리더보드 |
+| `portfolio` | `/portfolio` | `portfolio.md` | active | 모의 포트폴리오와 원장 기반 손익 |
 
 ## Screen Brief 템플릿
 
