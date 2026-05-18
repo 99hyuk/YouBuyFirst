@@ -25,6 +25,7 @@ const watchStocks = [
 
 const activeRailItem = ref('watch');
 const railExpanded = ref(false);
+const newsroomMenuDismissed = ref(false);
 const route = useRoute();
 const activeRailLabel = computed(() => railItems.find((item) => item.id === activeRailItem.value)?.label ?? '관심');
 const newsroomFeeds = [
@@ -43,6 +44,15 @@ const openRail = (id: string) => {
   activeRailItem.value = id;
   railExpanded.value = true;
 };
+
+const dismissNewsroomMenu = () => {
+  newsroomMenuDismissed.value = true;
+  window.setTimeout(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }, 0);
+};
 </script>
 
 <template>
@@ -58,14 +68,20 @@ const openRail = (id: string) => {
 
         <nav class="main-nav" aria-label="주요 화면">
           <RouterLink data-testid="nav-dashboard" to="/dashboard">대시보드</RouterLink>
-          <span class="nav-menu-parent">
-            <RouterLink data-testid="nav-newsroom" to="/newsroom">뉴스룸</RouterLink>
+          <span
+            :class="['nav-menu-parent', { 'menu-dismissed': newsroomMenuDismissed }]"
+            @pointerenter="newsroomMenuDismissed = false"
+            @pointerleave="newsroomMenuDismissed = false"
+            @focusin="newsroomMenuDismissed = false"
+          >
+            <RouterLink data-testid="nav-newsroom" to="/newsroom" @click="dismissNewsroomMenu">뉴스룸</RouterLink>
             <span class="nav-submenu" aria-label="뉴스룸 하위 피드">
               <RouterLink
                 v-for="feed in newsroomFeeds"
                 :key="feed.feed"
                 :class="{ active: activeNewsroomFeed === feed.feed }"
                 :to="{ path: '/newsroom', query: { feed: feed.feed } }"
+                @click="dismissNewsroomMenu"
               >
                 {{ feed.label }}
               </RouterLink>

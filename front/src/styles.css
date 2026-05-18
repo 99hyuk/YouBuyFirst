@@ -207,8 +207,8 @@ a {
     transform 140ms ease;
 }
 
-.nav-menu-parent:hover .nav-submenu,
-.nav-menu-parent:focus-within .nav-submenu {
+.nav-menu-parent:not(.menu-dismissed):hover .nav-submenu,
+.nav-menu-parent:not(.menu-dismissed):focus-within .nav-submenu {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);

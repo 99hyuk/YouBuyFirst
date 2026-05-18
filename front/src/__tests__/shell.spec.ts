@@ -75,6 +75,19 @@ describe('front dashboard shell', () => {
     expect(wrapper.find('.app-shell').classes()).not.toContain('edge-panel-open');
   });
 
+  it('dismisses the newsroom submenu after a newsroom navigation click', async () => {
+    const wrapper = await mountAt('/dashboard');
+
+    await wrapper.get('[data-testid="nav-newsroom"]').trigger('click');
+    expect(wrapper.find('.nav-menu-parent').classes()).toContain('menu-dismissed');
+
+    await wrapper.find('.nav-menu-parent').trigger('pointerleave');
+    expect(wrapper.find('.nav-menu-parent').classes()).not.toContain('menu-dismissed');
+
+    await wrapper.findAll('.nav-submenu a')[2].trigger('click');
+    expect(wrapper.find('.nav-menu-parent').classes()).toContain('menu-dismissed');
+  });
+
   it('renders the core product pages with the expanded planning content', async () => {
     const stocks = await mountAt('/stocks');
     expect(stocks.text()).toContain('종목 반응 랭킹');
