@@ -16,28 +16,28 @@ const stock = {
 };
 
 const topBrief = {
-  headline: 'HBM 한마디에 게시판은 축제 모드, 주가는 뒤늦게 입장 중',
+  headline: 'HBM 기대감은 뛰는데, 실적표 안 따라오면 축제 끝나는 거 국룰임',
   summary:
-    '30분 언급 128건 · 긍정 54 · 부정 27 · HBM 키워드 46건 · 가격 +1.24% · 거래량 18.4M',
+    '반도체 업황 회복 기대 · HBM 수요 뉴스 · 가격 +1.24% · 거래량 18.4M · 15분 지연 시세 기준',
   mood: '오늘의 한줄평',
   note:
-    '게시판은 먼저 달아올랐고 가격은 뒤에서 따라오는 모양새입니다. 다만 출처 편중 42%, 가격 15분 지연이라 원문 확인 없이는 호들갑인지 흐름인지 아직 모릅니다.',
-  scoreLine: '반응 점수 77점 · 커뮤니티 온도 ★★★★☆ · 근거 4개 소스',
+    '최근 시황은 반도체 쪽으로 바람이 불고 있지만, 이건 기대감이 먼저 뛰는 장입니다. 숫자가 확인되기 전까지는 분위기 좋다고 다 해결된 척하면 바로 민망해지는 구간입니다.',
+  scoreLine: '시황 점수 77점 · 기대감 ★★★★☆ · 실적 확인 전 설레발 주의',
   riskNote: '참고용 mock 요약 · 실거래 판단 근거 아님'
 };
 
 const topBriefMetrics = [
-  { label: '반응 점수', value: '77', meta: '+12p' },
-  { label: '언급', value: '128건', meta: '+34%' },
-  { label: '가격', value: '+1.24%', meta: stock.price },
-  { label: '거래량', value: stock.volume, meta: 'mock' }
+  { label: '시황 점수', value: '77', meta: '기대 우세' },
+  { label: '등락률', value: '+1.24%', meta: stock.price },
+  { label: '거래량', value: stock.volume, meta: 'mock' },
+  { label: '시세 기준', value: '09:50', meta: '15분 지연' }
 ];
 
 const topBriefReasons = [
-  'HBM 키워드 46건',
-  '디시·에펨코리아 확산',
-  '긍정 54 / 부정 27',
-  '원문 링크 5건'
+  '반도체 업황 회복 기대',
+  'HBM 수요 뉴스',
+  '거래량 18.4M',
+  '실적 확인 필요'
 ];
 
 const reactionTrend = [
