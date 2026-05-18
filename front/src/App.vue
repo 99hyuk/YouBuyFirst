@@ -196,7 +196,7 @@ const openRail = (id: string) => {
         <em>{{ item.label }}</em>
       </button>
       <button class="theme-toggle" type="button" aria-label="라이트 다크 모드 전환">
-        <span>T</span>
+        <span>◐</span>
         <em>테마</em>
       </button>
     </aside>
