@@ -325,7 +325,6 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 <h3 id="news-title">실시간 뉴스</h3>
               </div>
               <div class="section-actions">
-                <span class="status-pill warning">mock feed</span>
                 <RouterLink class="detail-link" to="/communities">자세히 보기 →</RouterLink>
               </div>
             </div>
@@ -360,7 +359,6 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 <h3 id="analyst-title">애널리스트 리포트</h3>
               </div>
               <div class="section-actions">
-                <span class="status-pill warning">제목 피드</span>
                 <a class="detail-link" href="https://finance.naver.com/research/" target="_blank" rel="noreferrer noopener">
                   자세히 보기 →
                 </a>
@@ -397,7 +395,6 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 <h3 id="external-video-title">증권 영상 새 글</h3>
               </div>
               <div class="section-actions">
-                <span class="status-pill warning">제목 링크만</span>
                 <a
                   class="detail-link"
                   href="https://www.youtube.com/results?search_query=%EC%A6%9D%EA%B6%8C+%EC%A3%BC%EC%8B%9D"
@@ -427,7 +424,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 </span>
                 <span class="feed-copy">
                   <strong :title="video.title">{{ video.title }}</strong>
-                  <em>{{ video.source }} · {{ video.publishedLabel }}</em>
+                  <em>{{ video.source }} · {{ video.publishedLabel }} · {{ video.engagementLabel }}</em>
                 </span>
               </a>
             </div>
@@ -440,7 +437,6 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 <h3 id="external-link-title">블로그와 커뮤니티 링크</h3>
               </div>
               <div class="section-actions">
-                <span class="status-pill warning">원문 이동</span>
                 <a class="detail-link" href="https://finance.naver.com/" target="_blank" rel="noreferrer noopener">
                   자세히 보기 →
                 </a>
@@ -465,7 +461,7 @@ const endLabelX = (points: SeriesPoint[]) => Math.min(wideX(points[points.length
                 </span>
                 <span class="feed-copy">
                   <strong :title="link.title">{{ link.title }}</strong>
-                  <em>{{ link.source }} · {{ link.publishedLabel }}</em>
+                  <em>{{ link.source }} · {{ link.publishedLabel }} · {{ link.engagementLabel }}</em>
                 </span>
               </a>
             </div>
