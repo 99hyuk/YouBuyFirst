@@ -6,6 +6,7 @@
 
 | Version | Time | Screenshot | What Changed |
 | --- | --- | --- | --- |
+| `FV-20260518-1442-rail-overlay-all` | 2026-05-18 14:42 KST | [dashboard 1920 rail open](../../../front/public/visual-history/2026-05-18/FV-20260518-1442-rail-overlay-all-dashboard-open-1920.png) | 오른쪽 패널이 열려도 1920px 화면과 좁은 화면 모두 본문 폭과 위치가 변하지 않도록 했습니다. 패널은 본문을 밀지 않고 오른쪽 위에 올라오는 방식으로 통일했습니다. |
 | `FV-20260518-1420-rail-overlay-narrow` | 2026-05-18 14:20 KST | [dashboard 1280 rail open](../../../front/public/visual-history/2026-05-18/FV-20260518-1420-rail-overlay-narrow-dashboard-open-1280.png) | 1500px 이하 화면에서는 오른쪽 패널이 열려도 본문 폭에서 320px을 빼지 않도록 바꿨습니다. 반쪽 브라우저에서는 본문을 찌그러뜨리지 않고 패널이 오른쪽 위에 올라오는 방식으로 동작합니다. |
 | `FV-20260518-1411-header-brand-rail-direction` | 2026-05-18 14:11 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1411-header-brand-rail-direction-dashboard.png) | 배포본 기준으로 헤더의 `너나사`와 `YouBuyFirst` 사이 공백을 되돌리고, 오른쪽 rail의 열기/닫기 화살표를 닫힌 상태 `«`, 열린 상태 `»`로 맞췄습니다. |
 | `FV-20260518-1359-feed-header-clean-engagement` | 2026-05-18 13:59 KST | [dashboard](../../../front/public/visual-history/2026-05-18/FV-20260518-1359-feed-header-clean-engagement-dashboard.png) | 실시간 뉴스, 애널리스트 리포트, 증권 영상 새 글, 블로그/커뮤니티 링크의 오른쪽 위 상태 배지를 제거했습니다. 영상과 블로그/커뮤니티 순위에는 조회수, 공감, 댓글 수 mock 지표를 붙여 순위 근거가 보이도록 했습니다. |
