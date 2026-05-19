@@ -2,8 +2,7 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-import StockPriceChart from '../components/StockPriceChart.vue';
-import { stockChartFixtures } from '../fixtures/stock-detail-chart';
+import TradingViewWidget from '../components/TradingViewWidget.vue';
 import stockDetailFixtureSet from '../fixtures/stock-detail-fixtures.json';
 
 type StockDetailFixture = {
@@ -48,9 +47,20 @@ const stock = computed(
 );
 const quoteSnapshot = computed(() => stock.value.quoteSnapshot);
 const topBrief = computed(() => stock.value.brief);
-const chartFixture = computed(
-  () => stockChartFixtures.find((item) => item.symbol.toUpperCase() === stock.value.symbol.toUpperCase()) ?? stockChartFixtures[0]
-);
+const tradingViewWidgets = [
+  {
+    marketLabel: '국내주식 위젯 테스트',
+    title: '삼성전자',
+    symbol: 'KRX:005930',
+    note: 'TradingView 공개 위젯에서 KRX 심볼이 외부 embed로 표시되는지 확인하는 용도입니다.'
+  },
+  {
+    marketLabel: '해외주식 위젯 테스트',
+    title: 'NVIDIA',
+    symbol: 'NASDAQ:NVDA',
+    note: '미장 대표 심볼은 같은 공개 위젯에서 정상 표시되는지 비교합니다.'
+  }
+];
 
 const topBriefMetrics = computed(() => [
   { label: '시황 점수', value: topBrief.value.score, meta: topBrief.value.scoreMeta },
@@ -185,26 +195,26 @@ const reliability = [
       </div>
     </section>
 
-    <section class="stock-main-chart panel content-feed-card surface-data-card" aria-label="원화 메인 가격 차트">
+    <section class="stock-main-chart panel content-feed-card surface-data-card" aria-label="TradingView 공개 위젯 테스트">
       <div class="panel-header">
         <div>
-          <p class="label">lightweight chart</p>
-          <h3>메인 가격 차트</h3>
+          <p class="label">TradingView embed</p>
+          <h3>국내/해외 TradingView 위젯 비교</h3>
         </div>
-        <span class="status-pill subtle">{{ stock.providerSymbol }}</span>
+        <span class="status-pill subtle">KRX:005930 · NASDAQ:NVDA</span>
       </div>
-      <StockPriceChart
-        :title="`${stock.name} 메인 가격 차트`"
-        :provider-symbol="chartFixture.providerSymbol"
-        :currency="chartFixture.currency"
-        :price-unit="chartFixture.priceUnit"
-        :volume-unit="chartFixture.volumeUnit"
-        :flow-unit="chartFixture.flowUnit"
-        :chart-source="chartFixture.chartSource"
-        :candles="chartFixture.candles"
-      />
+      <div class="tradingview-widget-grid">
+        <TradingViewWidget
+          v-for="widget in tradingViewWidgets"
+          :key="widget.symbol"
+          :market-label="widget.marketLabel"
+          :title="widget.title"
+          :symbol="widget.symbol"
+          :note="widget.note"
+        />
+      </div>
       <p class="chart-data-note">
-        위 차트는 TradingView Lightweight Charts 기반 mock 차트입니다. 현재가·등락률·거래량·asOf·stale 상태는 별도 quote snapshot 영역에서 관리합니다.
+        위 영역은 우리 데이터 재구성 차트가 아니라 TradingView 공개 embed 위젯입니다. 현재가·등락률·거래량·asOf·stale 상태는 기존 quote snapshot 영역과 분리해서 봅니다.
       </p>
     </section>
 

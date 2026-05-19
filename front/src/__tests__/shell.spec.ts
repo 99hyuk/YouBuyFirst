@@ -106,13 +106,14 @@ describe('front dashboard shell', () => {
     expect(stock.text()).toContain('오늘의 한줄평');
     expect(stock.text()).toContain('실적표 없으면 행복회로 압수');
     expect(stock.text()).toContain('실거래 판단 근거 아님');
-    expect(stock.text()).toContain('메인 가격 차트');
+    expect(stock.text()).toContain('국내/해외 TradingView 위젯 비교');
     expect(stock.text()).toContain('KRX:005930');
-    expect(stock.text()).toContain('KRX 원화 mock');
+    expect(stock.text()).toContain('NASDAQ:NVDA');
+    expect(stock.text()).toContain('국내주식 위젯 테스트');
+    expect(stock.text()).toContain('해외주식 위젯 테스트');
     expect(stock.text()).toContain('거래량');
-    expect(stock.text()).toContain('매매 동향');
     expect(stock.text()).toContain('quote snapshot');
-    expect(stock.text()).toContain('현재가·등락률·거래량·asOf·stale 상태는 별도 quote snapshot 영역');
+    expect(stock.text()).toContain('TradingView 공개 embed 위젯');
     expect(stock.text()).toContain('어제와 달라진 점');
     expect(stock.text()).toContain('반응 키워드');
     expect(stock.text()).toContain('시간대별 변화');

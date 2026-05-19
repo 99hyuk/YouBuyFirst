@@ -4,7 +4,7 @@
 
 - Parent: `stocks`
 - Route 후보: `/stocks/:symbol`
-- 현재 fixture 예시: `005930` -> `KRX:005930` 원화 mock chart, `NVDA` -> `NASDAQ:NVDA` 달러 mock chart
+- 현재 fixture 예시: `005930` -> `KRX:005930`, `NVDA` -> `NASDAQ:NVDA`. 종목 상세 메인 차트 영역은 두 공개 TradingView embed 위젯을 함께 보여 국내/해외 심볼 지원 여부를 확인한다.
 - Child screens:
   - `stock-news-detail`: 뉴스/공시/리포트 링크 상세 또는 drawer
   - `stock-community-post`: 커뮤니티 원문 snippet/출처 상세
@@ -18,7 +18,7 @@
 
 - 팩트폭격 상단 패널: 종목명, 티커, 한줄평, 보조 시황 문장, 근거 keyword chips
 - 종목 헤더: 종목명, 시장, quote snapshot 기반 현재가/등락률/거래량/asOf/stale 상태
-- 메인 가격 차트: TradingView Lightweight Charts 기반 내부 차트. 현재는 실시간 갱신이 없는 mock fixture이며, 국장은 원화 OHLC, 이동평균선, 하단 거래량, 매매동향 요약을 그린다.
+- 메인 가격 차트: 공개 TradingView Advanced Chart embed 위젯 2개를 나란히 보여준다. 국내 테스트는 `KRX:005930`, 해외 테스트는 `NASDAQ:NVDA`이며, 위젯 표시 성공/실패를 직접 비교하는 임시 검증 영역이다.
 - quote snapshot 영역: 현재가, 등락률, 거래량, asOf, stale은 차트 라이브러리에서 읽지 않고 별도 market API 후보 값으로 관리한다.
 - 요약 지표 strip: 반응 점수, 언급 변화, 긍정/부정, 출처 수, 원문 링크 수
 - 반응 키워드와 시간대별 변화: 30분 키워드 pulse, 09:00~09:45 snapshot
@@ -31,7 +31,7 @@
 
 ## 상태와 빈 화면
 
-- loading: 팩트폭격 패널, quote snapshot, lightweight chart shell skeleton을 먼저 보여준다.
+- loading: 팩트폭격 패널, quote snapshot, TradingView 위젯 shell fallback을 먼저 보여준다.
 - empty: 근거가 부족하면 `headlineTone`을 `normal`로 낮추고 표본/원문 부족을 신뢰도 영역에 표시한다.
 - error: 차트 로드 실패와 quote snapshot 실패를 분리해서 표시한다.
 - stale/mock: `quoteSnapshot.dataStatus`, `quoteSnapshot.asOf`, `quoteSnapshot.stale`을 quote 영역과 신뢰도 영역에 함께 표시한다.
@@ -66,4 +66,4 @@
 
 ## 변경 로그
 
-- 2026-05-19: Advanced Chart iframe 대신 TradingView Lightweight Charts 기반 내부 원화 차트로 전환. OHLC, 거래량, 매매동향은 차트 fixture/API 후보로 분리.
+- 2026-05-19: 종목 상세 메인 차트를 공개 TradingView embed 비교 영역으로 되돌림. `KRX:005930`과 `NASDAQ:NVDA`를 동시에 띄워 국내/해외 심볼 지원 여부를 브라우저에서 확인한다.
