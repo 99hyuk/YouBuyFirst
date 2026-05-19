@@ -2,6 +2,12 @@
 
 프론트 화면 변경을 다시 확인하기 위한 작은 기록입니다. 대화에 이미지를 계속 붙이는 대신, 대표 버전은 `front/public/visual-history/`에 HTML 갤러리로 두고 원본 캡처는 링크로 엽니다.
 
+## 2026-05-19 TradingView Widget Check
+
+| Version | Time | Screenshot | What Changed |
+| --- | --- | --- | --- |
+| `FV-20260519-1729-tradingview-widget-comparison` | 2026-05-19 17:29 KST | [stock detail](../../../front/public/visual-history/2026-05-19/FV-20260519-1729-tradingview-widget-comparison-stock-detail-1440.png) | 종목 상세 메인 차트를 TradingView 공개 embed 위젯 비교 영역으로 되돌리고 `KRX:005930`과 `NASDAQ:NVDA`를 나란히 배치했습니다. 브라우저 확인 결과 NVDA는 정상 렌더링되고, 삼성전자는 TradingView 전용 심볼 알림이 뜹니다. |
+
 ## 2026-05-18 Product Surface Pass
 
 | Version | Time | Screenshot | What Changed |
