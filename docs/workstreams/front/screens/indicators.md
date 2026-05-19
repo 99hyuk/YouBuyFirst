@@ -15,7 +15,7 @@
 - 시장 지표 tape: KOSPI, KOSDAQ, NASDAQ, 환율, VIX, 금리, SOX 등
 - 가격과 반응이 엇갈린 종목
 - 섹터/테마별 반응 히트맵
-- 국장/미장 섹터별 상승·하락 비율: 섹터 breadth를 상승, 하락, 보합 비중으로 비교
+- 국장/미장 섹터 방향 보드: 정사각형에 가까운 타일로 각 섹터의 상승/하락 방향과 강도를 표시
 - 주요 일정: CPI, FOMC, 실적, 공시
 - 지표별 데이터 신선도
 
@@ -34,7 +34,7 @@
 | `marketIndicators[].reaction` | data | 해당 지표와 연결된 커뮤니티 반응 변화 |
 | `anomalyRows` | market/data | 가격 상승·부정 증가, 가격 하락·관심 증가 등 |
 | `themeHeatmap` | data | 섹터/테마별 언급과 반응 점수 |
-| `sectorBreadthGroups` | market/data | 국장, 미장 섹터별 상승·하락·보합 비율과 기준 시각 |
+| `sectorBreadthGroups` | market/data | 국장, 미장 섹터별 상승/하락 방향, 변화율, 강도와 기준 시각 |
 | `schedules` | market/backend | 주요 일정과 영향 후보 |
 | `freshnessRows` | backend | 데이터 신선도와 사용처 |
 
