@@ -5698,6 +5698,144 @@ a {
   grid-column: 1 / -1;
 }
 
+.sector-breadth-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+
+.sector-breadth-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 12px 26px rgba(39, 51, 67, 0.04);
+}
+
+.sector-breadth-summary {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  gap: 4px 8px;
+  align-items: end;
+  padding: 10px;
+  border-bottom: 1px solid #edf1f6;
+  background: linear-gradient(90deg, #ffffff, #f8fbff);
+}
+
+.sector-breadth-summary strong {
+  color: var(--market-up);
+  font-size: 27px;
+  font-weight: 940;
+  line-height: 0.95;
+}
+
+.sector-breadth-summary span {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 880;
+}
+
+.sector-breadth-summary em,
+.sector-breadth-summary small {
+  color: #6e7d91;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 740;
+}
+
+.sector-breadth-summary small {
+  grid-column: 1 / -1;
+}
+
+.sector-breadth-head,
+.sector-breadth-row {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.72fr) minmax(150px, 1fr) 42px 42px;
+  gap: 8px;
+  align-items: center;
+}
+
+.sector-breadth-head {
+  min-height: 28px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--line);
+  background: #f8fafc;
+  color: #718094;
+  font-size: 11px;
+  font-weight: 780;
+}
+
+.sector-breadth-row {
+  min-height: 42px;
+  padding: 7px 10px;
+  border-bottom: 1px solid #edf1f6;
+}
+
+.sector-breadth-row:last-child {
+  border-bottom: 0;
+}
+
+.sector-breadth-row strong {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 860;
+}
+
+.sector-breadth-row small {
+  display: block;
+  overflow: hidden;
+  margin-top: 2px;
+  color: #7a8798;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sector-breadth-row em,
+.sector-breadth-row b {
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 900;
+  text-align: right;
+}
+
+.sector-breadth-row em {
+  color: var(--market-up);
+}
+
+.sector-breadth-row b {
+  color: var(--market-down);
+}
+
+.sector-breadth-bar {
+  display: flex;
+  overflow: hidden;
+  height: 8px;
+  border-radius: 999px;
+  background: #e9eef6;
+}
+
+.sector-breadth-bar mark {
+  display: block;
+  height: 100%;
+}
+
+.sector-breadth-bar .up {
+  background: linear-gradient(90deg, #ff97a0, var(--market-up));
+}
+
+.sector-breadth-bar .flat {
+  background: #cbd5e1;
+}
+
+.sector-breadth-bar .down {
+  background: linear-gradient(90deg, #81b0ff, var(--market-down));
+}
+
 .anomaly-head,
 .market-anomaly-table article {
   display: grid;
@@ -6542,6 +6680,7 @@ a {
   .stock-screener-layout,
   .market-ranking-grid,
   .market-ranking-console,
+  .sector-breadth-grid,
   .human-workbench,
   .market-split-grid,
   .agent-ledger-layout,

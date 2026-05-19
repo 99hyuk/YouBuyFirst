@@ -150,6 +150,9 @@ describe('front dashboard shell', () => {
     expect(indicators.text()).toContain('지표별 데이터 신선도');
     expect(indicators.text()).toContain('주요 일정');
 
+    expect(indicators.text()).toContain('국장 섹터별 상승·하락 비율');
+    expect(indicators.text()).toContain('미장 섹터별 상승·하락 비율');
+
     const agents = await mountAt('/agents');
     expect(agents.text()).toContain('에이전트 모의 판단 기록');
     expect(agents.text()).toContain('전략 버전과 판단 key 기준');

@@ -34,6 +34,37 @@ const themeHeatmap = [
   { theme: '금리', heat: 44, change: '+5p' }
 ];
 
+const sectorBreadthGroups = [
+  {
+    market: '국장',
+    caption: 'KRX 주요 섹터 · 15분 지연',
+    summary: { up: 57, down: 34, flat: 9 },
+    note: '상승 섹터가 더 많지만 2차전지는 혼조',
+    sectors: [
+      { name: '반도체', focus: 'HBM·장비', up: 68, down: 22, flat: 10 },
+      { name: '자동차', focus: '환율·수출', up: 54, down: 31, flat: 15 },
+      { name: '금융', focus: '배당·금리', up: 61, down: 24, flat: 15 },
+      { name: '2차전지', focus: '수급·마진', up: 36, down: 52, flat: 12 },
+      { name: '바이오', focus: '임상·공시', up: 44, down: 43, flat: 13 },
+      { name: '로봇', focus: '정책·수주', up: 63, down: 28, flat: 9 }
+    ]
+  },
+  {
+    market: '미장',
+    caption: 'S&P/NASDAQ 대표 섹터 · mock',
+    summary: { up: 49, down: 43, flat: 8 },
+    note: '기술주는 강하고 방어주는 약한 흐름',
+    sectors: [
+      { name: 'AI/반도체', focus: 'GPU·서버', up: 72, down: 19, flat: 9 },
+      { name: '빅테크', focus: '실적·CAPEX', up: 58, down: 33, flat: 9 },
+      { name: '소비재', focus: '소비 둔화', up: 39, down: 51, flat: 10 },
+      { name: '헬스케어', focus: '규제·실적', up: 46, down: 42, flat: 12 },
+      { name: '에너지', focus: 'WTI·정제', up: 52, down: 38, flat: 10 },
+      { name: '리츠/유틸', focus: '금리 민감', up: 31, down: 59, flat: 10 }
+    ]
+  }
+];
+
 const schedules = [
   { date: '05.20', time: '03:00', title: 'FOMC 의사록', watch: '금리·나스닥 반응' },
   { date: '05.22', time: '21:30', title: '미국 CPI 수정치', watch: '환율·성장주' },
@@ -74,6 +105,37 @@ const freshnessRows = [
           <em :class="indicator.change.startsWith('-') ? 'down' : 'up'">{{ indicator.change }}</em>
           <small>{{ indicator.state }}</small>
           <p>{{ indicator.link }} · 반응 {{ indicator.reaction }}</p>
+        </article>
+      </section>
+
+      <section class="sector-breadth-grid" aria-label="국장과 미장 섹터별 상승 하락 비율">
+        <article v-for="group in sectorBreadthGroups" :key="group.market" class="sector-breadth-card">
+          <div class="table-caption">
+            <div>
+              <p class="label">sector breadth</p>
+              <h3>{{ group.market }} 섹터별 상승·하락 비율</h3>
+            </div>
+            <span class="status-pill subtle">{{ group.caption }}</span>
+          </div>
+          <div class="sector-breadth-summary">
+            <strong>{{ group.summary.up }}%</strong>
+            <span>상승</span>
+            <em>{{ group.summary.down }}% 하락 · {{ group.summary.flat }}% 보합</em>
+            <small>{{ group.note }}</small>
+          </div>
+          <div class="sector-breadth-head">
+            <span>섹터</span><span>상승/하락 비중</span><span>상승</span><span>하락</span>
+          </div>
+          <div v-for="sector in group.sectors" :key="`${group.market}-${sector.name}`" class="sector-breadth-row">
+            <strong>{{ sector.name }}<small>{{ sector.focus }}</small></strong>
+            <i class="sector-breadth-bar">
+              <mark class="up" :style="{ width: `${sector.up}%` }"></mark>
+              <mark class="flat" :style="{ width: `${sector.flat}%` }"></mark>
+              <mark class="down" :style="{ width: `${sector.down}%` }"></mark>
+            </i>
+            <em>{{ sector.up }}%</em>
+            <b>{{ sector.down }}%</b>
+          </div>
         </article>
       </section>
 
