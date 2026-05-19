@@ -1,4 +1,19 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+const activeHumanView = computed(() => {
+  const view = route.query.view;
+  return Array.isArray(view) ? view[0] ?? 'overview' : view ?? 'overview';
+});
+
+const humanViewTabs = [
+  { label: '커뮤니티 반응', view: 'overview', to: { path: '/communities' } },
+  { label: '성과 실험', view: 'experiments', to: { path: '/communities', query: { view: 'experiments' } } },
+  { label: '모의 에이전트', view: 'agents', to: { path: '/communities', query: { view: 'agents' } } }
+];
+
 const communities = [
   { name: '네이버 종토방', status: 'local-research-only', lastCollected: '10:03', skipReason: '본문 일부만 저장', surge: '삼성전자', positive: 41, negative: 33, theme: '반도체·대형주' },
   { name: '디시 주식', status: 'public-demo-only', lastCollected: '10:01', skipReason: '속도 제한 관찰', surge: '에코프로', positive: 48, negative: 37, theme: '2차전지·미국주식' },
@@ -54,6 +69,34 @@ const experiments = [
   { community: '에펨코리아', style: '급증 관찰', returnPct: '+2.4%', hitRate: '55%', drawdown: '-3.6%' },
   { community: '토스증권', style: '관심 등록 변화', returnPct: '+1.2%', hitRate: '51%', drawdown: '-3.9%' }
 ];
+
+const agentPersonas = [
+  { name: 'Momentum', label: '언급 급증 추적', returnPct: '+3.2%', winRate: '55%', drawdown: '-3.8%', trades: 18, status: 'active' },
+  { name: 'Contrarian', label: '과열 반대 관찰', returnPct: '+1.1%', winRate: '49%', drawdown: '-5.4%', trades: 12, status: 'watch' },
+  { name: 'Risk Guard', label: '신뢰도 낮으면 스킵', returnPct: '+0.8%', winRate: '58%', drawdown: '-2.1%', trades: 8, status: 'guard' },
+  { name: 'Community Follow', label: '인기글 상위권 추적', returnPct: '+2.4%', winRate: '53%', drawdown: '-4.0%', trades: 21, status: 'active' }
+];
+
+const agentPipeline = [
+  { step: '입력 수집', count: 42, detail: '커뮤니티·가격 snapshot' },
+  { step: '신뢰도 배점', count: 31, detail: '편중·stale·원문 확인' },
+  { step: '판단 key', count: 14, detail: '중복 판단 방지' },
+  { step: 'paper 후보', count: 3, detail: '실거래 아님' }
+];
+
+const agentDecisionLogs = [
+  { time: '10:02', agent: 'Momentum', stock: '삼성전자', action: '관찰 유지', input: '반응 +18p · 가격 +1.2%', state: '판단 생성', key: 'mom-v3-005930-1002' },
+  { time: '09:48', agent: 'Risk Guard', stock: 'NAVER', action: '스킵', input: '부정 +14p · 출처 편중 58%', state: '스킵 사유', key: 'risk-v2-035420-0948' },
+  { time: '09:35', agent: 'Community Follow', stock: '두산로보틱스', action: 'paper 후보', input: '상위 2% 글 · 가격 변동', state: '후보 기록', key: 'follow-v1-454910-0935' },
+  { time: '09:20', agent: 'Contrarian', stock: '에코프로', action: '관찰만', input: '관심 +24% · 가격 -1.1%', state: '판단 생성', key: 'contra-v2-086520-0920' }
+];
+
+const strategyVersions = [
+  { version: 'mom-v3', persona: 'Momentum', rule: '언급 증가 + 가격 지지 + 출처 3개 이상', keys: 6 },
+  { version: 'risk-v2', persona: 'Risk Guard', rule: '출처 편중 55% 이상이면 후보 제외', keys: 4 },
+  { version: 'follow-v1', persona: 'Community Follow', rule: '인기글 상위 N%와 키워드 동시 관찰', keys: 7 },
+  { version: 'contra-v2', persona: 'Contrarian', rule: '가격 하락과 관심 증가 괴리만 관찰', keys: 3 }
+];
 </script>
 
 <template>
@@ -67,6 +110,17 @@ const experiments = [
         </div>
         <span class="status-pill subtle">커뮤니티 반응 비교</span>
       </div>
+
+      <nav class="human-view-tabs" aria-label="인간 지표 하위 화면">
+        <RouterLink
+          v-for="tab in humanViewTabs"
+          :key="tab.view"
+          :class="{ active: activeHumanView === tab.view }"
+          :to="tab.to"
+        >
+          {{ tab.label }}
+        </RouterLink>
+      </nav>
 
       <div class="terminal-kpi-row" aria-label="인간 지표 요약">
         <article v-for="item in humanStats" :key="item.label">
@@ -182,6 +236,87 @@ const experiments = [
             <em>{{ experiment.returnPct }} · 적중률 {{ experiment.hitRate }} · 최대 낙폭 {{ experiment.drawdown }}</em>
           </article>
         </div>
+      </section>
+
+      <section id="agent-simulation" class="human-agent-section" aria-labelledby="human-agent-title">
+        <div class="table-caption">
+          <div>
+            <p class="label">agent simulation</p>
+            <h3 id="human-agent-title">모의 에이전트 판단 기록</h3>
+          </div>
+          <span class="status-pill warning">인간 지표 기반 · 실거래 아님</span>
+        </div>
+
+        <section class="agent-ledger-layout">
+          <div class="agent-leaderboard">
+            <div class="table-caption">
+              <div>
+                <p class="label">paper leaderboard</p>
+                <h3>페르소나별 모의 성과</h3>
+              </div>
+            </div>
+            <article v-for="persona in agentPersonas" :key="persona.name">
+              <span :class="['agent-state-dot', persona.status]"></span>
+              <div>
+                <strong>{{ persona.name }}</strong>
+                <small>{{ persona.label }}</small>
+              </div>
+              <em>{{ persona.returnPct }}</em>
+              <span>승률 {{ persona.winRate }}</span>
+              <span>낙폭 {{ persona.drawdown }}</span>
+              <span>{{ persona.trades }}회</span>
+            </article>
+          </div>
+
+          <aside class="agent-pipeline">
+            <div>
+              <p class="label">input pipeline</p>
+              <h3>판단 입력값</h3>
+            </div>
+            <article v-for="item in agentPipeline" :key="item.step">
+              <strong>{{ item.count }}</strong>
+              <span>{{ item.step }}</span>
+              <em>{{ item.detail }}</em>
+            </article>
+          </aside>
+        </section>
+
+        <section class="agent-log-terminal">
+          <div class="table-caption">
+            <div>
+              <p class="label">decision log</p>
+              <h3>최근 판단 로그</h3>
+            </div>
+            <span class="status-pill subtle">판단 key로 중복 방지</span>
+          </div>
+          <div class="agent-log-head">
+            <span>시간</span><span>종목</span><span>에이전트</span><span>상태</span><span>입력값</span><span>판단 key</span>
+          </div>
+          <article v-for="log in agentDecisionLogs" :key="log.key">
+            <time>{{ log.time }}</time>
+            <strong>{{ log.stock }}</strong>
+            <span>{{ log.agent }} · {{ log.action }}</span>
+            <em>{{ log.state }}</em>
+            <span>{{ log.input }}</span>
+            <code>{{ log.key }}</code>
+          </article>
+        </section>
+
+        <section class="strategy-version-table">
+          <div class="table-caption">
+            <div>
+              <p class="label">strategy versions</p>
+              <h3>전략 버전과 판단 key 기준</h3>
+            </div>
+            <span class="status-pill subtle">모의 판단 기록</span>
+          </div>
+          <article v-for="strategy in strategyVersions" :key="strategy.version">
+            <strong>{{ strategy.version }}</strong>
+            <span>{{ strategy.persona }}</span>
+            <em>{{ strategy.rule }}</em>
+            <b>{{ strategy.keys }} keys</b>
+          </article>
+        </section>
       </section>
     </section>
   </section>

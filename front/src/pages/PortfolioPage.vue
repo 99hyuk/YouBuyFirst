@@ -75,7 +75,7 @@ const reviews = [
               <p class="label">holdings</p>
               <h3>보유 종목과 반응 연결</h3>
             </div>
-            <RouterLink class="detail-link" to="/agents">에이전트 판단 보기 →</RouterLink>
+            <RouterLink class="detail-link" :to="{ path: '/communities', query: { view: 'agents' } }">모의 판단 보기 →</RouterLink>
           </div>
           <div class="holdings-head">
             <span>종목</span><span>수량</span><span>평균</span><span>현재</span><span>손익</span><span>반응</span><span>에이전트</span>

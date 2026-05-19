@@ -1,6 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
 
-import AgentsPage from '../pages/AgentsPage.vue';
 import CommunitiesPage from '../pages/CommunitiesPage.vue';
 import DashboardPage from '../pages/DashboardPage.vue';
 import IndicatorsPage from '../pages/IndicatorsPage.vue';
@@ -47,7 +46,10 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/agents',
     name: 'agents',
-    component: AgentsPage
+    redirect: {
+      path: '/communities',
+      query: { view: 'agents' }
+    }
   },
   {
     path: '/portfolio',

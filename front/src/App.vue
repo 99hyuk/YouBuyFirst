@@ -90,7 +90,6 @@ const dismissNewsroomMenu = () => {
           <RouterLink data-testid="nav-stock" to="/stocks">종목</RouterLink>
           <RouterLink data-testid="nav-communities" to="/communities">인간 지표</RouterLink>
           <RouterLink data-testid="nav-indicators" to="/indicators">주요 지표</RouterLink>
-          <RouterLink data-testid="nav-agents" to="/agents">에이전트</RouterLink>
           <RouterLink data-testid="nav-portfolio" to="/portfolio">내 포트폴리오</RouterLink>
         </nav>
 

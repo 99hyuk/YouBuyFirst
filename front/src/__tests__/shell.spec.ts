@@ -42,6 +42,9 @@ describe('front dashboard shell', () => {
       '/portfolio'
     ]);
     expect(routes[0]).toMatchObject({ redirect: '/dashboard' });
+    expect(routes.find((route) => route.path === '/agents')).toMatchObject({
+      redirect: { path: '/communities', query: { view: 'agents' } }
+    });
   });
 
   it('declares an inline favicon so browser checks do not request /favicon.ico', () => {
@@ -63,7 +66,7 @@ describe('front dashboard shell', () => {
     expect(wrapper.get('[data-testid="nav-stock"]').text()).toContain('종목');
     expect(wrapper.get('[data-testid="nav-communities"]').text()).toContain('인간 지표');
     expect(wrapper.get('[data-testid="nav-indicators"]').text()).toContain('주요 지표');
-    expect(wrapper.get('[data-testid="nav-agents"]').text()).toContain('에이전트');
+    expect(wrapper.find('[data-testid="nav-agents"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="nav-portfolio"]').text()).toContain('내 포트폴리오');
     expect(wrapper.find('.topbar .live-ticker').exists()).toBe(true);
     expect(wrapper.text()).toContain('커뮤니티 지표 비교');
@@ -119,6 +122,10 @@ describe('front dashboard shell', () => {
     expect(communities.text()).toContain('커뮤니티별 언급 급증과 반응 비율');
     expect(communities.text()).toContain('인기글·개념글 레이어');
     expect(communities.text()).toContain('커뮤니티별 성과 실험');
+    expect(communities.text()).toContain('모의 에이전트');
+    expect(communities.text()).toContain('모의 에이전트 판단 기록');
+    expect(communities.text()).toContain('판단 입력값');
+    expect(communities.text()).toContain('전략 버전과 판단 key 기준');
 
     const newsroomAll = await mountAt('/newsroom');
     expect(newsroomAll.text()).toContain('뉴스룸');
@@ -154,7 +161,8 @@ describe('front dashboard shell', () => {
     expect(indicators.text()).toContain('미장 섹터 방향');
 
     const agents = await mountAt('/agents');
-    expect(agents.text()).toContain('에이전트 모의 판단 기록');
+    expect(agents.text()).toContain('인간 지표');
+    expect(agents.text()).toContain('모의 에이전트 판단 기록');
     expect(agents.text()).toContain('전략 버전과 판단 key 기준');
     expect(agents.text()).toContain('최근 판단 로그');
     expect(agents.text()).toContain('판단 입력값');

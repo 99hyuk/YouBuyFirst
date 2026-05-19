@@ -5467,6 +5467,29 @@ a {
   align-items: start;
 }
 
+.human-view-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.human-view-tabs a {
+  min-height: 28px;
+  padding: 6px 11px;
+  border: 1px solid rgba(226, 232, 240, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(238, 244, 255, 0.78);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.human-view-tabs a.active {
+  border-color: rgba(117, 169, 255, 0.7);
+  background: rgba(79, 127, 238, 0.24);
+  color: #ffffff;
+}
+
 .market-split-grid {
   grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
 }
@@ -5899,6 +5922,16 @@ a {
 .freshness-terminal article,
 .ledger-terminal article {
   grid-template-columns: minmax(120px, 0.8fr) minmax(0, 1fr) minmax(120px, 0.8fr);
+}
+
+.human-agent-section {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.16);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(248, 250, 252, 0.96));
 }
 
 .agent-ledger-layout {

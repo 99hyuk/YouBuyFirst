@@ -1,48 +1,48 @@
-# 에이전트 화면
+# 에이전트 하위 화면
 
 ## Route
 
-- Parent: root
-- Route 후보: `/agents`
-- Child screens: 없음. 판단 상세 drawer 후보는 추후 분리합니다.
+- Parent: 인간 지표
+- Route 후보: `/agents`는 `/communities?view=agents`로 redirect합니다.
+- Child screens: 판단 로그 상세 drawer는 후보입니다.
 
 ## 화면 목적
 
-에이전트가 어떤 입력값을 보고 관찰, 스킵, 모의 주문 후보를 남겼는지 추적합니다. 실제 매매 추천이 아니라 모의 판단 기록과 트랜잭션 정합성을 보여줍니다.
+에이전트를 독립 탭으로 두지 않고, 커뮤니티 반응을 해석한 모의 실험 레이어로 보여줍니다. 사용자는 인간 지표 화면 안에서 커뮤니티 반응, 성과 실험, 모의 에이전트 판단을 같은 맥락으로 확인합니다.
 
 ## 현재 섹션
 
-- 에이전트 모의 판단 기록 제목과 실거래 아님 badge
+- 인간 지표 하위 탭: 커뮤니티 반응, 성과 실험, 모의 에이전트
+- 모의 에이전트 판단 기록
 - 페르소나별 모의 성과
-- 판단 입력값 요약
+- 판단 입력값: 커뮤니티 반응, 가격 snapshot, 신뢰도, 원문 확인
 - 최근 판단 로그: 시간, 종목, 에이전트, 상태, 입력값, 판단 key
 - 전략 버전과 판단 key 기준
 
 ## 상태와 빈 화면
 
-- loading: 페르소나 카드와 로그 table skeleton을 보여줍니다.
-- empty: 아직 판단 로그가 없다고 표시하고 입력 데이터 상태를 보여줍니다.
-- error: 판단 생성 실패와 주문 후보 생성 실패를 분리합니다.
-- stale/mock: 가격 mock, stale, 중복 판단 스킵 사유를 로그 row에 표시합니다.
+- loading: 인간 지표 KPI와 에이전트 요약 skeleton을 함께 보여줍니다.
+- empty: 판단 로그가 없으면 커뮤니티 입력값 수집 상태를 먼저 보여줍니다.
+- error: 판단 생성 실패와 입력 데이터 실패를 분리합니다.
+- stale/mock: mock, stale, 실거래 아님 상태를 상단 badge와 log row에 표시합니다.
 
 ## API 후보
 
 | 필드 | 소유 트랙 | 설명 |
 | --- | --- | --- |
-| `personas` | agent | 모멘텀, 역발상, 리스크 회피, 커뮤니티 추종 등 |
-| `decisionLogs` | agent/trade | 관찰, 스킵, 모의 주문 후보, 체결 후보 기록 |
-| `decisionLogs[].input` | agent/data/market | 커뮤니티 반응, 가격 snapshot, 신뢰도, 뉴스 이벤트 |
-| `decisionLogs[].key` | agent/backend | 중복 판단 방지 key |
+| `agentPersonas` | agent | 모멘텀, 역발상, 리스크 회피, 커뮤니티 추종 등 |
+| `agentPipeline` | agent/data/market | 판단 입력값, 신뢰도, 중복 판단 key, paper 후보 수 |
+| `agentDecisionLogs` | agent/trade | 관찰, 스킵, paper 후보, 스킵 사유 기록 |
+| `agentDecisionLogs[].input` | agent/data/market | 커뮤니티 반응, 가격 snapshot, 신뢰도, 뉴스 이벤트 |
+| `agentDecisionLogs[].key` | agent/backend | 중복 판단 방지 key |
 | `strategyVersions` | agent | 전략 버전과 규칙 |
-| `paperOrderState` | trade/agent | 판단 생성, 주문 후보, 체결, 스킵 사유 |
-| `leaderboard` | agent/trade | 수익률, 승률, 최대 낙폭, 거래 횟수 |
 
 ## 기획자 확인 필요
 
-- 리더보드와 수익률 표현을 어디까지 노출해도 안전한지.
-- 판단 로그 상세를 drawer로 둘지 별도 route로 둘지.
-- paper order 상태를 trade 트랙 API와 언제 연결할지.
+- `/agents` redirect를 유지할지, 배포 후 한두 버전 뒤 route를 완전히 제거할지.
+- 판단 로그 상세를 drawer로 둘지 별도 상세 route로 둘지.
+- 리더보드의 수익률 표현 범위와 경고 문구 수준.
 
 ## 변경 로그
 
-- 2026-05-18: Screen Brief 신규 작성. 모의 판단 기록, 판단 key, 금지 표현 방지 기준을 정리.
+- 2026-05-19: 독립 에이전트 탭을 인간 지표 하위 화면으로 흡수. `/agents`는 `/communities?view=agents` redirect로 유지.
