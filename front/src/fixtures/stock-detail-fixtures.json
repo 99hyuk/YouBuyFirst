@@ -6,9 +6,6 @@
       "market": "KRX",
       "provider": "TradingView",
       "providerSymbol": "KRX:005930",
-      "widgetSymbol": "OTC:SSNLF",
-      "widgetSymbolNote": "KRX 위젯 미지원 → OTC:SSNLF 대체 표시",
-      "providerChartUrl": "https://www.tradingview.com/symbols/KRX-005930/",
       "quoteSnapshot": {
         "price": "78,200원",
         "change": "+1.24%",
@@ -42,9 +39,6 @@
       "market": "NASDAQ",
       "provider": "TradingView",
       "providerSymbol": "NASDAQ:NVDA",
-      "widgetSymbol": "NASDAQ:NVDA",
-      "widgetSymbolNote": "provider symbol과 위젯 symbol이 동일합니다.",
-      "providerChartUrl": "https://www.tradingview.com/symbols/NASDAQ-NVDA/",
       "quoteSnapshot": {
         "price": "$924.80",
         "change": "+1.85%",

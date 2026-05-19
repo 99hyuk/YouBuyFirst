@@ -108,8 +108,9 @@ describe('front dashboard shell', () => {
     expect(stock.text()).toContain('실거래 판단 근거 아님');
     expect(stock.text()).toContain('메인 가격 차트');
     expect(stock.text()).toContain('KRX:005930');
-    expect(stock.text()).toContain('OTC:SSNLF');
-    expect(stock.text()).toContain('KRX 위젯 미지원');
+    expect(stock.text()).toContain('KRX 원화 mock');
+    expect(stock.text()).toContain('거래량');
+    expect(stock.text()).toContain('매매 동향');
     expect(stock.text()).toContain('quote snapshot');
     expect(stock.text()).toContain('현재가·등락률·거래량·asOf·stale 상태는 별도 quote snapshot 영역');
     expect(stock.text()).toContain('어제와 달라진 점');

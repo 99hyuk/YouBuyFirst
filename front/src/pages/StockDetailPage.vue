@@ -2,7 +2,8 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-import TradingViewChart from '../components/TradingViewChart.vue';
+import StockPriceChart from '../components/StockPriceChart.vue';
+import { stockChartFixtures } from '../fixtures/stock-detail-chart';
 import stockDetailFixtureSet from '../fixtures/stock-detail-fixtures.json';
 
 type StockDetailFixture = {
@@ -11,9 +12,6 @@ type StockDetailFixture = {
   market: string;
   provider: string;
   providerSymbol: string;
-  widgetSymbol: string;
-  widgetSymbolNote: string;
-  providerChartUrl: string;
   quoteSnapshot: {
     price: string;
     change: string;
@@ -50,7 +48,9 @@ const stock = computed(
 );
 const quoteSnapshot = computed(() => stock.value.quoteSnapshot);
 const topBrief = computed(() => stock.value.brief);
-const usesWidgetFallback = computed(() => stock.value.widgetSymbol !== stock.value.providerSymbol);
+const chartFixture = computed(
+  () => stockChartFixtures.find((item) => item.symbol.toUpperCase() === stock.value.symbol.toUpperCase()) ?? stockChartFixtures[0]
+);
 
 const topBriefMetrics = computed(() => [
   { label: '시황 점수', value: topBrief.value.score, meta: topBrief.value.scoreMeta },
@@ -185,19 +185,26 @@ const reliability = [
       </div>
     </section>
 
-    <section class="stock-main-chart panel content-feed-card surface-data-card" aria-label="TradingView 메인 가격 차트">
+    <section class="stock-main-chart panel content-feed-card surface-data-card" aria-label="원화 메인 가격 차트">
       <div class="panel-header">
         <div>
-          <p class="label">tradingview widget</p>
+          <p class="label">lightweight chart</p>
           <h3>메인 가격 차트</h3>
         </div>
         <span class="status-pill subtle">{{ stock.providerSymbol }}</span>
       </div>
-      <TradingViewChart :symbol="stock.widgetSymbol" :title="`${stock.name} 메인 가격 차트`" />
+      <StockPriceChart
+        :title="`${stock.name} 메인 가격 차트`"
+        :provider-symbol="chartFixture.providerSymbol"
+        :currency="chartFixture.currency"
+        :price-unit="chartFixture.priceUnit"
+        :volume-unit="chartFixture.volumeUnit"
+        :flow-unit="chartFixture.flowUnit"
+        :chart-source="chartFixture.chartSource"
+        :candles="chartFixture.candles"
+      />
       <p class="chart-data-note">
-        위 차트는 가격 흐름 확인용 위젯입니다. 현재가·등락률·거래량·asOf·stale 상태는 별도 quote snapshot 영역에서 관리합니다.
-        <span v-if="usesWidgetFallback" class="chart-provider-note">{{ stock.widgetSymbolNote }}</span>
-        <a class="chart-source-link" :href="stock.providerChartUrl" target="_blank" rel="noreferrer noopener">원문 차트</a>
+        위 차트는 TradingView Lightweight Charts 기반 mock 차트입니다. 현재가·등락률·거래량·asOf·stale 상태는 별도 quote snapshot 영역에서 관리합니다.
       </p>
     </section>
 

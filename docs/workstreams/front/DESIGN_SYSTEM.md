@@ -58,7 +58,7 @@ Pretendard Variable을 기본으로 씁니다. 숫자는 굵게, 설명은 작�
 | `badge` | `status-pill`. mock/stale/warning/subtle 상태를 짧게 표시합니다. |
 | `tab` | pill 형태, 활성 상태는 brand 계열 border/background. 많은 탭은 filter strip으로 처리합니다. |
 | `table` | header band + row. 행 높이는 `42-52px`, 숫자와 상태는 작고 굵게. 좁은 화면에서는 가로 스크롤 허용. |
-| `chart shell` | 축/범례/기간 버튼을 그래프 안쪽 또는 헤더 오른쪽에 붙입니다. PPT식 단일 선만 두지 않습니다. 외부 차트 위젯은 quote snapshot과 데이터 출처 라벨을 분리합니다. |
+| `chart shell` | 축/범례/기간 버튼을 그래프 안쪽 또는 헤더 오른쪽에 붙입니다. PPT식 단일 선만 두지 않습니다. 가격 차트는 quote snapshot과 데이터 출처 라벨을 분리합니다. |
 
 ## 상승/하락/긍정/부정
 
@@ -85,7 +85,7 @@ Pretendard Variable을 기본으로 씁니다. 숫자는 굵게, 설명은 작�
 
 - 새 table variant
 - 새 chart shell
-- TradingView 외 다른 외부 차트 provider shell
+- Lightweight Charts 외 다른 차트 provider shell
 - 새 drawer/modal/detail panel
 - 새 상태 badge
 - 새 데이터 카드 밀도
