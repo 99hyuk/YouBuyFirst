@@ -11,6 +11,9 @@ type StockDetailFixture = {
   market: string;
   provider: string;
   providerSymbol: string;
+  widgetSymbol: string;
+  widgetSymbolNote: string;
+  providerChartUrl: string;
   quoteSnapshot: {
     price: string;
     change: string;
@@ -47,6 +50,7 @@ const stock = computed(
 );
 const quoteSnapshot = computed(() => stock.value.quoteSnapshot);
 const topBrief = computed(() => stock.value.brief);
+const usesWidgetFallback = computed(() => stock.value.widgetSymbol !== stock.value.providerSymbol);
 
 const topBriefMetrics = computed(() => [
   { label: '시황 점수', value: topBrief.value.score, meta: topBrief.value.scoreMeta },
@@ -189,9 +193,11 @@ const reliability = [
         </div>
         <span class="status-pill subtle">{{ stock.providerSymbol }}</span>
       </div>
-      <TradingViewChart :symbol="stock.providerSymbol" :title="`${stock.name} 메인 가격 차트`" />
+      <TradingViewChart :symbol="stock.widgetSymbol" :title="`${stock.name} 메인 가격 차트`" />
       <p class="chart-data-note">
         위 차트는 가격 흐름 확인용 위젯입니다. 현재가·등락률·거래량·asOf·stale 상태는 별도 quote snapshot 영역에서 관리합니다.
+        <span v-if="usesWidgetFallback" class="chart-provider-note">{{ stock.widgetSymbolNote }}</span>
+        <a class="chart-source-link" :href="stock.providerChartUrl" target="_blank" rel="noreferrer noopener">원문 차트</a>
       </p>
     </section>
 

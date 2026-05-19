@@ -32,7 +32,7 @@ const renderWidget = async () => {
   const widgetMount = document.createElement('div');
   widgetMount.className = 'tradingview-widget-container__widget';
   widgetMount.style.width = '100%';
-  widgetMount.style.height = '100%';
+  widgetMount.style.height = 'calc(100% - 32px)';
 
   const attribution = document.createElement('div');
   attribution.className = 'tradingview-widget-copyright';
@@ -54,14 +54,15 @@ const renderWidget = async () => {
     autosize: true,
     symbol: props.symbol,
     interval: 'D',
-    timezone: 'Asia/Seoul',
+    timezone: 'exchange',
     theme: props.theme,
     style: '1',
-    locale: 'kr',
+    locale: 'en',
     allow_symbol_change: false,
     enable_publishing: false,
     hide_side_toolbar: false,
     hide_top_toolbar: false,
+    save_image: false,
     calendar: false,
     support_host: 'https://www.tradingview.com'
   });
@@ -81,7 +82,7 @@ onBeforeUnmount(clearWidget);
       <strong>{{ title }}</strong>
       <span>{{ symbol }}</span>
     </div>
-    <div ref="container" class="tradingview-widget-container">
+    <div ref="container" class="tradingview-widget-container" style="height: 100%; width: 100%">
       <div class="tradingview-chart-fallback">
         <strong>{{ symbol }}</strong>
         <span>TradingView 차트 로딩 중</span>

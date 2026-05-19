@@ -4,7 +4,7 @@
 
 - Parent: `stocks`
 - Route 후보: `/stocks/:symbol`
-- 현재 fixture 예시: `005930` -> `KRX:005930`, `NVDA` -> `NASDAQ:NVDA`
+- 현재 fixture 예시: `005930` -> provider `KRX:005930`, widget `OTC:SSNLF`; `NVDA` -> provider/widget `NASDAQ:NVDA`
 - Child screens:
   - `stock-news-detail`: 뉴스/공시/리포트 링크 상세 또는 drawer
   - `stock-community-post`: 커뮤니티 원문 snippet/출처 상세
@@ -18,7 +18,7 @@
 
 - 팩트폭격 상단 패널: 종목명, 티커, 한줄평, 보조 시황 문장, 근거 keyword chips
 - 종목 헤더: 종목명, 시장, quote snapshot 기반 현재가/등락률/거래량/asOf/stale 상태
-- 메인 가격 차트: TradingView Advanced Chart widget을 사용하고 `providerSymbol` fixture를 전달한다.
+- 메인 가격 차트: TradingView Advanced Chart widget을 사용한다. `providerSymbol`은 market/quote 식별자이고, 위젯이 직접 지원하지 않는 시장은 `widgetSymbol` 대체값을 분리한다.
 - quote snapshot 영역: 현재가, 등락률, 거래량, asOf, stale은 TradingView에서 읽지 않고 별도 market API 후보 값으로 관리한다.
 - 요약 지표 strip: 반응 점수, 언급 변화, 긍정/부정, 출처 수, 원문 링크 수
 - 반응 키워드와 시간대별 변화: 30분 키워드 pulse, 09:00~09:45 snapshot
@@ -42,6 +42,8 @@
 | --- | --- | --- |
 | `symbol`, `name`, `market` | backend/data | 종목 식별과 표시명 |
 | `providerSymbol` | market/front | TradingView 등 외부 차트 provider용 심볼. 예: `KRX:005930`, `NASDAQ:NVDA` |
+| `widgetSymbol` | front/market | TradingView 금융 위젯에 실제 전달할 심볼. KRX처럼 위젯 미지원이면 지원되는 대체 심볼을 임시 사용 |
+| `providerChartUrl` | front/market | provider 원문 차트 링크. 위젯 대체 심볼 사용 시 실제 KRX 페이지 링크 보존 |
 | `quoteSnapshot.price`, `change`, `volume`, `asOf`, `stale`, `dataStatus` | market | 차트 위젯과 분리된 현재가/등락률/거래량/기준시각/신선도 |
 | `headlineTone`, `headline`, `subtitle`, `scoreLine`, `riskNote` | agent/backend | 상단 팩트폭격 카피와 보조 문구 |
 | `headlineEvidence` | market/data/agent | 한줄평 근거 chip 배열 |
@@ -57,7 +59,7 @@
 
 ## 확인 필요
 
-- provider symbol 매핑을 market 트랙에서 관리할지, front fixture에서 임시 관리할지.
+- provider symbol과 widget symbol 매핑을 market 트랙에서 관리할지, front fixture에서 임시 관리할지.
 - TradingView에서 지원하지 않는 심볼의 fallback 차트를 어떤 UI로 둘지.
 - 외부 위젯 로딩 실패 시 quote snapshot과 커뮤니티 반응을 그대로 보여줄지.
 - 뉴스/공시/커뮤니티 글 상세를 별도 route로 둘지 drawer/panel로 둘지.

@@ -3622,6 +3622,7 @@ a {
 
 .tradingview-widget-container {
   position: relative;
+  height: 486px;
   min-height: 486px;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -3670,6 +3671,20 @@ a {
   font-size: 11px;
   font-weight: 700;
   line-height: 1.5;
+}
+
+.chart-provider-note {
+  display: inline-flex;
+  margin-left: 8px;
+  color: #8a5d05;
+  font-weight: 820;
+}
+
+.chart-source-link {
+  display: inline-flex;
+  margin-left: 8px;
+  color: var(--brand);
+  font-weight: 850;
 }
 
 .stock-roast-panel {
@@ -4925,6 +4940,7 @@ a {
 
 .tradingview-widget-container,
 .tradingview-chart-fallback {
+  height: 426px;
   min-height: 426px;
 }
 
