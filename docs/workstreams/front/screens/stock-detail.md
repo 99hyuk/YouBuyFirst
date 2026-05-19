@@ -18,7 +18,7 @@
 
 - 팩트폭격 상단 패널: 종목명, 티커, 한줄평, 보조 시황 문장, 근거 keyword chips
 - 종목 헤더: 종목명, 시장, quote snapshot 기반 현재가/등락률/거래량/asOf/stale 상태
-- 메인 가격 차트: TradingView Lightweight Charts 기반 내부 차트. 국장은 원화 OHLC, 이동평균선, 하단 거래량, 매매동향 요약을 mock fixture로 그린다.
+- 메인 가격 차트: TradingView Lightweight Charts 기반 내부 차트. 현재는 실시간 갱신이 없는 mock fixture이며, 국장은 원화 OHLC, 이동평균선, 하단 거래량, 매매동향 요약을 그린다.
 - quote snapshot 영역: 현재가, 등락률, 거래량, asOf, stale은 차트 라이브러리에서 읽지 않고 별도 market API 후보 값으로 관리한다.
 - 요약 지표 strip: 반응 점수, 언급 변화, 긍정/부정, 출처 수, 원문 링크 수
 - 반응 키워드와 시간대별 변화: 30분 키워드 pulse, 09:00~09:45 snapshot

@@ -131,7 +131,7 @@ export const stockChartFixtures: StockChartFixture[] = [
     priceUnit: '원',
     volumeUnit: '주',
     flowUnit: '억원',
-    chartSource: 'KRX 원화 mock · market API 연결 후보'
+    chartSource: 'KRX 원화 mock · 실시간 갱신 없음 · market API 연결 후보'
   }),
   buildCandles({
     symbol: 'NVDA',
@@ -148,6 +148,6 @@ export const stockChartFixtures: StockChartFixture[] = [
     priceUnit: '달러',
     volumeUnit: '주',
     flowUnit: '백만달러',
-    chartSource: 'NASDAQ mock · market API 연결 후보'
+    chartSource: 'NASDAQ mock · 실시간 갱신 없음 · market API 연결 후보'
   })
 ];
