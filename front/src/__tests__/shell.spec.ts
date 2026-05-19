@@ -106,6 +106,10 @@ describe('front dashboard shell', () => {
     expect(stock.text()).toContain('오늘의 한줄평');
     expect(stock.text()).toContain('실적표 없으면 행복회로 압수');
     expect(stock.text()).toContain('실거래 판단 근거 아님');
+    expect(stock.text()).toContain('메인 가격 차트');
+    expect(stock.text()).toContain('KRX:005930');
+    expect(stock.text()).toContain('quote snapshot');
+    expect(stock.text()).toContain('현재가·등락률·거래량·asOf·stale 상태는 별도 quote snapshot 영역');
     expect(stock.text()).toContain('어제와 달라진 점');
     expect(stock.text()).toContain('반응 키워드');
     expect(stock.text()).toContain('시간대별 변화');
@@ -113,6 +117,12 @@ describe('front dashboard shell', () => {
     expect(stock.text()).toContain('신호 신뢰도');
     expect(stock.findAll('.vertical-timeline article')).toHaveLength(5);
     expect(stock.findAll('.evidence-list a').length).toBeGreaterThanOrEqual(5);
+
+    const overseasStock = await mountAt('/stocks/NVDA');
+    expect(overseasStock.text()).toContain('NVIDIA');
+    expect(overseasStock.text()).toContain('NASDAQ:NVDA');
+    expect(overseasStock.text()).toContain('$924.80');
+    expect(overseasStock.text()).toContain('AI 왕관');
 
     const communities = await mountAt('/communities');
     expect(communities.text()).toContain('인간 지표');

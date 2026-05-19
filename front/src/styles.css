@@ -3577,9 +3577,99 @@ a {
   color: var(--market-up);
 }
 
+.stock-quote-board em.down {
+  color: var(--market-down);
+}
+
 .indicator-strip-grid em.down,
 .edge-price em.down {
   color: var(--market-down);
+}
+
+.stock-main-chart {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+}
+
+.tradingview-chart-shell {
+  display: grid;
+  gap: 8px;
+  min-height: 520px;
+}
+
+.tradingview-chart-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 24px;
+  color: #59677a;
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.tradingview-chart-title strong {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 860;
+}
+
+.tradingview-chart-title span {
+  color: var(--brand);
+  font-weight: 850;
+}
+
+.tradingview-widget-container {
+  position: relative;
+  min-height: 486px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.tradingview-widget-container__widget {
+  min-height: 456px;
+}
+
+.tradingview-chart-fallback {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  min-height: 486px;
+  color: #728097;
+  font-size: 12px;
+  font-weight: 760;
+  text-align: center;
+}
+
+.tradingview-chart-fallback strong {
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.tradingview-widget-copyright {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 8px 6px;
+  background: #ffffff;
+  color: #8b97a8;
+  font-size: 10px;
+  font-weight: 720;
+}
+
+.tradingview-widget-copyright a {
+  color: inherit;
+}
+
+.chart-data-note {
+  margin: 0;
+  color: #647184;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
 }
 
 .stock-roast-panel {
@@ -4823,6 +4913,23 @@ a {
 
 .stock-quote-board strong {
   font-size: 17px;
+}
+
+.stock-main-chart {
+  padding: 12px;
+}
+
+.tradingview-chart-shell {
+  min-height: 460px;
+}
+
+.tradingview-widget-container,
+.tradingview-chart-fallback {
+  min-height: 426px;
+}
+
+.tradingview-widget-container__widget {
+  min-height: 396px;
 }
 
 .keyword-pulse-grid article,

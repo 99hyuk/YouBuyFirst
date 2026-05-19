@@ -1,44 +1,61 @@
 <script setup lang="ts">
-const stock = {
-  symbol: '005930',
-  name: '삼성전자',
-  market: 'KRX',
-  price: '78,200원',
-  change: '+1.24%',
-  volume: '18.4M',
-  quoteTime: '2026.05.18 09:50',
-  stale: false,
-  yesterday: [
-    '어제는 단순 실적 기대가 중심이었고, 오늘은 HBM 공급 키워드가 반응을 이끌고 있습니다.',
-    '네이버 종토방 비중이 낮아지고 디시·에펨코리아 쪽 확산이 늘었습니다.',
-    '가격 상승보다 커뮤니티 반응이 먼저 움직인 구간이 09:10~09:35에 보입니다.'
-  ]
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+import TradingViewChart from '../components/TradingViewChart.vue';
+import stockDetailFixtureSet from '../fixtures/stock-detail-fixtures.json';
+
+type StockDetailFixture = {
+  symbol: string;
+  name: string;
+  market: string;
+  provider: string;
+  providerSymbol: string;
+  quoteSnapshot: {
+    price: string;
+    change: string;
+    changeTone: 'up' | 'down';
+    volume: string;
+    asOf: string;
+    stale: boolean;
+    dataStatus: string;
+    latencyLabel: string;
+  };
+  brief: {
+    headline: string;
+    summary: string;
+    mood: string;
+    note: string;
+    score: string;
+    scoreMeta: string;
+    scoreLine: string;
+    riskNote: string;
+    reasons: string[];
+  };
+  yesterday: string[];
 };
 
-const topBrief = {
-  headline: 'HBM 붙었다고 삼전이 엔비디아면 내 통장도 워런 버핏임',
-  summary:
-    '반도체 업황 회복 기대 · HBM 수요 뉴스 · 가격 +1.24% · 거래량 18.4M · 15분 지연 시세 기준',
-  mood: '오늘의 한줄평',
-  note:
-    '반도체 바람은 맞는데, 바람이 실적 대신 돈 벌어주진 않습니다. 숫자 안 찍히면 기대감은 그냥 비싼 포장지입니다.',
-  scoreLine: '시황 77점 · 기대감 뜨거움 · 실적표 없으면 행복회로 압수',
-  riskNote: '참고용 mock 요약 · 실거래 판단 근거 아님'
-};
+const route = useRoute();
+const stockFixtures = stockDetailFixtureSet.items as StockDetailFixture[];
 
-const topBriefMetrics = [
-  { label: '시황 점수', value: '77', meta: '기대 우세' },
-  { label: '등락률', value: '+1.24%', meta: stock.price },
-  { label: '거래량', value: stock.volume, meta: 'mock' },
-  { label: '시세 기준', value: '09:50', meta: '15분 지연' }
-];
+const routeSymbol = computed(() => String(route.params.symbol ?? stockFixtures[0].symbol).toUpperCase());
+const stock = computed(
+  () =>
+    stockFixtures.find(
+      (item) => item.symbol.toUpperCase() === routeSymbol.value || item.providerSymbol.toUpperCase() === routeSymbol.value
+    ) ?? stockFixtures[0]
+);
+const quoteSnapshot = computed(() => stock.value.quoteSnapshot);
+const topBrief = computed(() => stock.value.brief);
 
-const topBriefReasons = [
-  '반도체 업황 회복 기대',
-  'HBM 수요 뉴스',
-  '거래량 18.4M',
-  '실적 확인 필요'
-];
+const topBriefMetrics = computed(() => [
+  { label: '시황 점수', value: topBrief.value.score, meta: topBrief.value.scoreMeta },
+  { label: '등락률', value: quoteSnapshot.value.change, meta: quoteSnapshot.value.price },
+  { label: '거래량', value: quoteSnapshot.value.volume, meta: quoteSnapshot.value.dataStatus },
+  { label: '시세 기준', value: quoteSnapshot.value.asOf.split(' ').at(-1) ?? quoteSnapshot.value.asOf, meta: quoteSnapshot.value.latencyLabel }
+]);
+
+const topBriefReasons = computed(() => topBrief.value.reasons);
 
 const reactionTrend = [
   { period: '30분', mentions: 128, positive: 54, negative: 27, neutral: 19 },
@@ -147,21 +164,35 @@ const reliability = [
       </div>
       <div class="stock-quote-board">
         <div>
-          <span>현재가</span>
-          <strong>{{ stock.price }}</strong>
-          <em class="up">{{ stock.change }}</em>
+          <span>quote snapshot · 현재가</span>
+          <strong>{{ quoteSnapshot.price }}</strong>
+          <em :class="quoteSnapshot.changeTone">{{ quoteSnapshot.change }}</em>
         </div>
         <div>
           <span>거래량</span>
-          <strong>{{ stock.volume }}</strong>
-          <em>mock</em>
+          <strong>{{ quoteSnapshot.volume }}</strong>
+          <em>{{ quoteSnapshot.dataStatus }}</em>
         </div>
         <div>
           <span>시세 기준</span>
-          <strong>{{ stock.quoteTime }}</strong>
-          <em :class="stock.stale ? 'warn' : 'ok'">{{ stock.stale ? 'stale' : '지연' }}</em>
+          <strong>{{ quoteSnapshot.asOf }}</strong>
+          <em :class="quoteSnapshot.stale ? 'warn' : 'ok'">{{ quoteSnapshot.stale ? 'stale' : quoteSnapshot.latencyLabel }}</em>
         </div>
       </div>
+    </section>
+
+    <section class="stock-main-chart panel content-feed-card surface-data-card" aria-label="TradingView 메인 가격 차트">
+      <div class="panel-header">
+        <div>
+          <p class="label">tradingview widget</p>
+          <h3>메인 가격 차트</h3>
+        </div>
+        <span class="status-pill subtle">{{ stock.providerSymbol }}</span>
+      </div>
+      <TradingViewChart :symbol="stock.providerSymbol" :title="`${stock.name} 메인 가격 차트`" />
+      <p class="chart-data-note">
+        위 차트는 가격 흐름 확인용 위젯입니다. 현재가·등락률·거래량·asOf·stale 상태는 별도 quote snapshot 영역에서 관리합니다.
+      </p>
     </section>
 
     <section class="dense-summary-strip stock-density-strip" aria-label="종목 요약 지표">
