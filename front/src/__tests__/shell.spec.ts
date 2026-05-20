@@ -38,6 +38,7 @@ describe('front dashboard shell', () => {
       '/stocks/:symbol',
       '/communities',
       '/indicators',
+      '/indicators/:category',
       '/agents',
       '/portfolio'
     ]);
@@ -177,6 +178,14 @@ describe('front dashboard shell', () => {
 
     expect(indicators.text()).toContain('국장 섹터 방향');
     expect(indicators.text()).toContain('미장 섹터 방향');
+    expect(indicators.text()).toContain('국내주식');
+    expect(indicators.text()).toContain('미국주식');
+    expect(indicators.text()).toContain('채권');
+    expect(indicators.text()).toContain('원자재');
+
+    const indicatorDetail = await mountAt('/indicators/domestic');
+    expect(indicatorDetail.text()).toContain('국내주식 상세 지표');
+    expect(indicatorDetail.text()).toContain('전체 핵심 보기');
 
     const agents = await mountAt('/agents');
     expect(agents.text()).toContain('인간 지표');
