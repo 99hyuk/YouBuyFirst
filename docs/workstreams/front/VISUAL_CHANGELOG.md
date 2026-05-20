@@ -6,6 +6,7 @@
 
 | Version | Time | Link | Summary |
 | --- | --- | --- | --- |
+| `FV-20260520-1320-tab-density-redesign` | 2026-05-20 13:20 KST | [stocks](../../../front/public/visual-history/2026-05-20/FV-20260520-1320-stock-screener-redesign-full.png) / [indicator detail](../../../front/public/visual-history/2026-05-20/FV-20260520-1320-indicator-domestic-detail-full.png) / [portfolio](../../../front/public/visual-history/2026-05-20/FV-20260520-1320-portfolio-ledger-redesign-full.png) | 종목 탭을 국장/해외 거래량 랭킹 중심으로 정리하고, 주요 지표 상세 route와 내 포트폴리오를 대시보드 기준 정보 밀도로 재구성했습니다. |
 | `FV-20260520-1257-indicators-hub-redesign` | 2026-05-20 12:57 KST | [indicators 1440](../../../front/public/visual-history/2026-05-20/FV-20260520-1257-indicators-hub-redesign-1440.png) | 주요 지표를 국내주식, 미국주식, 채권, 원자재 핵심 허브로 재구성하고 국장·미장 섹터 방향을 정사각형 타일 맵으로 정리했습니다. |
 | `FV-20260520-1233-human-indicator-redesign` | 2026-05-20 12:33 KST | [communities 1440](../../../front/public/visual-history/2026-05-20/FV-20260520-1233-human-indicator-redesign-communities-1440.png) | 인간 지표를 상단 종목 신호 모자이크, 커뮤니티 에이전트 수익률 비교 그래프, 지표 추종/커뮤니티 역추종 판단 로그 중심으로 재구성했습니다. |
 | `FV-20260520-1132-retail-sentiment-half-qhd` | 2026-05-20 11:32 KST | [dashboard 1280](../../../front/public/visual-history/2026-05-20/FV-20260520-1132-retail-sentiment-half-qhd-dashboard-1280.png) | 반폭 QHD에서 개미 심리 지수를 검색창 위의 얇은 정보 바로 전환해 검색창과 겹치지 않게 했습니다. |

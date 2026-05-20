@@ -93,22 +93,26 @@ const detailRows: Record<string, { label: string; value: string; note: string; t
   domestic: [
     { label: '상승 섹터 수', value: '4 / 6', note: '반도체, 로봇, 금융 우세', tone: 'up' },
     { label: '커뮤니티 괴리', value: 'NAVER', note: '가격 상승인데 부정 반응 증가', tone: 'down' },
-    { label: '일정 민감도', value: '실적 발표', note: '반도체 장비주 댓글 속도 증가', tone: 'up' }
+    { label: '일정 민감도', value: '실적 발표', note: '반도체 장비주 댓글 속도 증가', tone: 'up' },
+    { label: '시장 폭', value: '58%', note: '상승 종목이 우세하지만 대형주 편중', tone: 'neutral' }
   ],
   us: [
     { label: '상승 섹터 수', value: '3 / 6', note: 'AI와 에너지 우세', tone: 'up' },
     { label: '커뮤니티 괴리', value: 'SOXS', note: 'ETF 상승인데 부정 언급 우세', tone: 'down' },
-    { label: '일정 민감도', value: 'PCE', note: '금리 민감 글 증가', tone: 'neutral' }
+    { label: '일정 민감도', value: 'PCE', note: '금리 민감 글 증가', tone: 'neutral' },
+    { label: '시장 폭', value: '51%', note: 'AI 대형주 중심으로 폭이 좁음', tone: 'neutral' }
   ],
   bonds: [
     { label: '미국 10Y', value: '4.41%', note: '성장주 반응을 누르는 구간', tone: 'down' },
     { label: '한국 3Y', value: '3.38%', note: '금융주 배당 글과 연결', tone: 'neutral' },
-    { label: '반응 키워드', value: 'FOMC', note: '리츠, 성장주, 환율 글에서 반복', tone: 'up' }
+    { label: '반응 키워드', value: 'FOMC', note: '리츠, 성장주, 환율 글에서 반복', tone: 'up' },
+    { label: '환율 민감도', value: '+12%', note: '수출주 글에서 원달러 키워드 증가', tone: 'up' }
   ],
   commodities: [
     { label: 'WTI', value: '78.4', note: '정유와 운송 키워드가 갈림', tone: 'up' },
     { label: '금', value: '2,380', note: '안전자산 글에서 유지', tone: 'up' },
-    { label: '원자재 반응', value: '+7%', note: '방산, 에너지 글에서 보조 지표로 등장', tone: 'neutral' }
+    { label: '원자재 반응', value: '+7%', note: '방산, 에너지 글에서 보조 지표로 등장', tone: 'neutral' },
+    { label: '달러 영향', value: '중립', note: '원자재보다 환율 글로 분산', tone: 'neutral' }
   ]
 };
 
@@ -155,10 +159,104 @@ const freshnessRows = [
   { source: '환율·금리', state: '지연', used: '채권·환율 민감도' },
   { source: '커뮤니티 반응', state: '10:05 수집', used: '괴리 보드' }
 ];
+
+const detailChartTicks = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00'];
 </script>
 
 <template>
-  <section class="surface-page indicators-page indicator-hub-page">
+  <section v-if="selectedGroup" class="surface-page indicators-page indicator-detail-page">
+    <section class="indicator-detail-hero" :class="selectedGroup.tone">
+      <RouterLink to="/indicators">전체 핵심 보기</RouterLink>
+      <div>
+        <p class="label">{{ selectedGroup.label }}</p>
+        <h2>{{ selectedGroup.title }} 상세 지표</h2>
+        <span>{{ selectedGroup.summary }}</span>
+      </div>
+      <strong>{{ selectedGroup.change }}</strong>
+    </section>
+
+    <section class="indicator-detail-kpi-grid" aria-label="상세 핵심 지표">
+      <article v-for="row in detailRows[selectedGroup.id]" :key="row.label" :class="row.tone">
+        <span>{{ row.label }}</span>
+        <strong>{{ row.value }}</strong>
+        <em>{{ row.note }}</em>
+      </article>
+    </section>
+
+    <section class="indicator-detail-workbench">
+      <article class="indicator-detail-chart-panel">
+        <div class="section-band-title">
+          <div>
+            <p class="label">market x reaction</p>
+            <h3>가격·반응 동시 변화</h3>
+          </div>
+          <span>mock trend</span>
+        </div>
+        <div class="indicator-chart-lines" aria-hidden="true">
+          <svg viewBox="0 0 720 230" role="img">
+            <defs>
+              <linearGradient id="indicatorRedFill" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#ef4444" stop-opacity="0.18" />
+                <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="indicatorBlueFill" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#2563eb" stop-opacity="0.16" />
+                <stop offset="100%" stop-color="#2563eb" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path d="M20 160 L120 136 L220 118 L320 132 L420 88 L540 74 L700 54 L700 214 L20 214 Z" fill="url(#indicatorRedFill)" />
+            <path d="M20 178 L120 164 L220 172 L320 146 L420 152 L540 124 L700 136 L700 214 L20 214 Z" fill="url(#indicatorBlueFill)" />
+            <polyline points="20,160 120,136 220,118 320,132 420,88 540,74 700,54" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+            <polyline points="20,178 120,164 220,172 320,146 420,152 540,124 700,136" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" />
+          </svg>
+          <div>
+            <span v-for="tick in detailChartTicks" :key="tick">{{ tick }}</span>
+          </div>
+        </div>
+      </article>
+
+      <aside class="indicator-detail-side">
+        <section>
+          <p class="label">freshness</p>
+          <h3>지표별 데이터 신선도</h3>
+          <article v-for="row in freshnessRows" :key="row.source" class="freshness-row">
+            <strong>{{ row.source }}</strong>
+            <span>{{ row.state }}</span>
+            <em>{{ row.used }}</em>
+          </article>
+        </section>
+        <section>
+          <p class="label">chips</p>
+          <h3>연결 키워드</h3>
+          <div class="theme-chip-map">
+            <span v-for="chip in selectedGroup.chips" :key="chip" class="hot">{{ chip }}</span>
+          </div>
+        </section>
+      </aside>
+    </section>
+
+    <section class="indicator-anomaly-panel detail-wide">
+      <div class="section-band-title">
+        <div>
+          <p class="label">reaction anomaly</p>
+          <h3>가격과 반응이 엇갈린 종목</h3>
+        </div>
+        <span>관찰 후보</span>
+      </div>
+      <div class="indicator-row-head">
+        <span>종목</span><span>괴리</span><span>가격</span><span>반응</span><span>이유</span>
+      </div>
+      <article v-for="row in anomalyRows" :key="`${row.stock}-${row.type}`">
+        <strong>{{ row.stock }}</strong>
+        <span>{{ row.type }}</span>
+        <em :class="row.price.startsWith('-') ? 'down' : 'up'">{{ row.price }}</em>
+        <b>{{ row.reaction }}</b>
+        <small>{{ row.reason }}</small>
+      </article>
+    </section>
+  </section>
+
+  <section v-else class="surface-page indicators-page indicator-hub-page">
     <section class="indicator-hub-hero" aria-labelledby="indicators-title">
       <div>
         <p class="label">market context</p>
@@ -180,7 +278,7 @@ const freshnessRows = [
       >
         <div class="indicator-core-top">
           <span>{{ group.label }}</span>
-          <em>상세 지표 보기</em>
+          <em>상세 분석으로 이동</em>
         </div>
         <strong>{{ group.title }}</strong>
         <b>{{ group.change }}</b>
@@ -194,27 +292,6 @@ const freshnessRows = [
           </span>
         </div>
       </RouterLink>
-    </section>
-
-    <section v-if="selectedGroup" class="indicator-detail-panel" aria-label="상세 지표">
-      <div class="section-band-title">
-        <div>
-          <p class="label">detail route</p>
-          <h3>{{ selectedGroup.title }} 상세 지표</h3>
-        </div>
-        <RouterLink to="/indicators">전체 핵심 보기</RouterLink>
-      </div>
-      <div class="indicator-detail-grid">
-        <article
-          v-for="row in detailRows[selectedGroup.id]"
-          :key="row.label"
-          :class="row.tone"
-        >
-          <span>{{ row.label }}</span>
-          <strong>{{ row.value }}</strong>
-          <em>{{ row.note }}</em>
-        </article>
-      </div>
     </section>
 
     <section class="indicator-sector-layout">
