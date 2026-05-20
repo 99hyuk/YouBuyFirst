@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>2026-05-20 Front Visual History</title>
     <style>
-      :root { color: #17212b; background: #eef3f8; font-family: Pretendard, "Pretendard Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      :root {
+        color: #17212b;
+        background: #eef3f8;
+        font-family: Pretendard, "Pretendard Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
       * { box-sizing: border-box; }
       body { margin: 0; }
       main { width: min(1120px, calc(100% - 40px)); margin: 0 auto; padding: 34px 0 64px; }
@@ -29,7 +33,7 @@
     <main>
       <header>
         <h1>2026-05-20</h1>
-        <p>대시보드 개미 심리 지수 게이지와 자료 모음집 정리 상태를 확인하는 기록입니다.</p>
+        <p>대시보드 개미 심리 지수와 인간 지표 화면 개편을 확인하는 대표 캡처입니다.</p>
         <div class="actions">
           <a href="../index.html">전체 날짜로 돌아가기</a>
           <a href="../references/index.html">자료 모음집</a>
@@ -39,12 +43,38 @@
 
       <section class="version-list">
         <article>
+          <img class="thumb" src="./FV-20260520-1233-human-indicator-redesign-communities-1440.png" alt="인간 지표 모자이크 신호, 성과 그래프, 모의 판단 로그 화면" />
+          <div class="version-copy">
+            <span class="meta">FV-20260520-1233-human-indicator-redesign · current</span>
+            <h2>인간 지표 대시보드형 재구성</h2>
+            <span class="capture-note">Playwright full page · 1440px wide · communities</span>
+            <p>지금 뜨는 종목, 부정적인 종목, 언급 많은 종목, 라이징 스타를 상단 모자이크로 배치했습니다. 커뮤니티 에이전트 수익률 비교 그래프와 지표 추종/커뮤니티 역추종 판단 로그를 함께 보여줍니다.</p>
+            <div class="shot-links" aria-label="human indicator screenshot">
+              <a href="./FV-20260520-1233-human-indicator-redesign-communities-1440.png">인간 지표 캡처 보기</a>
+            </div>
+          </div>
+        </article>
+
+        <article>
+          <img class="thumb" src="./FV-20260520-1132-retail-sentiment-half-qhd-dashboard-1280.png" alt="1280px 반폭에서 검색창 위로 올라간 개미 심리 지수 바" />
+          <div class="version-copy">
+            <span class="meta">FV-20260520-1132-retail-sentiment-half-qhd · responsive check</span>
+            <h2>QHD 절반 폭 심리 지수 바</h2>
+            <span class="capture-note">Playwright viewport · 1280px wide · dashboard</span>
+            <p>1280px 폭에서는 왼쪽 게이지 카드가 검색창과 겹치지 않도록 검색창 위의 얇은 정보 바로 전환합니다.</p>
+            <div class="shot-links" aria-label="half qhd screenshot">
+              <a href="./FV-20260520-1132-retail-sentiment-half-qhd-dashboard-1280.png">1280px 캡처 보기</a>
+            </div>
+          </div>
+        </article>
+
+        <article>
           <img class="thumb" src="./FV-20260520-1038-retail-sentiment-gauge-ratio-dashboard-1440.png" alt="개미 심리 지수 가로형 게이지가 들어간 대시보드" />
           <div class="version-copy">
-            <span class="meta">FV-20260520-1038-retail-sentiment-gauge-ratio · current</span>
+            <span class="meta">FV-20260520-1038-retail-sentiment-gauge-ratio</span>
             <h2>대시보드 가로형 개미 심리 지수 게이지</h2>
             <span class="capture-note">Playwright viewport · 1440px wide · dashboard</span>
-            <p>숫자와 상태 문구는 카드 왼쪽에, 순수 게이지 그래프는 오른쪽에 분리했습니다. SVG 안에는 글씨와 큰 숫자를 넣지 않아 겹침이 생기지 않도록 했습니다.</p>
+            <p>검색창 위치를 유지하면서 개미 심리 지수를 가로형 게이지 카드로 정리한 기준 캡처입니다.</p>
             <div class="shot-links" aria-label="dashboard screenshots">
               <a href="./FV-20260520-1038-retail-sentiment-gauge-ratio-dashboard-1440.png">대시보드 캡처 보기</a>
             </div>
@@ -57,23 +87,10 @@
             <span class="meta">FV-20260520-1042-reference-library-originals</span>
             <h2>자료 모음집 원본 이미지 정리</h2>
             <span class="capture-note">Playwright viewport · 1440px wide · references</span>
-            <p>종목 상세 레퍼런스 3장은 실제 로컬 원본 파일을 복사해서 연결했습니다. Fear &amp; Greed 캡처 원본은 현재 로컬 파일로 찾지 못해 재현 이미지는 제거했습니다.</p>
+            <p>종목 상세 레퍼런스 이미지를 실제 로컬 원본 파일로 연결한 자료 모음집 캡처입니다.</p>
             <div class="shot-links" aria-label="reference screenshots">
               <a href="./FV-20260520-1042-reference-library-originals.png">자료 모음집 캡처 보기</a>
               <a href="../references/index.html">자료 모음집 열기</a>
-            </div>
-          </div>
-        </article>
-
-        <article>
-          <img class="thumb" src="./FV-20260520-1132-retail-sentiment-half-qhd-dashboard-1280.png" alt="1280px 반폭에서 검색창 위로 올라간 개미 심리 지수 바" />
-          <div class="version-copy">
-            <span class="meta">FV-20260520-1132-retail-sentiment-half-qhd · responsive check</span>
-            <h2>QHD 절반 폭 심리 지수 바</h2>
-            <span class="capture-note">Playwright viewport · 1280px wide · dashboard</span>
-            <p>1280px 폭에서는 왼쪽 게이지 카드가 검색창과 겹치지 않도록 검색창 위의 얇은 정보 바 형태로 전환됩니다. 글씨를 억지로 줄이지 않고 배치만 바꾸는 대응입니다.</p>
-            <div class="shot-links" aria-label="half qhd screenshot">
-              <a href="./FV-20260520-1132-retail-sentiment-half-qhd-dashboard-1280.png">1280px 캡처 보기</a>
             </div>
           </div>
         </article>
