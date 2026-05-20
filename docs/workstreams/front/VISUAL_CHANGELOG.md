@@ -1,5 +1,12 @@
 # Front Visual Changelog
 
+## 2026-05-20 Dashboard Retail Sentiment Layout Fix
+
+| Version | Time | Screenshot | What Changed |
+| --- | --- | --- | --- |
+| `FV-20260520-1132-retail-sentiment-half-qhd` | 2026-05-20 11:32 KST | [dashboard 1280](../../../front/public/visual-history/2026-05-20/FV-20260520-1132-retail-sentiment-half-qhd-dashboard-1280.png) | At half-QHD width, the retail sentiment widget now switches into a compact bar above the centered search field instead of competing for side space. This keeps the search position stable and avoids text overlap without shrinking the copy into unreadable size. |
+| `FV-20260520-1038-retail-sentiment-gauge-ratio` | 2026-05-20 10:38 KST | [dashboard](../../../front/public/visual-history/2026-05-20/FV-20260520-1038-retail-sentiment-gauge-ratio-dashboard-1440.png) / [references](../../../front/public/visual-history/2026-05-20/FV-20260520-1042-reference-library-originals.png) | 검색창 위치와 아래 간격을 유지하고, 개미 심리 지수는 세로형 카드에서 가로형 게이지 카드로 바꿨습니다. SVG 안의 글씨와 숫자를 제거해 겹침을 없앴고, 자료 모음집은 사용자가 준 종목 상세 원본 이미지 파일 3장을 실제 asset으로 연결했습니다. Fear & Greed 캡처 원본은 현재 로컬 파일을 찾지 못해 재현 SVG를 제거했습니다. |
+
 프론트 화면 변경을 다시 확인하기 위한 작은 기록입니다. 대화에 이미지를 계속 붙이는 대신, 대표 버전은 `front/public/visual-history/`에 HTML 갤러리로 두고 원본 캡처는 링크로 엽니다.
 
 ## 2026-05-19 TradingView Widget Check

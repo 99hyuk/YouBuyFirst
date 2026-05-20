@@ -403,6 +403,7 @@ a {
 
 .standalone-search {
   display: grid;
+  position: relative;
   gap: 8px;
   justify-items: center;
   text-align: center;
@@ -413,6 +414,160 @@ a {
   gap: 7px;
   justify-items: center;
   width: min(760px, 100%);
+}
+
+.search-primary-row {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  min-height: 48px;
+}
+
+.retail-sentiment-gauge-card {
+  display: grid;
+  position: absolute;
+  top: 6px;
+  left: 0;
+  grid-template-columns: 112px minmax(0, 1fr);
+  align-items: center;
+  width: 328px;
+  min-height: 118px;
+  padding: 12px 13px;
+  border: 1px solid #d9e4ee;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 248, 240, 0.9), rgba(255, 255, 255, 0.98) 56%),
+    #ffffff;
+  color: var(--ink);
+  box-shadow:
+    0 16px 34px rgba(40, 54, 72, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  text-align: left;
+}
+
+.retail-sentiment-copy {
+  display: grid;
+  gap: 4px;
+  align-content: center;
+  min-width: 0;
+}
+
+.retail-sentiment-copy span {
+  color: #536274;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.retail-sentiment-copy strong {
+  color: #222b38;
+  font-size: 36px;
+  font-weight: 940;
+  letter-spacing: 0;
+  line-height: 0.9;
+  white-space: nowrap;
+}
+
+.retail-sentiment-copy strong small {
+  margin-left: 3px;
+  color: #778498;
+  font-size: 13px;
+  font-weight: 840;
+}
+
+.retail-sentiment-copy em {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 18px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: #e9f7ef;
+  color: #178452;
+  font-size: 10px;
+  font-weight: 860;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.retail-gauge-wrap {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.retail-gauge {
+  display: block;
+  width: min(184px, 100%);
+  height: auto;
+  overflow: visible;
+}
+
+.gauge-base,
+.gauge-segment {
+  fill: none;
+  stroke-linecap: butt;
+  stroke-width: 18;
+}
+
+.gauge-base {
+  stroke: #edf1f5;
+}
+
+.gauge-segment + .gauge-segment {
+  stroke-linecap: butt;
+}
+
+.gauge-label {
+  fill: #8994a3;
+  font-size: 9px;
+  font-weight: 860;
+  letter-spacing: 0;
+  text-anchor: middle;
+}
+
+.gauge-needle {
+  stroke: #232b36;
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.gauge-hub {
+  fill: #ffffff;
+  stroke: #232b36;
+  stroke-width: 1.2;
+}
+
+.retail-gauge-scale {
+  display: flex;
+  width: min(184px, 100%);
+  justify-content: space-between;
+  margin-top: -2px;
+  color: #7a8493;
+  font-size: 10px;
+  font-weight: 820;
+  line-height: 1;
+}
+
+.retail-sentiment-keywords {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.retail-sentiment-keywords span {
+  overflow: hidden;
+  color: #6a7482;
+  font-size: 10.5px;
+  font-weight: 780;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .search-line p {
@@ -6820,6 +6975,61 @@ a {
   }
 }
 
+@media (max-width: 1439px) and (min-width: 761px) {
+  .search-line {
+    width: min(760px, 100%);
+  }
+
+  .search-primary-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .retail-sentiment-gauge-card {
+    position: static;
+    grid-template-columns: minmax(0, 1fr);
+    width: min(640px, 100%);
+    min-height: 42px;
+    padding: 9px 12px;
+  }
+
+  .retail-sentiment-copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .retail-sentiment-copy strong {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .retail-sentiment-copy strong small {
+    font-size: 11px;
+  }
+
+  .retail-sentiment-copy em,
+  .retail-sentiment-keywords {
+    flex: 0 1 auto;
+  }
+
+  .retail-gauge-wrap {
+    display: none;
+  }
+
+  .mock-search {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 1080px) and (min-width: 761px) {
+  .retail-sentiment-copy span,
+  .retail-sentiment-keywords {
+    display: none;
+  }
+}
+
 @media (max-width: 760px) {
   .topbar-inner,
   .page-frame,
@@ -6875,6 +7085,19 @@ a {
 
   .search-line {
     justify-items: stretch;
+  }
+
+  .search-primary-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .retail-sentiment-gauge-card {
+    display: none;
+  }
+
+  .mock-search {
+    margin-top: 0;
   }
 
   .standalone-search .market-filter-row {

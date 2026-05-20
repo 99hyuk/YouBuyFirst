@@ -69,6 +69,10 @@ describe('front dashboard shell', () => {
     expect(wrapper.find('[data-testid="nav-agents"]').exists()).toBe(false);
     expect(wrapper.get('[data-testid="nav-portfolio"]').text()).toContain('내 포트폴리오');
     expect(wrapper.find('.topbar .live-ticker').exists()).toBe(true);
+    expect(wrapper.text()).toContain('개미 심리 지수');
+    expect(wrapper.text()).toContain('73점');
+    expect(wrapper.text()).toContain('어제 대비 +6.4%');
+    expect(wrapper.text()).toContain('실적 경계');
     expect(wrapper.text()).toContain('커뮤니티 지표 비교');
     expect(wrapper.find('.edge-rail').exists()).toBe(true);
     expect(wrapper.find('.edge-panel').exists()).toBe(true);
