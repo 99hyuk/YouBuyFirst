@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import TradingViewWidget from '../components/TradingViewWidget.vue';
+import StockPriceChart from '../components/StockPriceChart.vue';
+import quoteSnapshotFixtureSet from '../fixtures/quote-snapshots.json';
+import { stockChartFixtures } from '../fixtures/stock-detail-chart';
 import stockDetailFixtureSet from '../fixtures/stock-detail-fixtures.json';
 
 type StockDetailFixture = {
@@ -35,38 +37,138 @@ type StockDetailFixture = {
   yesterday: string[];
 };
 
+type ApiQuoteSnapshot = {
+  symbol: string;
+  name: string;
+  market: string;
+  currency: 'KRW' | 'USD';
+  price: number;
+  change: number;
+  changePct: number;
+  volume: number;
+  asOf: string;
+  provider: string;
+  delayLabel: string;
+  stale: boolean;
+  dataStatus: string;
+};
+
+type QuoteDisplay = {
+  symbol: string;
+  price: string;
+  change: string;
+  changeTone: 'up' | 'down';
+  volume: string;
+  asOf: string;
+  provider: string;
+  delayLabel: string;
+  stale: boolean;
+  dataStatus: string;
+};
+
 const route = useRoute();
 const stockFixtures = stockDetailFixtureSet.items as StockDetailFixture[];
+const quoteSnapshots = ref<ApiQuoteSnapshot[]>(quoteSnapshotFixtureSet.items as ApiQuoteSnapshot[]);
+const quoteLoadState = ref<'fixture' | 'api' | 'error'>('fixture');
+const isTestMode = typeof window !== 'undefined' && window.navigator.userAgent.includes('jsdom');
+const quoteApiBaseUrl = '';
 
 const routeSymbol = computed(() => String(route.params.symbol ?? stockFixtures[0].symbol).toUpperCase());
+const quoteApiSymbolFor = (item: StockDetailFixture) =>
+  item.market === 'KRX' && /^\d{6}$/.test(item.symbol) ? `${item.symbol}.KS` : item.symbol;
 const stock = computed(
   () =>
     stockFixtures.find(
-      (item) => item.symbol.toUpperCase() === routeSymbol.value || item.providerSymbol.toUpperCase() === routeSymbol.value
+      (item) =>
+        item.symbol.toUpperCase() === routeSymbol.value.replace(/\.KS$/, '') ||
+        item.providerSymbol.toUpperCase() === routeSymbol.value ||
+        quoteApiSymbolFor(item).toUpperCase() === routeSymbol.value
     ) ?? stockFixtures[0]
 );
-const quoteSnapshot = computed(() => stock.value.quoteSnapshot);
+const quoteApiSymbol = computed(() => quoteApiSymbolFor(stock.value));
+const quoteRequestSymbols = computed(() => Array.from(new Set(['005930.KS', 'AAPL', 'NVDA', quoteApiSymbol.value])));
+const quoteApiUrl = computed(() => `${quoteApiBaseUrl}/api/quotes?symbols=${quoteRequestSymbols.value.join(',')}`);
+const apiQuoteSnapshot = computed(() =>
+  quoteSnapshots.value.find((quote) => quote.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase())
+);
 const topBrief = computed(() => stock.value.brief);
-const tradingViewWidgets = [
-  {
-    marketLabel: '국내주식 위젯 테스트',
-    title: '삼성전자',
-    symbol: 'KRX:005930',
-    note: 'TradingView 공개 위젯에서 KRX 심볼이 외부 embed로 표시되는지 확인하는 용도입니다.'
-  },
-  {
-    marketLabel: '해외주식 위젯 테스트',
-    title: 'NVIDIA',
-    symbol: 'NASDAQ:NVDA',
-    note: '미장 대표 심볼은 같은 공개 위젯에서 정상 표시되는지 비교합니다.'
+const chartFixture = computed(
+  () =>
+    stockChartFixtures.find(
+      (item) =>
+        item.symbol.toUpperCase() === stock.value.symbol.toUpperCase() ||
+        item.providerSymbol.toUpperCase() === stock.value.providerSymbol.toUpperCase()
+    ) ?? stockChartFixtures[0]
+);
+
+const formatCurrency = (value: number, currency: ApiQuoteSnapshot['currency']) =>
+  currency === 'KRW'
+    ? `${Math.round(value).toLocaleString('ko-KR')}원`
+    : `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+const formatSignedCurrency = (value: number, currency: ApiQuoteSnapshot['currency']) => {
+  const sign = value > 0 ? '+' : value < 0 ? '-' : '';
+  return `${sign}${formatCurrency(Math.abs(value), currency)}`;
+};
+
+const formatVolume = (value: number) => {
+  if (value >= 100000000) return `${(value / 100000000).toFixed(1)}억주`;
+  if (value >= 10000) return `${(value / 10000).toFixed(1)}만주`;
+  return `${value.toLocaleString('ko-KR')}주`;
+};
+
+const formatAsOf = (value: string) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return new Intl.DateTimeFormat('ko-KR', {
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Seoul'
+  }).format(date);
+};
+
+const quoteSnapshot = computed<QuoteDisplay>(() => {
+  const apiQuote = apiQuoteSnapshot.value;
+  if (apiQuote) {
+    const isLiveApi = quoteLoadState.value === 'api';
+
+    return {
+      symbol: apiQuote.symbol,
+      price: formatCurrency(apiQuote.price, apiQuote.currency),
+      change: `${formatSignedCurrency(apiQuote.change, apiQuote.currency)} (${apiQuote.changePct >= 0 ? '+' : ''}${apiQuote.changePct.toFixed(2)}%)`,
+      changeTone: apiQuote.change >= 0 ? 'up' : 'down',
+      volume: formatVolume(apiQuote.volume),
+      asOf: formatAsOf(apiQuote.asOf),
+      provider: isLiveApi ? apiQuote.provider : 'front mock fixture',
+      delayLabel: isLiveApi ? apiQuote.delayLabel : 'quote API 미연결 · mock fixture',
+      stale: isLiveApi ? apiQuote.stale : true,
+      dataStatus: isLiveApi ? apiQuote.dataStatus : 'MOCK'
+    };
   }
-];
+
+  return {
+    symbol: quoteApiSymbol.value,
+    price: stock.value.quoteSnapshot.price,
+    change: stock.value.quoteSnapshot.change,
+    changeTone: stock.value.quoteSnapshot.changeTone,
+    volume: stock.value.quoteSnapshot.volume,
+    asOf: stock.value.quoteSnapshot.asOf,
+    provider: `${stock.value.provider} mock fixture`,
+    delayLabel: 'quote API 미연결 · mock fixture',
+    stale: true,
+    dataStatus: 'MOCK'
+  };
+});
 
 const topBriefMetrics = computed(() => [
   { label: '시황 점수', value: topBrief.value.score, meta: topBrief.value.scoreMeta },
   { label: '등락률', value: quoteSnapshot.value.change, meta: quoteSnapshot.value.price },
   { label: '거래량', value: quoteSnapshot.value.volume, meta: quoteSnapshot.value.dataStatus },
-  { label: '시세 기준', value: quoteSnapshot.value.asOf.split(' ').at(-1) ?? quoteSnapshot.value.asOf, meta: quoteSnapshot.value.latencyLabel }
+  { label: '시세 기준', value: quoteSnapshot.value.asOf, meta: quoteSnapshot.value.delayLabel }
 ]);
 
 const topBriefReasons = computed(() => topBrief.value.reasons);
@@ -129,6 +231,40 @@ const reliability = [
   { label: '가격 지연', value: '15분', state: '주의' },
   { label: '원문 확인', value: '필요', state: '주의' }
 ];
+
+const loadQuoteSnapshots = async () => {
+  if (isTestMode) {
+    return;
+  }
+
+  try {
+    const response = await fetch(quoteApiUrl.value, {
+      headers: { Accept: 'application/json' }
+    });
+    if (!response.ok) {
+      throw new Error(`quote snapshot request failed: ${response.status}`);
+    }
+
+    const contentType = response.headers.get('content-type') ?? '';
+    if (!contentType.includes('application/json')) {
+      throw new Error('quote snapshot response is not JSON');
+    }
+
+    const payload = (await response.json()) as ApiQuoteSnapshot[] | { items?: ApiQuoteSnapshot[] };
+    const items = Array.isArray(payload) ? payload : payload.items;
+
+    if (!items?.length) {
+      throw new Error('quote snapshot payload is empty');
+    }
+
+    quoteSnapshots.value = items;
+    quoteLoadState.value = 'api';
+  } catch {
+    quoteLoadState.value = 'error';
+  }
+};
+
+onMounted(loadQuoteSnapshots);
 </script>
 
 <template>
@@ -177,10 +313,16 @@ const reliability = [
         <p>뉴스, 커뮤니티 반응, 가격 변화를 시간순으로 묶어 왜 반응이 움직였는지 확인합니다.</p>
       </div>
       <div class="stock-quote-board">
-        <div>
+        <div class="quote-primary-card">
           <span>quote snapshot · 현재가</span>
           <strong>{{ quoteSnapshot.price }}</strong>
           <em :class="quoteSnapshot.changeTone">{{ quoteSnapshot.change }}</em>
+          <div class="quote-meta-list" aria-label="quote snapshot metadata">
+            <small>{{ quoteSnapshot.asOf }}</small>
+            <small>{{ quoteSnapshot.provider }}</small>
+            <small>{{ quoteSnapshot.delayLabel }}</small>
+            <small :class="quoteSnapshot.stale ? 'warn' : 'ok'">{{ quoteSnapshot.dataStatus }} · {{ quoteSnapshot.stale ? 'stale' : 'fresh' }}</small>
+          </div>
         </div>
         <div>
           <span>거래량</span>
@@ -188,33 +330,35 @@ const reliability = [
           <em>{{ quoteSnapshot.dataStatus }}</em>
         </div>
         <div>
-          <span>시세 기준</span>
-          <strong>{{ quoteSnapshot.asOf }}</strong>
-          <em :class="quoteSnapshot.stale ? 'warn' : 'ok'">{{ quoteSnapshot.stale ? 'stale' : quoteSnapshot.latencyLabel }}</em>
+          <span>데이터 상태</span>
+          <strong>{{ quoteSnapshot.symbol }}</strong>
+          <em :class="quoteLoadState === 'api' ? 'ok' : 'warn'">
+            {{ quoteLoadState === 'api' ? 'API 연결' : quoteLoadState === 'error' ? 'API 미연결' : 'fixture 준비' }}
+          </em>
         </div>
       </div>
     </section>
 
-    <section class="stock-main-chart panel content-feed-card surface-data-card" aria-label="TradingView 공개 위젯 테스트">
+    <section class="stock-main-chart panel content-feed-card surface-data-card" aria-label="종목 가격 차트와 매매 동향">
       <div class="panel-header">
         <div>
-          <p class="label">TradingView embed</p>
-          <h3>국내/해외 TradingView 위젯 비교</h3>
+          <p class="label">chart lab</p>
+          <h3>가격 차트와 매매 동향</h3>
         </div>
-        <span class="status-pill subtle">KRX:005930 · NASDAQ:NVDA</span>
+        <span class="status-pill subtle">snapshot 전용 · 원시 데이터 미노출</span>
       </div>
-      <div class="tradingview-widget-grid">
-        <TradingViewWidget
-          v-for="widget in tradingViewWidgets"
-          :key="widget.symbol"
-          :market-label="widget.marketLabel"
-          :title="widget.title"
-          :symbol="widget.symbol"
-          :note="widget.note"
-        />
-      </div>
+      <StockPriceChart
+        :title="stock.name"
+        :provider-symbol="chartFixture.providerSymbol"
+        :currency="chartFixture.currency"
+        :price-unit="chartFixture.priceUnit"
+        :volume-unit="chartFixture.volumeUnit"
+        :flow-unit="chartFixture.flowUnit"
+        :chart-source="chartFixture.chartSource"
+        :candles="chartFixture.candles"
+      />
       <p class="chart-data-note">
-        위 영역은 우리 데이터 재구성 차트가 아니라 TradingView 공개 embed 위젯입니다. 현재가·등락률·거래량·asOf·stale 상태는 기존 quote snapshot 영역과 분리해서 봅니다.
+        차트와 매매동향은 현재 프론트 fixture로 재구성한 화면입니다. 공개 화면에서는 원시 분봉, 호가, 대량 OHLC를 요청하거나 노출하지 않고, 현재가·등락률·거래량·asOf·provider·delayLabel·stale·dataStatus는 위 quote snapshot API 영역에서만 표시합니다.
       </p>
     </section>
 

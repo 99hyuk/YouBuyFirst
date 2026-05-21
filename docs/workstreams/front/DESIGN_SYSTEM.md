@@ -62,7 +62,7 @@
 | badge | mock/stale/warning/subtle 상태를 짧게 표시합니다. |
 | tab | pill 형태. 활성 상태는 브랜드 계열 또는 어두운 배경. |
 | table | header band + row. 좁은 화면에서는 가로 스크롤 허용. |
-| chart shell | 그래프, 범례, 기간 버튼을 한 shell 안에서 정리합니다. 축과 grid를 넣어 전문적인 느낌을 유지합니다. |
+| chart shell | 그래프, 범례, 기간 버튼, 데이터 출처와 상태를 한 shell 안에서 정리합니다. 축과 grid를 넣어 전문적인 느낌을 유지하고, quote snapshot과 raw 차트 데이터는 시각적으로 분리합니다. |
 | signal mosaic | 인간 지표처럼 상단 핵심 신호를 `2칸+1칸 / 1칸+2칸` 모자이크로 배치합니다. |
 | overview hub | 주요 지표처럼 국내주식, 미국주식, 채권, 원자재 등 큰 묶음을 첫 화면 카드로 보여주고 상세 route로 연결합니다. |
 | sector square map | 국장/미장 섹터처럼 방향성이 중요한 데이터는 정사각형에 가까운 타일 묶음으로 보여줍니다. |
@@ -82,6 +82,13 @@
 - 위치: 종목 상세 최상단
 - 시각: 검은색 배너, 큰 한줄평, 보조 근거 chip
 - 내용: 커뮤니티 요약이 아니라 시황, 기술 지표, 재무, 뉴스/공시, 컨센서스 기반 종목 상태 카피
+
+### 종목 상세 가격 차트
+
+- TradingView embed 대신 우리 UI shell을 우선 사용합니다.
+- 차트 shell은 봉/기간/이평/관찰 신호 controls, OHLC strip, 거래량, 매매동향을 한 화면에 묶습니다.
+- 현재가, 등락률, 거래량, asOf, provider, delayLabel, stale, dataStatus는 quote snapshot 영역에서만 표시합니다.
+- 공개 화면에서 원시 분봉, 호가, 대량 OHLC를 요청하거나 그대로 노출하지 않습니다.
 
 ## 후보 기록
 

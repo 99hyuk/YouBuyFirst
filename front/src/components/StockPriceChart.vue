@@ -27,6 +27,8 @@ const props = defineProps<{
 const chartEl = ref<HTMLDivElement | null>(null);
 const selectedRange = ref<'1M' | '3M' | '6M' | '1Y'>('3M');
 const chartRanges = ['1M', '3M', '6M', '1Y'] as const;
+const candleModes = ['일', '주', '월'] as const;
+const movingAverageToggles = ['5', '20', '60', '120'] as const;
 const isTestMode = typeof window !== 'undefined' && window.navigator.userAgent.includes('jsdom');
 const chartRendered = ref(false);
 
@@ -243,7 +245,23 @@ onBeforeUnmount(() => {
         <strong>{{ title }}</strong>
         <span>{{ providerSymbol }} · {{ chartSource }}</span>
       </div>
-      <div class="chart-range-tabs" aria-label="차트 기간">
+      <span class="status-pill subtle">front-only chart shell</span>
+    </div>
+
+    <div class="chart-feature-strip" aria-label="차트 기능">
+      <div>
+        <span>봉</span>
+        <button
+          v-for="mode in candleModes"
+          :key="mode"
+          type="button"
+          :class="{ active: mode === '일' }"
+        >
+          {{ mode }}
+        </button>
+      </div>
+      <div>
+        <span>분석</span>
         <button
           v-for="range in chartRanges"
           :key="range"
@@ -252,6 +270,22 @@ onBeforeUnmount(() => {
           @click="setRange(range)"
         >
           {{ range }}
+        </button>
+      </div>
+      <div>
+        <span>신호</span>
+        <button type="button" class="active">B/S</button>
+        <button type="button">추세</button>
+      </div>
+      <div>
+        <span>이평</span>
+        <button
+          v-for="line in movingAverageToggles"
+          :key="line"
+          type="button"
+          :class="{ active: ['5', '20', '60'].includes(line) }"
+        >
+          {{ line }}
         </button>
       </div>
     </div>

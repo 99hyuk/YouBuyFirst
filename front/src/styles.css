@@ -3686,10 +3686,19 @@ a {
 
 .stock-quote-board div {
   min-width: 0;
+  display: grid;
+  align-content: start;
   padding: 12px;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.07);
+}
+
+.stock-quote-board .quote-primary-card {
+  grid-column: span 2;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.06)),
+    rgba(255, 255, 255, 0.08);
 }
 
 .stock-quote-board span {
@@ -3717,6 +3726,10 @@ a {
   white-space: normal;
 }
 
+.stock-quote-board .quote-primary-card strong {
+  font-size: 24px;
+}
+
 .stock-quote-board em {
   display: block;
   margin-top: 4px;
@@ -3736,6 +3749,27 @@ a {
   color: var(--market-down);
 }
 
+.quote-meta-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.quote-meta-list small {
+  min-width: 0;
+  overflow: hidden;
+  padding: 5px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  background: rgba(11, 18, 32, 0.22);
+  color: #c8d4e6;
+  font-size: 10.5px;
+  font-weight: 780;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .indicator-strip-grid em.down,
 .edge-price em.down {
   color: var(--market-down);
@@ -3750,6 +3784,49 @@ a {
 .stock-price-chart-shell {
   display: grid;
   gap: 12px;
+}
+
+.chart-feature-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 7px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.chart-feature-strip div {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+}
+
+.chart-feature-strip span {
+  color: #67758a;
+  font-size: 11px;
+  font-weight: 820;
+}
+
+.chart-feature-strip button {
+  min-width: 32px;
+  height: 25px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: #5f6d80;
+  font-size: 11px;
+  font-weight: 840;
+  cursor: pointer;
+}
+
+.chart-feature-strip button.active {
+  border-color: #ccd8e8;
+  background: #ffffff;
+  color: var(--brand);
+  box-shadow: 0 3px 10px rgba(55, 77, 112, 0.1);
 }
 
 .tradingview-widget-grid {
