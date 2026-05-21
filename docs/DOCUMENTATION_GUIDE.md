@@ -45,6 +45,20 @@
 | Notion 개발자 기술 경험 DB | 제품 개발/운영 문제, 개선 근거, 기술 결정 |
 | Notion 에이전트 운영 로그 DB | Codex, Notion, GitHub PR, 문서 운영 사고 |
 
+## 정본과 인덱스 원칙
+
+정본은 현재 판단의 기준입니다. 채팅, 메모리, 과거 archive는 정본을 찾기 위한 색인일 뿐입니다.
+
+| 대상 | 정본 |
+| --- | --- |
+| 제품 범위와 결정 | `docs/FINAL_PRODUCT_PLAN.md`, `docs/PRODUCT_DECISION_NOTES.md` |
+| 현재 작업 상태 | `docs/CURRENT_HANDOFF.md`, `docs/TASKS.md` |
+| 화면 구조와 API 후보 | `docs/workstreams/front/screens/`, 현재 `front/` 코드 |
+| 시세/커뮤니티/에이전트/원장 데이터 | 해당 트랙 README, API contract, DB entity/snapshot |
+| 장애와 기술 결정 근거 | `docs/TECHNICAL_RISK_REGISTER.md`, Notion 개발자 기술 경험 DB |
+
+새 인덱스 문서는 같은 lookup을 여러 트랙이 반복할 때만 만듭니다. 인덱스는 상세 설명을 복제하지 않고 정본 위치, ID/key, 상태, source/asOf만 짧게 가리킵니다.
+
 ## 채팅 안정성 규칙
 
 - 이미 주입된 `AGENTS.md`나 긴 문서는 터미널로 다시 전문 출력하지 않습니다.

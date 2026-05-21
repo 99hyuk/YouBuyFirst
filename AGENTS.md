@@ -118,6 +118,8 @@ Notion 루트, 홈카드, 주요 DB 페이지, 제품 기획, 작업 진행, 기
 - Notion 작업일지는 PR별 요약 기록입니다.
 - 제품 개발/운영 문제, 성능 개선, 품질 개선, 기술 결정은 개발자 기술 경험 DB에 남깁니다.
 - Codex, Notion, GitHub PR, 문서 운영 사고는 에이전트 운영 로그 DB에 분리합니다.
+- 새 데이터/API/배치 흐름은 정본 위치, 식별자, 상태값, 출처/asOf, 완료 기준을 함께 정합니다. 예: `QuoteSnapshot`, `CommunityMetricSnapshot`, `AgentDecision`, `LedgerEntry`.
+- 확인할 수 없는 값은 추측으로 채우지 않고 `unknown`, `null`, `확인 필요`, `mock`처럼 구분합니다.
 - 최종 기획상 생길 수 있는 기술/제품/운영 리스크 후보는 `docs/TECHNICAL_RISK_REGISTER.md`에 누적합니다. 실제 장애 복구 기록은 `docs/TROUBLESHOOTING_GUIDE.md`와 PR/Notion 작업 로그에 남깁니다.
 - 사용자가 작업 중 던진 제품/기술 고민을 나중에 다시 보고 싶다고 하면 `docs/PRODUCT_DECISION_NOTES.md`에 짧게 누적합니다. 확정된 결정은 최종 기획, 현재 handoff, 리스크 문서, Notion 기술 경험 DB 중 맞는 위치로 승격합니다.
 - front 화면 구조, route, child detail, fixture/API 후보, 화면 문구 기준이 바뀌면 사용자의 별도 기록 지시 없이 `docs/workstreams/front/screens/`의 해당 Screen Brief를 갱신합니다. Screen Brief는 최신 기준만 유지하고 긴 변경 이력은 누적하지 않습니다.

@@ -94,6 +94,7 @@ ops는 에이전트 행동 규칙 PR을 main에 머지한 뒤 열린 worktree �
 6. PR 본문은 `.github/pull_request_template.md`를 복사해서 채웁니다.
 7. 한국어 PR 본문은 UTF-8 no BOM 파일과 `gh --body-file <path>`를 사용합니다.
 8. PR 본문에는 변경 내용, 범위, 검증 결과, 리스크, Notion 기록 여부를 적습니다.
+9. 새 데이터/API/배치 흐름이 생기면 정본 위치, ID/key, 상태값, source/asOf, unknown/mock 처리, 완료 기준을 함께 확인합니다.
 
 ## Notion 기록
 
