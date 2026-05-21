@@ -29,6 +29,17 @@ Codex는 사용자의 요구를 무조건 수용하는 실행기가 아닙니다
 - `front/`: Vue 3 + Vite + TypeScript mock 와이어프레임 shell
 - `docker-compose.yml`: local MySQL + backend + pipeline runtime
 
+빠른 경로 지도:
+
+| 찾는 것 | 먼저 볼 곳 |
+| --- | --- |
+| 백엔드 API/도메인 | `backend/` |
+| 수집/분석 worker | `pipeline/` |
+| 화면/fixture/API client | `front/` |
+| 트랙별 작업 기준 | `docs/workstreams/<track>/README.md` |
+| 화면별 최신 기획 | `docs/workstreams/front/screens/` |
+| 완료 이력/과거 설계 | `docs/work-units/`, `docs/superpowers/` archive |
+
 | 트랙 | 담당 |
 | --- | --- |
 | `crawl` | 커뮤니티 글 수집, 소스 어댑터, 종목별 게시판 타깃, 수집 정책 |
