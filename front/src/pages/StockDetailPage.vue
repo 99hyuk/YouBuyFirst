@@ -797,7 +797,7 @@ watch(quoteApiSymbol, () => {
         </div>
 
         <p class="investor-flow-note">
-          provider가 내려준 OK/STALE 거래일만 표시합니다. 다일 수급 API가 붙으면 5줄 높이 스크롤 목록으로 확장됩니다.
+          provider가 내려준 OK/STALE 거래일만 최신순으로 표시합니다. 표는 5줄 높이에서 스크롤됩니다.
         </p>
       </section>
       <p class="chart-data-note">
