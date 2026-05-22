@@ -60,23 +60,32 @@ public class InvestorFlowSnapshot {
     @Column(name = "collected_at", nullable = false)
     private Instant collectedAt;
 
-    @Column(name = "individual_net_amount", nullable = false, precision = 19, scale = 2)
+    @Column(name = "individual_net_amount", precision = 19, scale = 2)
     private BigDecimal individualNetAmount;
 
     @Column(name = "individual_net_volume", nullable = false)
     private long individualNetVolume;
 
-    @Column(name = "foreign_net_amount", nullable = false, precision = 19, scale = 2)
+    @Column(name = "individual_derived", nullable = false)
+    private boolean individualDerived;
+
+    @Column(name = "foreign_net_amount", precision = 19, scale = 2)
     private BigDecimal foreignNetAmount;
 
     @Column(name = "foreign_net_volume", nullable = false)
     private long foreignNetVolume;
 
-    @Column(name = "institution_net_amount", nullable = false, precision = 19, scale = 2)
+    @Column(name = "foreign_derived", nullable = false)
+    private boolean foreignDerived;
+
+    @Column(name = "institution_net_amount", precision = 19, scale = 2)
     private BigDecimal institutionNetAmount;
 
     @Column(name = "institution_net_volume", nullable = false)
     private long institutionNetVolume;
+
+    @Column(name = "institution_derived", nullable = false)
+    private boolean institutionDerived;
 
     protected InvestorFlowSnapshot() {
     }
@@ -112,10 +121,13 @@ public class InvestorFlowSnapshot {
         this.collectedAt = collectedAt;
         this.individualNetAmount = individual.netAmount();
         this.individualNetVolume = individual.netVolume();
+        this.individualDerived = Boolean.TRUE.equals(individual.derived());
         this.foreignNetAmount = foreign.netAmount();
         this.foreignNetVolume = foreign.netVolume();
+        this.foreignDerived = Boolean.TRUE.equals(foreign.derived());
         this.institutionNetAmount = institution.netAmount();
         this.institutionNetVolume = institution.netVolume();
+        this.institutionDerived = Boolean.TRUE.equals(institution.derived());
     }
 
     public String getSymbol() {
@@ -166,6 +178,10 @@ public class InvestorFlowSnapshot {
         return individualNetVolume;
     }
 
+    public boolean isIndividualDerived() {
+        return individualDerived;
+    }
+
     public BigDecimal getForeignNetAmount() {
         return foreignNetAmount;
     }
@@ -174,11 +190,19 @@ public class InvestorFlowSnapshot {
         return foreignNetVolume;
     }
 
+    public boolean isForeignDerived() {
+        return foreignDerived;
+    }
+
     public BigDecimal getInstitutionNetAmount() {
         return institutionNetAmount;
     }
 
     public long getInstitutionNetVolume() {
         return institutionNetVolume;
+    }
+
+    public boolean isInstitutionDerived() {
+        return institutionDerived;
     }
 }

@@ -18,8 +18,10 @@ from youbuyfirst_pipeline.crawlers.naver import NaverBoardAdapter
 from youbuyfirst_pipeline.instruments import load_instruments
 from youbuyfirst_pipeline.llm import build_llm_provider
 from youbuyfirst_pipeline.market_investor_flows import (
+    DEFAULT_INVESTOR_FLOW_PROVIDER,
     DEFAULT_INVESTOR_FLOW_HISTORY_LIMIT,
     MarketInvestorFlowProvider,
+    build_investor_flow_client,
     configured_investor_flow_symbols,
 )
 from youbuyfirst_pipeline.market_scheduler import build_investor_flow_refresh_job, build_market_refresh_job
@@ -125,6 +127,11 @@ async def async_main() -> None:
         default=int(os.getenv("MARKET_INVESTOR_FLOW_HISTORY_LIMIT", str(DEFAULT_INVESTOR_FLOW_HISTORY_LIMIT))),
     )
     parser.add_argument(
+        "--investor-flow-provider",
+        default=os.getenv("MARKET_INVESTOR_FLOW_PROVIDER", DEFAULT_INVESTOR_FLOW_PROVIDER),
+        help="Investor flow provider: naver-finance or pykrx",
+    )
+    parser.add_argument(
         "--market-refresh-interval-minutes",
         type=int,
         default=int(os.getenv("MARKET_REFRESH_INTERVAL_MINUTES", "10")),
@@ -184,6 +191,7 @@ async def async_main() -> None:
 
     if args.command in {"investor-flows", "investor-flows-push"}:
         provider = MarketInvestorFlowProvider(
+            flow_client=build_investor_flow_client(args.investor_flow_provider),
             stale_after_hours=int(os.getenv("MARKET_INVESTOR_FLOW_STALE_AFTER_HOURS", "96")),
         )
         snapshots = provider.snapshots(
@@ -223,6 +231,7 @@ async def async_main() -> None:
                 client=market_client,
                 symbols=args.investor_flow_symbols,
                 limit=args.investor_flow_limit,
+                provider_name=args.investor_flow_provider,
                 stale_after_hours=int(os.getenv("MARKET_INVESTOR_FLOW_STALE_AFTER_HOURS", "96")),
             )
         await serve(

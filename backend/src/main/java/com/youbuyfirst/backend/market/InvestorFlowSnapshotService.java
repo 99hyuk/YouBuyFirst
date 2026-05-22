@@ -89,9 +89,21 @@ public class InvestorFlowSnapshotService {
                 snapshot.getAsOf(),
                 stale,
                 stale ? "STALE" : snapshot.getDataStatus(),
-                new InvestorFlowLegResponse(snapshot.getIndividualNetAmount(), snapshot.getIndividualNetVolume()),
-                new InvestorFlowLegResponse(snapshot.getForeignNetAmount(), snapshot.getForeignNetVolume()),
-                new InvestorFlowLegResponse(snapshot.getInstitutionNetAmount(), snapshot.getInstitutionNetVolume())
+                new InvestorFlowLegResponse(
+                        snapshot.getIndividualNetAmount(),
+                        snapshot.getIndividualNetVolume(),
+                        snapshot.isIndividualDerived()
+                ),
+                new InvestorFlowLegResponse(
+                        snapshot.getForeignNetAmount(),
+                        snapshot.getForeignNetVolume(),
+                        snapshot.isForeignDerived()
+                ),
+                new InvestorFlowLegResponse(
+                        snapshot.getInstitutionNetAmount(),
+                        snapshot.getInstitutionNetVolume(),
+                        snapshot.isInstitutionDerived()
+                )
         );
     }
 

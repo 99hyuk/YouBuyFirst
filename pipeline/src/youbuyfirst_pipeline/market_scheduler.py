@@ -5,7 +5,11 @@ from dataclasses import dataclass
 from typing import Protocol
 
 from youbuyfirst_pipeline.client import SpringIngestionClient
-from youbuyfirst_pipeline.market_investor_flows import InvestorFlowSnapshot, MarketInvestorFlowProvider
+from youbuyfirst_pipeline.market_investor_flows import (
+    InvestorFlowSnapshot,
+    MarketInvestorFlowProvider,
+    build_investor_flow_client,
+)
 from youbuyfirst_pipeline.market_quotes import ChartCandleSet, MarketChartCandleProvider, MarketQuoteProvider, QuoteSnapshot
 
 logger = logging.getLogger(__name__)
@@ -177,9 +181,13 @@ def build_investor_flow_refresh_job(
         symbols: list[str],
         limit: int,
         stale_after_hours: int,
+        provider_name: str | None = None,
 ) -> InvestorFlowRefreshJob:
     return InvestorFlowRefreshJob(
-        provider=MarketInvestorFlowProvider(stale_after_hours=stale_after_hours),
+        provider=MarketInvestorFlowProvider(
+            flow_client=build_investor_flow_client(provider_name),
+            stale_after_hours=stale_after_hours,
+        ),
         client=client,
         symbols=symbols,
         limit=limit,
