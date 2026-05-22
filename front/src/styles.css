@@ -3652,6 +3652,38 @@ a {
   color: #ffffff;
 }
 
+.stock-roast-panel {
+  order: -3;
+}
+
+.stock-main-chart {
+  order: -2;
+}
+
+.stock-hero {
+  order: -1;
+}
+
+.stock-main-chart > .panel-header {
+  order: 1;
+}
+
+.stock-main-chart > .stock-price-chart-shell {
+  order: 2;
+}
+
+.stock-main-chart > .chart-source-meta-grid {
+  order: 3;
+}
+
+.stock-main-chart > .investor-flow-panel {
+  order: 4;
+}
+
+.stock-main-chart > .chart-data-note {
+  order: 5;
+}
+
 .stock-identity h2 {
   margin: 6px 0;
   color: #ffffff;

@@ -17,8 +17,8 @@
 ## 현재 섹션
 
 - 팩트폭격 상단 패널: 종목명, 티커, 한줄평, 보조 시황 문장, 근거 keyword chips
+- 메인 가격 차트: TradingView embed가 아니라 `StockPriceChart` 기반의 자체 UI shell이다. 팩트폭격 상단 패널 바로 아래에 두어 첫 화면에서 실제 차트 캔버스가 보이게 한다. `GET /api/market/chart-candles?range=5Y&interval=1d`를 호출해 실제 display-only OHLC bars가 오면 렌더링하고, 화면 기본 범위는 3M으로 둔다. 화면 선택지는 `1M`, `3M`, `6M`, `1Y`, `3Y`, `5Y`이며, `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 차트를 숨기고 상태 안내를 보여준다.
 - 종목 헤더: 종목명, 시장, quote snapshot 기반 현재가/등락률/거래량/asOf/stale 상태
-- 메인 가격 차트: TradingView embed가 아니라 `StockPriceChart` 기반의 자체 UI shell이다. `GET /api/market/chart-candles?range=5Y&interval=1d`를 호출해 실제 display-only OHLC bars가 오면 렌더링하고, 화면 기본 범위는 3M으로 둔다. 화면 선택지는 `1M`, `3M`, `6M`, `1Y`, `3Y`, `5Y`이며, `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 차트를 숨기고 상태 안내를 보여준다.
 - quote snapshot 영역: `GET /api/quotes?symbols=005930.KS,AAPL,NVDA` 응답을 우선 사용한다. 현재가, 등락률, 거래량, asOf, provider, delayLabel, stale, dataStatus는 가격 근처에 함께 보여주며 차트에서 긁지 않는다.
 - 거래일별 수급 영역: 국내 종목/ETF는 `GET /api/market/investor-flows/history?symbol=005930.KS&limit=20` 응답으로 최근 거래일별 개인/외국인/기관 순매수 표를 보여준다. 화면 제목과 안내문에는 수급이 공개 표 기반 추정치이며 실제 확정값과 다를 수 있음을 명시한다. `naver-finance` row는 외국인/기관 순매수 수량만 직접 관찰값이고 개인은 잔차 추정값이므로, `individual.derived=true`이면 `개인(잔차)`처럼 표시한다. `netAmount`가 `null`이면 금액은 `-`로 처리하고 0원처럼 보이지 않게 한다. `tradeDate`, `provider`, `sourceLabel`, `delayLabel`, `asOf`, `stale`, `dataStatus`를 함께 표시한다. public API는 `OK`, `STALE` row만 반환하며, 국내 종목에서 응답 배열이 비면 가짜 0값 표 대신 빈 상태 문구만 보여준다. 미국 종목은 수급 영역을 숨긴다. 표는 5줄 높이 스크롤 목록으로 둔다. 수급 row와 같은 날짜의 `chart-candles` bar가 없으면 종가/전일비/등락률/거래량 칸은 `-`로 표시한다.
 - 차트 데이터 상태: `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 메인 차트를 숨기고 차트 영역에 API 상태 안내를 표시한다. 렌더링 가능한 경우에도 asOf, provider, delayLabel, stale, dataStatus를 차트 shell 안에 함께 보여준다.
