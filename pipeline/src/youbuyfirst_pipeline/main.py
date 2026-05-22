@@ -18,6 +18,7 @@ from youbuyfirst_pipeline.crawlers.naver import NaverBoardAdapter
 from youbuyfirst_pipeline.instruments import load_instruments
 from youbuyfirst_pipeline.llm import build_llm_provider
 from youbuyfirst_pipeline.market_investor_flows import (
+    DEFAULT_INVESTOR_FLOW_HISTORY_LIMIT,
     MarketInvestorFlowProvider,
     configured_investor_flow_symbols,
 )
@@ -119,6 +120,11 @@ async def async_main() -> None:
     )
     parser.add_argument("--trade-date", default=os.getenv("MARKET_INVESTOR_FLOW_TRADE_DATE"))
     parser.add_argument(
+        "--investor-flow-limit",
+        type=int,
+        default=int(os.getenv("MARKET_INVESTOR_FLOW_HISTORY_LIMIT", str(DEFAULT_INVESTOR_FLOW_HISTORY_LIMIT))),
+    )
+    parser.add_argument(
         "--market-refresh-interval-minutes",
         type=int,
         default=int(os.getenv("MARKET_REFRESH_INTERVAL_MINUTES", "10")),
@@ -180,7 +186,11 @@ async def async_main() -> None:
         provider = MarketInvestorFlowProvider(
             stale_after_hours=int(os.getenv("MARKET_INVESTOR_FLOW_STALE_AFTER_HOURS", "96")),
         )
-        snapshots = provider.snapshots(args.investor_flow_symbols, trade_date=_parse_trade_date(args.trade_date))
+        snapshots = provider.snapshots(
+            args.investor_flow_symbols,
+            trade_date=_parse_trade_date(args.trade_date),
+            limit=args.investor_flow_limit,
+        )
         if args.command == "investor-flows":
             print(json.dumps({"items": [snapshot.to_api_dict() for snapshot in snapshots]}, ensure_ascii=False, indent=2))
             return
@@ -212,6 +222,7 @@ async def async_main() -> None:
             investor_flow_refresh_job = build_investor_flow_refresh_job(
                 client=market_client,
                 symbols=args.investor_flow_symbols,
+                limit=args.investor_flow_limit,
                 stale_after_hours=int(os.getenv("MARKET_INVESTOR_FLOW_STALE_AFTER_HOURS", "96")),
             )
         await serve(

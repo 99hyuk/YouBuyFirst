@@ -1,10 +1,10 @@
-# Investor Flow Snapshot
+# Investor Flow History
 
 ## 한눈에 보기
 
-종목별 개인/외국인/기관 수급은 가격 snapshot이나 차트 candle에 섞지 않고 별도 slice로 제공한다. 프론트는 종목 상세에서 가격은 `GET /api/quotes`, 차트는 `GET /api/market/chart-candles`, 수급은 `GET /api/market/investor-flows`로 분리 호출한다.
+종목별 개인/외국인/기관 수급은 가격 snapshot이나 차트 candle에 섞지 않고 별도 history slice로 제공한다. 프론트는 종목 상세에서 가격은 `GET /api/quotes`, 차트는 `GET /api/market/chart-candles`, 수급은 `GET /api/market/investor-flows/history`로 분리 호출한다.
 
-이 API는 국내 종목/ETF의 전 거래일 확정 수급만 대상으로 한다. 장중 실시간 수급, 호가, 분봉, raw market feed, 대량 다운로드용 OHLC는 공개 화면에 제공하지 않는다.
+이 API는 국내 종목/ETF의 거래일별 확정 수급만 대상으로 한다. 장중 실시간 수급, 외인 보유율, 호가, 분봉, raw market feed, 대량 다운로드용 OHLC는 공개 화면에 제공하지 않는다.
 
 ## Provider 역할
 
@@ -17,9 +17,11 @@ pykrx 1.2.8 문서는 일부 KRX 로그인 필요 API에 `KRX_ID`, `KRX_PW` 환�
 
 ## 공개 API
 
-`GET /api/market/investor-flows?symbols=005930.KS,000660.KS,069500.KS`
+`GET /api/market/investor-flows/history?symbol=005930.KS&limit=20`
 
-공개 응답은 `GET /api/quotes`처럼 배열이다. 캐시에 없는 종목은 같은 shape로 `dataStatus: "INSUFFICIENT"`를 내려 프론트가 수급 영역만 숨길 수 있게 한다.
+공개 응답은 단일 국내 종목의 거래일별 수급 배열이며 `tradeDate` 최신순이다. `limit` 기본값은 20이고 서버에서 상한을 둔다. 표시 가능한 상태는 `OK`, `STALE`뿐이다. `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK` row는 공개 history 응답에 넣지 않는다.
+
+단일 최신 수급 public endpoint는 두지 않는다. 최신 1건이 필요하면 history 응답의 첫 번째 row를 사용한다.
 
 ```json
 [
@@ -62,7 +64,7 @@ pykrx 1.2.8 문서는 일부 KRX 로그인 필요 API에 `KRX_ID`, `KRX_PW` 환�
 | `delayLabel` | 지연/확정 기준 설명. 수급은 장중 실시간이 아니라 전 거래일 기준 |
 | `asOf` | 이 snapshot이 대표하는 기준 시각 |
 | `stale` | stale 기준을 넘겼는지 여부 |
-| `dataStatus` | `OK`, `STALE`, `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK` |
+| `dataStatus` | 공개 history에서는 `OK`, `STALE`만 반환한다. 실패/부족/mock row는 제외한다. |
 | `individual`, `foreign`, `institution` | 개인/외국인/기관의 순매수 금액과 순매수 수량 |
 
 `netAmount`는 원화 순매수 금액, `netVolume`은 순매수 수량이다. 음수는 순매도 방향이다. 이 값은 관찰 데이터이지 서비스의 매수/매도 판단이 아니다.
@@ -95,12 +97,14 @@ pipeline은 provider 결과를 backend display cache로 밀어 넣는다.
 }
 ```
 
+내부 적재 API는 `OK`, `STALE` row만 저장한다. `PROVIDER_ERROR`, `INSUFFICIENT`, `MOCK` row는 저장하지 않는다. provider 실패 시 개인/외국인/기관 0값을 적재하거나 공개하지 않는다.
+
 ## Pipeline 사용법
 
 조회만 확인:
 
 ```powershell
-.\pipeline\.venv\Scripts\python -m youbuyfirst_pipeline.main investor-flows --investor-flow-symbols 005930.KS 000660.KS 069500.KS --trade-date 2026-05-21
+.\pipeline\.venv\Scripts\python -m youbuyfirst_pipeline.main investor-flows --investor-flow-symbols 005930.KS --trade-date 2026-05-21 --investor-flow-limit 20
 ```
 
 CLI 출력은 backend 적재 batch와 맞추기 위해 `{ "items": [...] }`로 감싸지만, 공개 GET API는 배열을 그대로 반환한다.
@@ -108,7 +112,7 @@ CLI 출력은 backend 적재 batch와 맞추기 위해 `{ "items": [...] }`로 �
 backend cache에 적재:
 
 ```powershell
-.\pipeline\.venv\Scripts\python -m youbuyfirst_pipeline.main investor-flows-push --investor-flow-symbols 005930.KS 000660.KS 069500.KS --trade-date 2026-05-21
+.\pipeline\.venv\Scripts\python -m youbuyfirst_pipeline.main investor-flows-push --investor-flow-symbols 005930.KS --trade-date 2026-05-21 --investor-flow-limit 20
 ```
 
 `serve` runtime에서는 quote/chart 10분 refresh와 별개로 수급 refresh job을 등록한다. 기본값은 한국시간 평일 18:30이다.
@@ -116,6 +120,7 @@ backend cache에 적재:
 ```env
 MARKET_INVESTOR_FLOW_REFRESH_ENABLED=true
 MARKET_INVESTOR_FLOW_SYMBOLS=005930.KS,000660.KS,069500.KS
+MARKET_INVESTOR_FLOW_HISTORY_LIMIT=20
 MARKET_INVESTOR_FLOW_REFRESH_HOUR_LOCAL=18
 MARKET_INVESTOR_FLOW_REFRESH_MINUTE_LOCAL=30
 MARKET_INVESTOR_FLOW_REFRESH_TIMEZONE=Asia/Seoul
@@ -127,7 +132,7 @@ KRX_PW=
 
 ## 캐시와 stale 기준
 
-backend는 `investor_flow_snapshots` display cache를 가진다. 같은 `symbol`은 마지막 snapshot으로 upsert한다.
+backend는 `investor_flow_snapshots` display cache를 가진다. 같은 `symbol + tradeDate`는 마지막 snapshot으로 upsert한다.
 
 기본 stale 기준은 96시간이다. 휴일과 주말을 고려해 전 거래일 데이터가 금요일 장 종료 후 월요일까지 표시될 수 있도록 quote/chart보다 길게 둔다.
 
@@ -137,7 +142,7 @@ INVESTOR_FLOW_STALE_MINUTES=5760
 
 ## 현재 검증 상태
 
-계약과 adapter 구조는 구현한다. 다만 로컬 검증에서 pykrx 직접 호출은 KRX 응답 문제로 빈 DataFrame/Provider error를 반환했다. 따라서 프론트는 `dataStatus`가 `PROVIDER_ERROR` 또는 `INSUFFICIENT`이면 수급 UI를 숨겨야 한다.
+계약과 adapter 구조는 구현한다. 다만 로컬 검증에서 pykrx 직접 호출은 KRX 응답 문제로 빈 DataFrame/Provider error를 반환할 수 있다. 이 경우 pipeline은 실패 row를 publish하지 않고, public history API는 빈 배열을 반환한다. 프론트는 배열이 비면 수급 표를 숨긴다.
 
 다음 단계는 실제 provider 접근 안정화다. 후보는 pykrx 최신 버전 재검증, KRX OpenAPI, 또는 권한이 명확한 vendor이다.
 

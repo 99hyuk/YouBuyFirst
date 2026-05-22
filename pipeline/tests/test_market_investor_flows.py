@@ -70,25 +70,47 @@ def test_market_investor_flow_provider_builds_previous_day_contract():
     }
 
 
-def test_market_investor_flow_provider_marks_provider_error_without_direct_scraping_fallback():
+def test_market_investor_flow_provider_builds_recent_history_latest_first():
+    client = _FakeInvestorFlowClient()
+    provider = MarketInvestorFlowProvider(
+        flow_client=client,
+        metadata_provider=_FakeKoreaMetadataProvider(),
+    )
+
+    snapshots = provider.snapshots(
+        ["005930.KS"],
+        trade_date=date(2026, 5, 21),
+        limit=3,
+        now=datetime(2026, 5, 22, 1, 0, tzinfo=timezone.utc),
+    )
+
+    assert client.calls == [
+        ("005930", date(2026, 5, 21)),
+        ("005930", date(2026, 5, 20)),
+        ("005930", date(2026, 5, 19)),
+    ]
+    assert [snapshot.trade_date for snapshot in snapshots] == [
+        date(2026, 5, 21),
+        date(2026, 5, 20),
+        date(2026, 5, 19),
+    ]
+    assert all(snapshot.data_status == "OK" for snapshot in snapshots)
+
+
+def test_market_investor_flow_provider_skips_provider_errors_without_fake_zero_rows():
     provider = MarketInvestorFlowProvider(
         flow_client=_FakeInvestorFlowClient(fail=True),
         metadata_provider=_FakeKoreaMetadataProvider(),
     )
 
-    snapshot = provider.snapshot(
-        "005930.KS",
+    snapshots = provider.snapshots(
+        ["005930.KS"],
         trade_date=date(2026, 5, 21),
+        limit=3,
         now=datetime(2026, 5, 22, 1, 0, tzinfo=timezone.utc),
     )
 
-    response = snapshot.to_api_dict()
-
-    assert response["dataStatus"] == "PROVIDER_ERROR"
-    assert response["provider"] == "pykrx"
-    assert response["individual"] == {"netAmount": 0, "netVolume": 0}
-    assert response["foreign"] == {"netAmount": 0, "netVolume": 0}
-    assert response["institution"] == {"netAmount": 0, "netVolume": 0}
+    assert snapshots == []
 
 
 def test_investor_flow_snapshot_request_payload_excludes_stale():

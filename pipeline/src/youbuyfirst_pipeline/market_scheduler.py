@@ -22,7 +22,7 @@ class ChartCandleProvider(Protocol):
 
 
 class InvestorFlowProvider(Protocol):
-    def snapshots(self, symbols: list[str]) -> list[InvestorFlowSnapshot]:
+    def snapshots(self, symbols: list[str], limit: int) -> list[InvestorFlowSnapshot]:
         ...
 
 
@@ -116,17 +116,20 @@ class InvestorFlowRefreshJob:
             provider: InvestorFlowProvider,
             client: MarketRefreshClient,
             symbols: list[str],
+            limit: int,
     ) -> None:
         self.provider = provider
         self.client = client
         self.symbols = symbols
+        self.limit = limit
 
     def run_once(self) -> InvestorFlowRefreshResult:
         status = "OK"
         count = 0
         try:
-            snapshots = self.provider.snapshots(self.symbols)
-            self.client.publish_investor_flows(snapshots)
+            snapshots = self.provider.snapshots(self.symbols, limit=self.limit)
+            if snapshots:
+                self.client.publish_investor_flows(snapshots)
             count = len(snapshots)
         except Exception:
             status = "PROVIDER_ERROR"
@@ -172,10 +175,12 @@ def build_investor_flow_refresh_job(
         *,
         client: SpringIngestionClient,
         symbols: list[str],
+        limit: int,
         stale_after_hours: int,
 ) -> InvestorFlowRefreshJob:
     return InvestorFlowRefreshJob(
         provider=MarketInvestorFlowProvider(stale_after_hours=stale_after_hours),
         client=client,
         symbols=symbols,
+        limit=limit,
     )
