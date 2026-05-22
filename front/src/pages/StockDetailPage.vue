@@ -302,6 +302,28 @@ const chartDisplayCandles = computed<StockChartCandle[]>(() =>
     institution: 0
   }))
 );
+const isWeekendDate = (value: string) => {
+  const day = new Date(`${value}T00:00:00`).getDay();
+  return day === 0 || day === 6;
+};
+const chartCalendarWarning = computed(() => {
+  const payload = chartCandles.value;
+  if (!payload || !isDomesticInvestorFlowTarget.value) return '';
+
+  const weekendBars = payload.bars.filter((bar) => isWeekendDate(bar.date));
+  const barDates = new Set(payload.bars.map((bar) => bar.date));
+  const missingFlowDates = investorFlowSnapshots.value
+    .filter((snapshot) => !barDates.has(snapshot.tradeDate))
+    .slice(0, 3)
+    .map((snapshot) => snapshot.tradeDate.slice(5));
+
+  if (!weekendBars.length && !missingFlowDates.length) return '';
+
+  const issueParts = [];
+  if (weekendBars.length) issueParts.push(`비거래일 bar ${weekendBars.length}개`);
+  if (missingFlowDates.length) issueParts.push(`수급 날짜 미매칭 ${missingFlowDates.join(', ')}`);
+  return `국장 차트 날짜 정합성 확인 필요: ${issueParts.join(' · ')}. 차트 API 날짜를 KRX 거래일 기준으로 보정하기 전까지 수급 표의 가격 칸은 같은 날짜만 붙입니다.`;
+});
 const chartStatusLabel = computed(() => {
   const payload = chartCandles.value;
   if (!payload) return chartLoadState.value === 'loading' ? 'chart API 확인 중' : 'chart API 대기';
@@ -693,6 +715,10 @@ watch(quoteApiSymbol, () => {
           <strong>{{ item.value }}</strong>
         </article>
       </div>
+
+      <p v-if="chartCalendarWarning" class="chart-data-warning" role="note">
+        {{ chartCalendarWarning }}
+      </p>
 
       <StockPriceChart
         v-if="canRenderChart && chartCandles"

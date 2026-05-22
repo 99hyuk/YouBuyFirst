@@ -3656,11 +3656,11 @@ a {
   order: -3;
 }
 
-.stock-main-chart {
+.stock-hero {
   order: -2;
 }
 
-.stock-hero {
+.stock-main-chart {
   order: -1;
 }
 
@@ -3672,16 +3672,20 @@ a {
   order: 2;
 }
 
-.stock-main-chart > .chart-source-meta-grid {
+.stock-main-chart > .chart-data-warning {
   order: 3;
 }
 
-.stock-main-chart > .investor-flow-panel {
+.stock-main-chart > .chart-source-meta-grid {
   order: 4;
 }
 
-.stock-main-chart > .chart-data-note {
+.stock-main-chart > .investor-flow-panel {
   order: 5;
+}
+
+.stock-main-chart > .chart-data-note {
+  order: 6;
 }
 
 .stock-identity h2 {
@@ -4102,6 +4106,18 @@ a {
   font-weight: 880;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.chart-data-warning {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #f0d7a1;
+  border-radius: 8px;
+  background: #fff8e8;
+  color: #8a5a0b;
+  font-size: 11px;
+  font-weight: 760;
+  line-height: 1.45;
 }
 
 .chart-contract-fields {
