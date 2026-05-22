@@ -4458,6 +4458,17 @@ a {
   color: #66758a;
 }
 
+.investor-flow-empty {
+  padding: 14px 16px;
+  border: 1px dashed #cbd8e8;
+  border-radius: 8px;
+  background: rgba(248, 251, 255, 0.92);
+  color: #536174;
+  font-size: 12px;
+  font-weight: 760;
+  line-height: 1.55;
+}
+
 .investor-flow-note {
   margin: 0;
   color: #647184;

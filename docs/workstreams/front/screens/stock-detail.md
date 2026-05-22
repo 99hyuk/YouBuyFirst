@@ -20,7 +20,7 @@
 - 종목 헤더: 종목명, 시장, quote snapshot 기반 현재가/등락률/거래량/asOf/stale 상태
 - 메인 가격 차트: TradingView embed가 아니라 `StockPriceChart` 기반의 자체 UI shell이다. `GET /api/market/chart-candles?range=5Y&interval=1d`를 호출해 실제 display-only OHLC bars가 오면 렌더링하고, 화면 기본 범위는 3M으로 둔다. 화면 선택지는 `1M`, `3M`, `6M`, `1Y`, `3Y`, `5Y`이며, `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 차트를 숨기고 상태 안내를 보여준다.
 - quote snapshot 영역: `GET /api/quotes?symbols=005930.KS,AAPL,NVDA` 응답을 우선 사용한다. 현재가, 등락률, 거래량, asOf, provider, delayLabel, stale, dataStatus는 가격 근처에 함께 보여주며 차트에서 긁지 않는다.
-- 일별 수급 영역: 국내 종목/ETF는 `GET /api/market/investor-flows/history?symbol=005930.KS&limit=20` 응답으로 개인/외국인/기관의 거래일별 순매수/순매도 금액과 수량을 표로 표시한다. `tradeDate`, `provider`, `sourceLabel`, `delayLabel`, `asOf`, `stale`, `dataStatus`를 함께 표시하고, 미국 종목이거나 표시 가능한 `OK`, `STALE` row가 없으면 이 영역만 숨긴다. 표는 5줄 높이 스크롤 목록으로 둔다.
+- 일별 수급 영역: 국내 종목/ETF는 `GET /api/market/investor-flows/history?symbol=005930.KS&limit=20` 응답으로 개인/외국인/기관의 거래일별 순매수/순매도 금액과 수량을 표로 표시한다. `tradeDate`, `provider`, `sourceLabel`, `delayLabel`, `asOf`, `stale`, `dataStatus`를 함께 표시한다. 표시 가능한 `OK`, `STALE` row가 없으면 가짜 0값 표 대신 빈 상태 문구만 보여준다. 미국 종목은 수급 영역을 숨긴다. 표는 5줄 높이 스크롤 목록으로 둔다.
 - 차트 데이터 상태: `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 메인 차트를 숨기고 차트 영역에 API 상태 안내를 표시한다. 렌더링 가능한 경우에도 asOf, provider, delayLabel, stale, dataStatus를 차트 shell 안에 함께 보여준다.
 - 요약 지표 strip: 반응 점수, 언급 변화, 긍정/부정, 출처 수, 원문 링크 수
 - 반응 키워드와 시간대별 변화: 30분 키워드 pulse, 09:00~09:45 snapshot
@@ -37,7 +37,7 @@
 - empty: 근거가 부족하면 `headlineTone`을 `normal`로 낮추고 표본/원문 부족을 신뢰도 영역에 표시한다.
 - error: chart candle 실패와 quote snapshot 실패를 분리해서 표시한다.
 - stale/mock: `quoteSnapshot.dataStatus`, `quoteSnapshot.asOf`, `quoteSnapshot.stale`, `chartCandles.dataStatus`, `chartCandles.asOf`, `chartCandles.stale`을 각각 가격/차트 영역에 함께 표시한다.
-- investor flow stale/error: 수급은 거래일별 확정 관찰 데이터라 장중 실시간처럼 보이게 표시하지 않는다. `investorFlow.delayLabel`, `investorFlow.tradeDate`, `investorFlow.provider`, `investorFlow.stale`, `investorFlow.dataStatus`를 수급 영역에 함께 표시한다. public history 응답은 `OK`, `STALE`만 표시하고, 배열이 비면 0 수급처럼 보이지 않게 수급 표를 숨긴다.
+- investor flow stale/error: 수급은 거래일별 확정 관찰 데이터라 장중 실시간처럼 보이게 표시하지 않는다. `investorFlow.delayLabel`, `investorFlow.tradeDate`, `investorFlow.provider`, `investorFlow.stale`, `investorFlow.dataStatus`를 수급 영역에 함께 표시한다. public history 응답은 `OK`, `STALE`만 표에 표시하고, 배열이 비면 0 수급처럼 보이지 않게 표를 숨기되 빈 상태 패널로 위치를 알려준다.
 
 ## API 후보
 
@@ -63,7 +63,7 @@
 
 ## 확인 필요
 
-- investor flow는 `GET /api/market/investor-flows/history?symbol=005930.KS&limit=20`를 사용한다. public history API는 실패/부족/mock row를 저장하거나 노출하지 않으므로 배열이 비면 수급 표를 숨긴다.
+- investor flow는 `GET /api/market/investor-flows/history?symbol=005930.KS&limit=20`를 사용한다. public history API는 실패/부족/mock row를 저장하거나 노출하지 않으므로 배열이 비면 수급 표를 숨기고 빈 상태만 표시한다.
 - 외인보유/보유율 컬럼은 현재 API에 없으므로 표시하지 않는다. 필요하면 market API 후보로 `foreignHolding`, `foreignHoldingPct`를 별도 논의한다.
 - Lightweight Charts용 chartCandles와 quoteSnapshot의 기준 시각 차이를 어떻게 표시할지.
 - chartCandles API는 `docs/workstreams/market/chart-candles.md` shape를 따른다. raw minute, order book, bulk OHLC가 아닌 공개 표시 가능한 일/주/월 display bars만 사용한다.

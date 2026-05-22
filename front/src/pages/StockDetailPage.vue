@@ -337,11 +337,17 @@ const latestInvestorFlow = computed(() => investorFlowSnapshots.value[0] ?? null
 const canRenderInvestorFlow = computed(
   () => investorFlowLoadState.value === 'api' && isDomesticInvestorFlowTarget.value && investorFlowSnapshots.value.length > 0
 );
-const chartPanelTitle = computed(() => (canRenderInvestorFlow.value ? '가격 차트와 일별 수급' : '가격 차트'));
+const canShowInvestorFlowPanel = computed(() => isDomesticInvestorFlowTarget.value && investorFlowLoadState.value !== 'idle');
+const chartPanelTitle = computed(() => (isDomesticInvestorFlowTarget.value ? '가격 차트와 일별 수급' : '가격 차트'));
 const investorFlowStatusLabel = computed(() => {
   const payload = latestInvestorFlow.value;
   if (!payload) return investorFlowLoadState.value === 'loading' ? '수급 API 확인 중' : '수급 API 대기';
   return `${payload.dataStatus} · ${payload.stale ? 'stale' : 'fresh'}`;
+});
+const investorFlowEmptyMessage = computed(() => {
+  if (investorFlowLoadState.value === 'loading') return '수급 history API를 확인하고 있습니다.';
+  if (investorFlowLoadState.value === 'error') return '수급 history API 응답을 확인할 수 없습니다. 차트와 가격 영역은 그대로 볼 수 있습니다.';
+  return '표시 가능한 OK/STALE 수급 row가 아직 없습니다. 실패/부족/mock 값은 0 수급처럼 보이지 않게 숨깁니다.';
 });
 const investorFlowMetaItems = computed(() => {
   const payload = latestInvestorFlow.value;
@@ -720,7 +726,7 @@ watch(quoteApiSymbol, () => {
         </div>
       </div>
 
-      <section v-if="canRenderInvestorFlow" class="investor-flow-panel" aria-label="일별 수급">
+      <section v-if="canShowInvestorFlowPanel" class="investor-flow-panel" aria-label="일별 수급">
         <div class="investor-flow-head">
           <div>
             <p class="label">investor flow</p>
@@ -729,14 +735,14 @@ watch(quoteApiSymbol, () => {
           <span class="status-pill subtle">{{ investorFlowStatusLabel }}</span>
         </div>
 
-        <div class="investor-flow-meta" aria-label="수급 데이터 기준">
+        <div v-if="canRenderInvestorFlow" class="investor-flow-meta" aria-label="수급 데이터 기준">
           <span v-for="item in investorFlowMetaItems" :key="item.label">
             <b>{{ item.label }}</b>
             {{ item.value }}
           </span>
         </div>
 
-        <div class="investor-flow-table-wrap" aria-label="최근 거래일 수급 표">
+        <div v-if="canRenderInvestorFlow" class="investor-flow-table-wrap" aria-label="최근 거래일 수급 표">
           <table class="investor-flow-table">
             <thead>
               <tr>
@@ -763,6 +769,10 @@ watch(quoteApiSymbol, () => {
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div v-else class="investor-flow-empty" aria-label="수급 데이터 없음">
+          {{ investorFlowEmptyMessage }}
         </div>
 
         <p class="investor-flow-note">
