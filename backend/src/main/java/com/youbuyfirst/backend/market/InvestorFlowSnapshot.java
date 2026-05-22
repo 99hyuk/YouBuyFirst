@@ -16,7 +16,10 @@ import java.time.LocalDate;
 @Entity
 @Table(
         name = "investor_flow_snapshots",
-        uniqueConstraints = @UniqueConstraint(name = "uk_investor_flow_snapshots_symbol", columnNames = "symbol")
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_investor_flow_snapshots_symbol_trade_date",
+                columnNames = {"symbol", "trade_date"}
+        )
 )
 public class InvestorFlowSnapshot {
 

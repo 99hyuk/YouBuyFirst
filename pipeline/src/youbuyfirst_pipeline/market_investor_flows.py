@@ -11,6 +11,7 @@ from typing import Protocol
 from youbuyfirst_pipeline.market_quotes import FinanceDataReaderMetadataProvider, MetadataProvider
 
 DEFAULT_INVESTOR_FLOW_SYMBOLS = ["005930.KS", "000660.KS", "069500.KS"]
+DEFAULT_INVESTOR_FLOW_HISTORY_LIMIT = 20
 
 _INDIVIDUAL = "\uac1c\uc778"
 _FOREIGN_TOTAL = "\uc678\uad6d\uc778\ud569\uacc4"
@@ -164,9 +165,8 @@ class MarketInvestorFlowProvider:
         try:
             individual, foreign, institution = self.flow_client.flow(_krx_code(normalized), target_date)
             status = "STALE" if stale else "OK"
-        except Exception:
-            individual = foreign = institution = InvestorFlowLeg(Decimal("0"), 0)
-            status = "PROVIDER_ERROR"
+        except Exception as exc:
+            raise InvestorFlowProviderError(f"investor flow provider failed for {normalized} on {target_date}") from exc
 
         return _snapshot(
             symbol=metadata.symbol,
@@ -188,9 +188,32 @@ class MarketInvestorFlowProvider:
             self,
             symbols: list[str],
             trade_date: date | None = None,
+            limit: int = DEFAULT_INVESTOR_FLOW_HISTORY_LIMIT,
             now: datetime | None = None,
     ) -> list[InvestorFlowSnapshot]:
-        return [self.snapshot(symbol, trade_date=trade_date, now=now) for symbol in symbols]
+        snapshots: list[InvestorFlowSnapshot] = []
+        for symbol in symbols:
+            snapshots.extend(self.history(symbol, trade_date=trade_date, limit=limit, now=now))
+        return snapshots
+
+    def history(
+            self,
+            symbol: str,
+            trade_date: date | None = None,
+            limit: int = DEFAULT_INVESTOR_FLOW_HISTORY_LIMIT,
+            now: datetime | None = None,
+    ) -> list[InvestorFlowSnapshot]:
+        current_time = _as_utc_datetime(now or datetime.now(timezone.utc))
+        target_date = trade_date or previous_weekday(current_time.date())
+        snapshots: list[InvestorFlowSnapshot] = []
+        for candidate in recent_weekdays(target_date, limit):
+            try:
+                snapshot = self.snapshot(symbol, trade_date=candidate, now=current_time)
+            except InvestorFlowProviderError:
+                continue
+            if snapshot.data_status in {"OK", "STALE"}:
+                snapshots.append(snapshot)
+        return snapshots
 
 
 def configured_investor_flow_symbols(value: str | None) -> list[str]:
@@ -204,6 +227,17 @@ def previous_weekday(today: date) -> date:
     while candidate.weekday() >= 5:
         candidate -= timedelta(days=1)
     return candidate
+
+
+def recent_weekdays(end_date: date, limit: int) -> list[date]:
+    bounded_limit = max(1, min(limit, 120))
+    days: list[date] = []
+    candidate = end_date
+    while len(days) < bounded_limit:
+        if candidate.weekday() < 5:
+            days.append(candidate)
+        candidate -= timedelta(days=1)
+    return days
 
 
 def _snapshot(
