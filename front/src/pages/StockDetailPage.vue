@@ -745,7 +745,7 @@ watch(quoteApiSymbol, () => {
         <div class="investor-flow-head">
           <div>
             <p class="label">investor flow</p>
-            <h4>일별 수급</h4>
+            <h4>일별 수급 추정치</h4>
           </div>
           <span class="status-pill subtle">{{ investorFlowStatusLabel }}</span>
         </div>
@@ -797,7 +797,8 @@ watch(quoteApiSymbol, () => {
         </div>
 
         <p class="investor-flow-note">
-          provider가 내려준 OK/STALE 거래일만 최신순으로 표시합니다. 표는 5줄 높이에서 스크롤됩니다.
+          수급은 공개 표 기반 추정치라 실제 확정값과 다를 수 있습니다. 개인(잔차)은 외국인/기관 관찰 수량으로 계산한 값이며,
+          종가·전일비·거래량은 차트 API에 같은 날짜 bar가 없으면 -로 표시합니다.
         </p>
       </section>
       <p class="chart-data-note">
