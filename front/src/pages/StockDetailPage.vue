@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 
 import StockPriceChart from '../components/StockPriceChart.vue';
 import quoteSnapshotFixtureSet from '../fixtures/quote-snapshots.json';
+import type { StockChartCandle } from '../fixtures/stock-detail-chart';
 import { stockChartFixtures } from '../fixtures/stock-detail-chart';
 import stockDetailFixtureSet from '../fixtures/stock-detail-fixtures.json';
 
@@ -53,6 +54,36 @@ type ApiQuoteSnapshot = {
   dataStatus: string;
 };
 
+type ApiChartCandleBar = {
+  date: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+};
+
+type ApiChartCandles = {
+  symbol: string;
+  name: string;
+  market: string;
+  currency: 'KRW' | 'USD';
+  range: string;
+  interval: string;
+  provider: string;
+  delayLabel: string;
+  asOf: string;
+  stale: boolean;
+  dataStatus: string;
+  bars: ApiChartCandleBar[];
+  displayPolicy: {
+    displayOnly: boolean;
+    rawMinute: boolean;
+    downloadable: boolean;
+    maxBars: number;
+  };
+};
+
 type QuoteDisplay = {
   symbol: string;
   price: string;
@@ -70,8 +101,12 @@ const route = useRoute();
 const stockFixtures = stockDetailFixtureSet.items as StockDetailFixture[];
 const quoteSnapshots = ref<ApiQuoteSnapshot[]>(quoteSnapshotFixtureSet.items as ApiQuoteSnapshot[]);
 const quoteLoadState = ref<'fixture' | 'api' | 'error'>('fixture');
+const chartCandles = ref<ApiChartCandles | null>(null);
+const chartLoadState = ref<'idle' | 'loading' | 'api' | 'hidden' | 'error'>('idle');
+const chartBlockReason = ref('차트 API 응답을 기다리고 있습니다.');
 const isTestMode = typeof window !== 'undefined' && window.navigator.userAgent.includes('jsdom');
 const quoteApiBaseUrl = '';
+const hiddenChartStatuses = new Set(['INSUFFICIENT', 'PROVIDER_ERROR', 'MOCK']);
 
 const routeSymbol = computed(() => String(route.params.symbol ?? stockFixtures[0].symbol).toUpperCase());
 const quoteApiSymbolFor = (item: StockDetailFixture) =>
@@ -88,6 +123,7 @@ const stock = computed(
 const quoteApiSymbol = computed(() => quoteApiSymbolFor(stock.value));
 const quoteRequestSymbols = computed(() => Array.from(new Set(['005930.KS', 'AAPL', 'NVDA', quoteApiSymbol.value])));
 const quoteApiUrl = computed(() => `${quoteApiBaseUrl}/api/quotes?symbols=${quoteRequestSymbols.value.join(',')}`);
+const chartApiRequestUrl = computed(() => `/api/market/chart-candles?symbol=${quoteApiSymbol.value}&range=5Y&interval=1d`);
 const apiQuoteSnapshot = computed(() =>
   quoteSnapshots.value.find((quote) => quote.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase())
 );
@@ -172,6 +208,69 @@ const topBriefMetrics = computed(() => [
 ]);
 
 const topBriefReasons = computed(() => topBrief.value.reasons);
+
+const requiredChartFields = [
+  'symbol',
+  'currency',
+  'interval',
+  'range',
+  'bars[].date',
+  'bars[].open/high/low/close',
+  'bars[].volume',
+  'asOf',
+  'provider',
+  'delayLabel',
+  'stale',
+  'dataStatus'
+];
+
+const normalizedChartStatus = computed(() => chartCandles.value?.dataStatus?.toUpperCase() ?? '');
+const canRenderChart = computed(() => {
+  const payload = chartCandles.value;
+  if (chartLoadState.value !== 'api' || !payload?.bars?.length) return false;
+  return !hiddenChartStatuses.has(normalizedChartStatus.value);
+});
+const chartDisplayCandles = computed<StockChartCandle[]>(() =>
+  (chartCandles.value?.bars ?? []).map((bar) => ({
+    time: bar.date,
+    open: bar.open,
+    high: bar.high,
+    low: bar.low,
+    close: bar.close,
+    volume: bar.volume,
+    individual: 0,
+    foreign: 0,
+    institution: 0
+  }))
+);
+const chartStatusLabel = computed(() => {
+  const payload = chartCandles.value;
+  if (!payload) return chartLoadState.value === 'loading' ? 'chart API 확인 중' : 'chart API 대기';
+  return `${payload.dataStatus} · ${payload.stale ? 'stale' : 'fresh'}`;
+});
+const chartMetadataItems = computed(() => {
+  const payload = chartCandles.value;
+  if (!payload) return [];
+
+  return [
+    { label: 'provider', value: payload.provider },
+    { label: 'delay', value: payload.delayLabel },
+    { label: 'asOf', value: formatAsOf(payload.asOf) },
+    { label: 'status', value: chartStatusLabel.value }
+  ];
+});
+const chartSourceLabel = computed(() => {
+  const payload = chartCandles.value;
+  if (!payload) return chartFixture.value.chartSource;
+  return `${payload.provider} · ${payload.delayLabel}`;
+});
+const chartPriceUnit = computed(() => (chartCandles.value?.currency === 'USD' ? '달러' : '원'));
+const chartBlockTitle = computed(() => {
+  if (chartLoadState.value === 'loading') return `${chartFixture.value.providerSymbol} 차트 API 확인 중`;
+  if (chartLoadState.value === 'hidden') return '차트 응답이 표시 조건을 만족하지 않습니다';
+  if (chartLoadState.value === 'error') return '실제 차트 API가 아직 연결되지 않았습니다';
+  return `실제 ${chartFixture.value.providerSymbol} 일자별 차트 API가 필요합니다`;
+});
 
 const reactionTrend = [
   { period: '30분', mentions: 128, positive: 54, negative: 27, neutral: 19 },
@@ -264,7 +363,54 @@ const loadQuoteSnapshots = async () => {
   }
 };
 
-onMounted(loadQuoteSnapshots);
+const loadChartCandles = async () => {
+  if (isTestMode) {
+    return;
+  }
+
+  chartLoadState.value = 'loading';
+  chartBlockReason.value = '실제 일자별 캔들 API를 호출하고 있습니다.';
+
+  try {
+    const response = await fetch(chartApiRequestUrl.value, {
+      headers: { Accept: 'application/json' }
+    });
+    if (!response.ok) {
+      throw new Error(`chart candles request failed: ${response.status}`);
+    }
+
+    const contentType = response.headers.get('content-type') ?? '';
+    if (!contentType.includes('application/json')) {
+      throw new Error('chart candles response is not JSON');
+    }
+
+    const payload = (await response.json()) as ApiChartCandles;
+    chartCandles.value = payload;
+
+    if (!payload.bars?.length) {
+      chartLoadState.value = 'hidden';
+      chartBlockReason.value = 'bars가 비어 있어 차트를 표시하지 않습니다.';
+      return;
+    }
+
+    if (hiddenChartStatuses.has(payload.dataStatus.toUpperCase())) {
+      chartLoadState.value = 'hidden';
+      chartBlockReason.value = `dataStatus=${payload.dataStatus} 상태라 차트를 표시하지 않습니다.`;
+      return;
+    }
+
+    chartLoadState.value = 'api';
+  } catch {
+    chartCandles.value = null;
+    chartLoadState.value = 'error';
+    chartBlockReason.value = '현재 브랜치의 backend에는 chart-candles public endpoint가 아직 없거나 응답이 실패했습니다.';
+  }
+};
+
+onMounted(() => {
+  void loadQuoteSnapshots();
+  void loadChartCandles();
+});
 </script>
 
 <template>
@@ -345,20 +491,64 @@ onMounted(loadQuoteSnapshots);
           <p class="label">chart lab</p>
           <h3>가격 차트와 매매 동향</h3>
         </div>
-        <span class="status-pill subtle">snapshot 전용 · 원시 데이터 미노출</span>
+        <span class="status-pill subtle">{{ canRenderChart ? 'chart API 연결' : '실제 차트 API 대기' }}</span>
       </div>
+
+      <div v-if="chartCandles" class="chart-source-meta-grid" aria-label="chart candle metadata">
+        <article v-for="item in chartMetadataItems" :key="item.label">
+          <span>{{ item.label }}</span>
+          <strong>{{ item.value }}</strong>
+        </article>
+      </div>
+
       <StockPriceChart
-        :title="stock.name"
-        :provider-symbol="chartFixture.providerSymbol"
-        :currency="chartFixture.currency"
-        :price-unit="chartFixture.priceUnit"
-        :volume-unit="chartFixture.volumeUnit"
+        v-if="canRenderChart && chartCandles"
+        :title="chartCandles.name || stock.name"
+        :provider-symbol="chartCandles.symbol"
+        :currency="chartCandles.currency"
+        :price-unit="chartPriceUnit"
+        volume-unit="주"
         :flow-unit="chartFixture.flowUnit"
-        :chart-source="chartFixture.chartSource"
-        :candles="chartFixture.candles"
+        :chart-source="chartSourceLabel"
+        :candles="chartDisplayCandles"
+        :snapshot-as-of="chartCandles.asOf"
+        :snapshot-status="chartStatusLabel"
+        data-mode="actual"
       />
+
+      <div v-else class="chart-api-blocker" role="note" aria-label="실제 차트 API 요청">
+        <div class="chart-api-blocker-copy">
+          <p class="label">actual chart blocked</p>
+          <h4>{{ chartBlockTitle }}</h4>
+          <p>
+            현재 연결된 <code>/api/quotes</code>는 현재가 snapshot만 내려줍니다. 메인 차트는 <code>/api/market/chart-candles</code>가 유효한 bars를 줄 때만 표시합니다. {{ chartBlockReason }}
+          </p>
+        </div>
+        <div class="chart-api-request-grid">
+          <article>
+            <span>현재 API</span>
+            <strong>/api/quotes</strong>
+            <em>현재가·등락률·거래량 snapshot only</em>
+          </article>
+          <article>
+            <span>요청 API</span>
+            <strong>{{ chartApiRequestUrl }}</strong>
+            <em>일/주/월 OHLC + volume display bars</em>
+          </article>
+          <article>
+            <span>표시 범위</span>
+            <strong>1M · 3M · 6M · 1Y · 3Y · 5Y</strong>
+            <em>5Y bars를 받아 화면 범위만 줄여 이평선 끊김을 줄임</em>
+          </article>
+        </div>
+        <div class="chart-contract-fields" aria-label="차트 API 필수 응답 필드">
+          <b>필수 응답 필드</b>
+          <span v-for="field in requiredChartFields" :key="field">{{ field }}</span>
+        </div>
+      </div>
+
       <p class="chart-data-note">
-        차트와 매매동향은 현재 프론트 fixture로 재구성한 화면입니다. 공개 화면에서는 원시 분봉, 호가, 대량 OHLC를 요청하거나 노출하지 않고, 현재가·등락률·거래량·asOf·provider·delayLabel·stale·dataStatus는 위 quote snapshot API 영역에서만 표시합니다.
+        현재가·등락률·거래량은 위 quote snapshot API 값입니다. 메인 차트는 chart-candles API의 display-only OHLC bars만 사용하고, 수급 데이터는 별도 전 거래일 slice로 분리합니다.
       </p>
     </section>
 

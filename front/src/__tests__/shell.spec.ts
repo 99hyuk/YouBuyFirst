@@ -117,9 +117,10 @@ describe('front dashboard shell', () => {
     expect(stock.text()).toContain('MOCK · stale');
     expect(stock.text()).toContain('거래량');
     expect(stock.text()).toContain('quote snapshot');
-    expect(stock.text()).toContain('front-only chart shell');
-    expect(stock.text()).toContain('매매 동향');
-    expect(stock.text()).toContain('원시 데이터 미노출');
+    expect(stock.text()).toContain('실제 차트 API 대기');
+    expect(stock.text()).toContain('/api/market/chart-candles');
+    expect(stock.text()).toContain('유효한 bars를 줄 때만 표시');
+    expect(stock.text()).toContain('bars[].open/high/low/close');
     expect(stock.text()).toContain('어제와 달라진 점');
     expect(stock.text()).toContain('반응 키워드');
     expect(stock.text()).toContain('시간대별 변화');

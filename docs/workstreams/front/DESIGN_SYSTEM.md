@@ -86,7 +86,13 @@
 ### 종목 상세 가격 차트
 
 - TradingView embed 대신 우리 UI shell을 우선 사용합니다.
-- 차트 shell은 봉/기간/이평/관찰 신호 controls, OHLC strip, 거래량, 매매동향을 한 화면에 묶습니다.
+- 차트 shell은 봉, 기간, 표시, 단기 이평, 장기 이평처럼 기능 대분류별 control group을 나눕니다.
+- control group의 label과 실제 버튼은 배경, border, 크기를 달리해 한눈에 구분되게 합니다.
+- 날짜 축은 zoom/scroll 상태에 맞춰 일, 월, 년 단위가 자연스럽게 드러나야 하고, 날짜 요약은 화면에 보이는 logical range 기준으로 갱신합니다.
+- 날짜 축은 시작/끝 두 점만 보여주지 않고 zoom/scroll 상태에 맞춰 여러 tick을 보여줍니다. 좁은 구간은 일자, 중간 구간은 월, 장기 구간은 연도 중심으로 읽히게 합니다.
+- 이평선은 현재 화면에 보이는 bars만이 아니라 chart-candles 전체 bars로 계산해 visible range 안에서 선이 불필요하게 끊기지 않게 합니다.
+- 이평선, 상승/하락, 긍정/부정처럼 색상이 의미를 가지는 요소는 차트 안팎에 짧은 범례를 둡니다.
+- 종목 상세 메인 차트는 `GET /api/market/chart-candles`의 display-only bars로만 렌더링합니다. 실제 일자별 차트 데이터가 없으면 fixture를 현재가에 맞춰 늘리거나 실제 차트처럼 보이게 하지 않고 API 필요 상태를 표시합니다.
 - 현재가, 등락률, 거래량, asOf, provider, delayLabel, stale, dataStatus는 quote snapshot 영역에서만 표시합니다.
 - 공개 화면에서 원시 분봉, 호가, 대량 OHLC를 요청하거나 그대로 노출하지 않습니다.
 

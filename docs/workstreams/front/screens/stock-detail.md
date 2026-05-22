@@ -18,7 +18,7 @@
 
 - 팩트폭격 상단 패널: 종목명, 티커, 한줄평, 보조 시황 문장, 근거 keyword chips
 - 종목 헤더: 종목명, 시장, quote snapshot 기반 현재가/등락률/거래량/asOf/stale 상태
-- 메인 가격 차트: TradingView embed가 아니라 `StockPriceChart` 기반의 자체 UI shell이다. `GET /api/market/chart-candles?symbol=005930.KS&range=3M&interval=1d`의 display-only OHLC bars가 있을 때만 렌더링한다.
+- 메인 가격 차트: TradingView embed가 아니라 `StockPriceChart` 기반의 자체 UI shell이다. `GET /api/market/chart-candles?range=5Y&interval=1d`를 호출해 실제 display-only OHLC bars가 오면 렌더링하고, 화면 기본 범위는 3M으로 둔다. 화면 선택지는 `1M`, `3M`, `6M`, `1Y`, `3Y`, `5Y`이며, `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 차트를 숨기고 상태 안내를 보여준다.
 - quote snapshot 영역: `GET /api/quotes?symbols=005930.KS,AAPL,NVDA` 응답을 우선 사용한다. 현재가, 등락률, 거래량, asOf, provider, delayLabel, stale, dataStatus는 가격 근처에 함께 보여주며 차트에서 긁지 않는다.
 - 차트 데이터 상태: `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 메인 차트를 숨기고 차트 영역에 API 상태 안내를 표시한다. 렌더링 가능한 경우에도 asOf, provider, delayLabel, stale, dataStatus를 차트 shell 안에 함께 보여준다.
 - 요약 지표 strip: 반응 점수, 언급 변화, 긍정/부정, 출처 수, 원문 링크 수
@@ -62,9 +62,13 @@
 
 - investor flow 전 거래일 slice를 어느 market/data API에서 가져올지.
 - Lightweight Charts용 chartCandles와 quoteSnapshot의 기준 시각 차이를 어떻게 표시할지.
+- chartCandles API는 `docs/workstreams/market/chart-candles.md` shape를 따른다. raw minute, order book, bulk OHLC가 아닌 공개 표시 가능한 일/주/월 display bars만 사용한다.
+- quote snapshot만으로 차트를 만들지 않는다.
+- 이평선과 zoom/scroll 축 요약은 API가 내려준 전체 bars를 기준으로 계산하고, 화면 범위만 1M/3M/6M/1Y/3Y/5Y로 조절한다. 단기 이평은 5/10/20, 장기 이평은 60/120/200을 쓰고 색상 범례를 함께 표시한다. 날짜 축은 확대/축소에 따라 일/월/년 단위 tick이 여러 개 보이게 유지한다.
 - 차트 로드 실패 시 quote snapshot과 커뮤니티 반응을 그대로 보여줄지.
 - 뉴스/공시/커뮤니티 글 상세를 별도 route로 둘지 drawer/panel로 둘지.
 
 ## 변경 로그
 
 - 2026-05-21: quote snapshot은 `GET /api/quotes`, 메인 가격 차트는 `GET /api/market/chart-candles`로 분리했다. 차트가 숨겨지는 상태와 차트 shell metadata 표시 기준을 최신 API 계약에 맞췄다.
+- 2026-05-22: chart-candles 요청 범위를 5Y로 두고 기본 화면 범위만 3M으로 제한해 장기 이평선과 확대/축소 축을 실제 bars 기준으로 계산한다. 축 라벨은 zoom/scroll과 봉 단위에 맞춰 여러 날짜 tick이 일/월/년 단위로 바뀌도록 보정했다.
