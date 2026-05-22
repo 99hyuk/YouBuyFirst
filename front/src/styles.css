@@ -4458,6 +4458,12 @@ a {
   color: #66758a;
 }
 
+.investor-flow-table .derived {
+  font-style: italic;
+  text-decoration: underline dotted rgba(100, 113, 132, 0.48);
+  text-underline-offset: 3px;
+}
+
 .investor-flow-empty {
   padding: 14px 16px;
   border: 1px dashed #cbd8e8;

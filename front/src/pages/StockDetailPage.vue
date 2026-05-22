@@ -85,8 +85,9 @@ type ApiChartCandles = {
 };
 
 type ApiInvestorFlowLeg = {
-  netAmount: number;
+  netAmount: number | null;
   netVolume: number;
+  derived: boolean;
 };
 
 type ApiInvestorFlowSnapshot = {
@@ -189,7 +190,9 @@ const formatSignedNumber = (value: number) => {
 
 const formatSignedPct = (value: number) => `${value > 0 ? '+' : ''}${value.toFixed(2)}%`;
 
-const formatNetAmount = (value: number, currency: ApiInvestorFlowSnapshot['currency']) => {
+const formatNetAmount = (value: number | null, currency: ApiInvestorFlowSnapshot['currency']) => {
+  if (value === null) return '-';
+
   const sign = value > 0 ? '+' : value < 0 ? '-' : '';
   const absolute = Math.abs(value);
 
@@ -361,6 +364,16 @@ const investorFlowMetaItems = computed(() => {
     { label: 'status', value: investorFlowStatusLabel.value }
   ];
 });
+const investorFlowSubjectLabels = computed(() => {
+  const payload = latestInvestorFlow.value;
+  const labelFor = (label: string, leg?: ApiInvestorFlowLeg) => (leg?.derived ? `${label}(잔차)` : label);
+
+  return {
+    individual: labelFor('개인', payload?.individual),
+    foreign: labelFor('외국인', payload?.foreign),
+    institution: labelFor('기관', payload?.institution)
+  };
+});
 const investorFlowTableRows = computed(() => {
   const bars = chartCandles.value?.bars ?? [];
 
@@ -374,7 +387,9 @@ const investorFlowTableRows = computed(() => {
     const flowCell = (leg: ApiInvestorFlowLeg) => ({
       volumeLabel: formatSignedNumber(leg.netVolume),
       amountLabel: formatNetAmount(leg.netAmount, snapshot.currency),
-      tone: flowTone(leg.netVolume || leg.netAmount)
+      derived: leg.derived,
+      title: `${leg.derived ? '잔차 계산값' : '관찰값'} · 금액 ${formatNetAmount(leg.netAmount, snapshot.currency)}`,
+      tone: flowTone(leg.netVolume || leg.netAmount || 0)
     });
 
     return {
@@ -751,9 +766,9 @@ watch(quoteApiSymbol, () => {
                 <th>전일비</th>
                 <th>등락률</th>
                 <th>거래량</th>
-                <th>개인</th>
-                <th>외국인</th>
-                <th>기관</th>
+                <th>{{ investorFlowSubjectLabels.individual }}</th>
+                <th>{{ investorFlowSubjectLabels.foreign }}</th>
+                <th>{{ investorFlowSubjectLabels.institution }}</th>
               </tr>
             </thead>
             <tbody>
@@ -763,9 +778,15 @@ watch(quoteApiSymbol, () => {
                 <td :class="row.changeTone">{{ row.changeLabel }}</td>
                 <td :class="row.changeTone">{{ row.changePctLabel }}</td>
                 <td>{{ row.volumeLabel }}</td>
-                <td :class="row.individual.tone" :title="row.individual.amountLabel">{{ row.individual.volumeLabel }}</td>
-                <td :class="row.foreign.tone" :title="row.foreign.amountLabel">{{ row.foreign.volumeLabel }}</td>
-                <td :class="row.institution.tone" :title="row.institution.amountLabel">{{ row.institution.volumeLabel }}</td>
+                <td :class="[row.individual.tone, { derived: row.individual.derived }]" :title="row.individual.title">
+                  {{ row.individual.volumeLabel }}
+                </td>
+                <td :class="[row.foreign.tone, { derived: row.foreign.derived }]" :title="row.foreign.title">
+                  {{ row.foreign.volumeLabel }}
+                </td>
+                <td :class="[row.institution.tone, { derived: row.institution.derived }]" :title="row.institution.title">
+                  {{ row.institution.volumeLabel }}
+                </td>
               </tr>
             </tbody>
           </table>
