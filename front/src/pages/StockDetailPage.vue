@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import StockPriceChart from '../components/StockPriceChart.vue';
@@ -84,6 +84,28 @@ type ApiChartCandles = {
   };
 };
 
+type ApiInvestorFlowLeg = {
+  netAmount: number;
+  netVolume: number;
+};
+
+type ApiInvestorFlowSnapshot = {
+  symbol: string;
+  name: string;
+  market: string;
+  currency: 'KRW' | 'USD';
+  tradeDate: string;
+  provider: string;
+  sourceLabel: string;
+  delayLabel: string;
+  asOf: string;
+  stale: boolean;
+  dataStatus: string;
+  individual: ApiInvestorFlowLeg;
+  foreign: ApiInvestorFlowLeg;
+  institution: ApiInvestorFlowLeg;
+};
+
 type QuoteDisplay = {
   symbol: string;
   price: string;
@@ -104,9 +126,12 @@ const quoteLoadState = ref<'fixture' | 'api' | 'error'>('fixture');
 const chartCandles = ref<ApiChartCandles | null>(null);
 const chartLoadState = ref<'idle' | 'loading' | 'api' | 'hidden' | 'error'>('idle');
 const chartBlockReason = ref('차트 API 응답을 기다리고 있습니다.');
+const investorFlow = ref<ApiInvestorFlowSnapshot | null>(null);
+const investorFlowLoadState = ref<'idle' | 'loading' | 'api' | 'hidden' | 'error'>('idle');
 const isTestMode = typeof window !== 'undefined' && window.navigator.userAgent.includes('jsdom');
 const quoteApiBaseUrl = '';
 const hiddenChartStatuses = new Set(['INSUFFICIENT', 'PROVIDER_ERROR', 'MOCK']);
+const hiddenInvestorFlowStatuses = new Set(['INSUFFICIENT', 'PROVIDER_ERROR', 'MOCK']);
 
 const routeSymbol = computed(() => String(route.params.symbol ?? stockFixtures[0].symbol).toUpperCase());
 const quoteApiSymbolFor = (item: StockDetailFixture) =>
@@ -124,9 +149,11 @@ const quoteApiSymbol = computed(() => quoteApiSymbolFor(stock.value));
 const quoteRequestSymbols = computed(() => Array.from(new Set(['005930.KS', 'AAPL', 'NVDA', quoteApiSymbol.value])));
 const quoteApiUrl = computed(() => `${quoteApiBaseUrl}/api/quotes?symbols=${quoteRequestSymbols.value.join(',')}`);
 const chartApiRequestUrl = computed(() => `/api/market/chart-candles?symbol=${quoteApiSymbol.value}&range=5Y&interval=1d`);
+const investorFlowApiRequestUrl = computed(() => `/api/market/investor-flows?symbols=${quoteApiSymbol.value}`);
 const apiQuoteSnapshot = computed(() =>
   quoteSnapshots.value.find((quote) => quote.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase())
 );
+const isDomesticInvestorFlowTarget = computed(() => quoteApiSymbol.value.toUpperCase().endsWith('.KS') || stock.value.market === 'KRX');
 const topBrief = computed(() => stock.value.brief);
 const chartFixture = computed(
   () =>
@@ -151,6 +178,37 @@ const formatVolume = (value: number) => {
   if (value >= 100000000) return `${(value / 100000000).toFixed(1)}억주`;
   if (value >= 10000) return `${(value / 10000).toFixed(1)}만주`;
   return `${value.toLocaleString('ko-KR')}주`;
+};
+
+const formatSignedVolume = (value: number) => {
+  const sign = value > 0 ? '+' : value < 0 ? '-' : '';
+  return `${sign}${formatVolume(Math.abs(value))}`;
+};
+
+const formatNetAmount = (value: number, currency: ApiInvestorFlowSnapshot['currency']) => {
+  const sign = value > 0 ? '+' : value < 0 ? '-' : '';
+  const absolute = Math.abs(value);
+
+  if (currency === 'KRW') {
+    if (absolute >= 1000000000000) return `${sign}${(absolute / 1000000000000).toFixed(2)}조원`;
+    if (absolute >= 100000000) return `${sign}${(absolute / 100000000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}억원`;
+    if (absolute >= 10000) return `${sign}${(absolute / 10000).toLocaleString('ko-KR', { maximumFractionDigits: 1 })}만원`;
+    return `${sign}${absolute.toLocaleString('ko-KR')}원`;
+  }
+
+  return formatSignedCurrency(value, currency);
+};
+
+const flowDirectionLabel = (value: number) => {
+  if (value > 0) return '순매수';
+  if (value < 0) return '순매도';
+  return '중립';
+};
+
+const flowTone = (value: number) => {
+  if (value > 0) return 'up';
+  if (value < 0) return 'down';
+  return 'flat';
 };
 
 const formatAsOf = (value: string) => {
@@ -270,6 +328,54 @@ const chartBlockTitle = computed(() => {
   if (chartLoadState.value === 'hidden') return '차트 응답이 표시 조건을 만족하지 않습니다';
   if (chartLoadState.value === 'error') return '실제 차트 API가 아직 연결되지 않았습니다';
   return `실제 ${chartFixture.value.providerSymbol} 일자별 차트 API가 필요합니다`;
+});
+const chartPanelTitle = computed(() => (isDomesticInvestorFlowTarget.value ? '가격 차트와 전 거래일 수급' : '가격 차트'));
+
+const normalizedInvestorFlowStatus = computed(() => investorFlow.value?.dataStatus?.toUpperCase() ?? '');
+const canRenderInvestorFlow = computed(() => {
+  const payload = investorFlow.value;
+  if (investorFlowLoadState.value !== 'api' || !payload || !isDomesticInvestorFlowTarget.value) return false;
+  return !hiddenInvestorFlowStatuses.has(normalizedInvestorFlowStatus.value);
+});
+const investorFlowStatusLabel = computed(() => {
+  const payload = investorFlow.value;
+  if (!payload) return investorFlowLoadState.value === 'loading' ? '수급 API 확인 중' : '수급 API 대기';
+  return `${payload.dataStatus} · ${payload.stale ? 'stale' : 'fresh'}`;
+});
+const investorFlowMetaItems = computed(() => {
+  const payload = investorFlow.value;
+  if (!payload) return [];
+
+  return [
+    { label: '거래일', value: payload.tradeDate },
+    { label: 'provider', value: payload.provider },
+    { label: 'delay', value: payload.delayLabel },
+    { label: 'asOf', value: formatAsOf(payload.asOf) },
+    { label: 'status', value: investorFlowStatusLabel.value }
+  ];
+});
+const investorFlowRows = computed(() => {
+  const payload = investorFlow.value;
+  if (!payload) return [];
+
+  return [
+    { key: 'individual', label: '개인', ...payload.individual },
+    { key: 'foreign', label: '외국인', ...payload.foreign },
+    { key: 'institution', label: '기관', ...payload.institution }
+  ].map((row) => ({
+    ...row,
+    direction: flowDirectionLabel(row.netAmount),
+    tone: flowTone(row.netAmount),
+    amountLabel: formatNetAmount(row.netAmount, payload.currency),
+    volumeLabel: formatSignedVolume(row.netVolume)
+  }));
+});
+const maxInvestorFlowAmount = computed(() => Math.max(...investorFlowRows.value.map((row) => Math.abs(row.netAmount)), 1));
+const dominantInvestorFlow = computed(() => {
+  const rows = investorFlowRows.value;
+  if (!rows.length) return null;
+
+  return [...rows].sort((first, second) => Math.abs(second.netAmount) - Math.abs(first.netAmount))[0];
 });
 
 const reactionTrend = [
@@ -407,9 +513,68 @@ const loadChartCandles = async () => {
   }
 };
 
-onMounted(() => {
+const loadInvestorFlows = async () => {
+  investorFlow.value = null;
+
+  if (isTestMode) {
+    return;
+  }
+
+  if (!isDomesticInvestorFlowTarget.value) {
+    investorFlowLoadState.value = 'hidden';
+    return;
+  }
+
+  investorFlowLoadState.value = 'loading';
+
+  try {
+    const response = await fetch(investorFlowApiRequestUrl.value, {
+      headers: { Accept: 'application/json' }
+    });
+    if (!response.ok) {
+      throw new Error(`investor flow request failed: ${response.status}`);
+    }
+
+    const contentType = response.headers.get('content-type') ?? '';
+    if (!contentType.includes('application/json')) {
+      throw new Error('investor flow response is not JSON');
+    }
+
+    const payload = (await response.json()) as ApiInvestorFlowSnapshot[] | { items?: ApiInvestorFlowSnapshot[] };
+    const items = Array.isArray(payload) ? payload : payload.items;
+    const snapshot = items?.find((item) => item.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase()) ?? items?.[0] ?? null;
+
+    if (!snapshot) {
+      investorFlowLoadState.value = 'hidden';
+      return;
+    }
+
+    investorFlow.value = snapshot;
+
+    if (hiddenInvestorFlowStatuses.has(snapshot.dataStatus.toUpperCase())) {
+      investorFlowLoadState.value = 'hidden';
+      return;
+    }
+
+    investorFlowLoadState.value = 'api';
+  } catch {
+    investorFlow.value = null;
+    investorFlowLoadState.value = 'error';
+  }
+};
+
+const loadMarketSlices = () => {
   void loadQuoteSnapshots();
   void loadChartCandles();
+  void loadInvestorFlows();
+};
+
+onMounted(() => {
+  loadMarketSlices();
+});
+
+watch(quoteApiSymbol, () => {
+  loadMarketSlices();
 });
 </script>
 
@@ -485,11 +650,11 @@ onMounted(() => {
       </div>
     </section>
 
-    <section class="stock-main-chart panel content-feed-card surface-data-card" aria-label="종목 가격 차트와 매매 동향">
+    <section class="stock-main-chart panel content-feed-card surface-data-card" :aria-label="`종목 ${chartPanelTitle}`">
       <div class="panel-header">
         <div>
           <p class="label">chart lab</p>
-          <h3>가격 차트와 매매 동향</h3>
+          <h3>{{ chartPanelTitle }}</h3>
         </div>
         <span class="status-pill subtle">{{ canRenderChart ? 'chart API 연결' : '실제 차트 API 대기' }}</span>
       </div>
@@ -514,6 +679,7 @@ onMounted(() => {
         :snapshot-as-of="chartCandles.asOf"
         :snapshot-status="chartStatusLabel"
         data-mode="actual"
+        :show-flow-summary="false"
       />
 
       <div v-else class="chart-api-blocker" role="note" aria-label="실제 차트 API 요청">
@@ -547,8 +713,44 @@ onMounted(() => {
         </div>
       </div>
 
+      <section v-if="canRenderInvestorFlow && investorFlow" class="investor-flow-panel" aria-label="전 거래일 수급">
+        <div class="investor-flow-head">
+          <div>
+            <p class="label">investor flow</p>
+            <h4>전 거래일 수급</h4>
+          </div>
+          <span class="status-pill subtle">{{ investorFlowStatusLabel }}</span>
+        </div>
+
+        <div class="investor-flow-meta" aria-label="수급 데이터 기준">
+          <span v-for="item in investorFlowMetaItems" :key="item.label">
+            <b>{{ item.label }}</b>
+            {{ item.value }}
+          </span>
+        </div>
+
+        <div class="investor-flow-grid">
+          <article v-for="row in investorFlowRows" :key="row.key" class="investor-flow-card" :class="row.tone">
+            <div>
+              <span>{{ row.label }}</span>
+              <strong>{{ row.direction }}</strong>
+            </div>
+            <p>{{ row.amountLabel }}</p>
+            <i>
+              <mark :style="{ width: `${Math.max(10, (Math.abs(row.netAmount) / maxInvestorFlowAmount) * 100)}%` }"></mark>
+            </i>
+            <em>{{ row.volumeLabel }}</em>
+          </article>
+        </div>
+
+        <p class="investor-flow-note">
+          <strong v-if="dominantInvestorFlow">{{ dominantInvestorFlow.label }} {{ dominantInvestorFlow.direction }}가 가장 큽니다.</strong>
+          이 값은 {{ investorFlow.sourceLabel }} 기준 관찰 데이터이며 장중 실시간 수급이나 투자 판단 문구가 아닙니다.
+        </p>
+      </section>
+
       <p class="chart-data-note">
-        현재가·등락률·거래량은 위 quote snapshot API 값입니다. 메인 차트는 chart-candles API의 display-only OHLC bars만 사용하고, 수급 데이터는 별도 전 거래일 slice로 분리합니다.
+        현재가·등락률·거래량은 quote snapshot API, 메인 차트는 chart-candles API, 전 거래일 수급은 investor-flows API를 각각 따로 사용합니다.
       </p>
     </section>
 

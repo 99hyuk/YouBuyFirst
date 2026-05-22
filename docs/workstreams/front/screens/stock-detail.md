@@ -20,7 +20,7 @@
 - 종목 헤더: 종목명, 시장, quote snapshot 기반 현재가/등락률/거래량/asOf/stale 상태
 - 메인 가격 차트: TradingView embed가 아니라 `StockPriceChart` 기반의 자체 UI shell이다. `GET /api/market/chart-candles?range=5Y&interval=1d`를 호출해 실제 display-only OHLC bars가 오면 렌더링하고, 화면 기본 범위는 3M으로 둔다. 화면 선택지는 `1M`, `3M`, `6M`, `1Y`, `3Y`, `5Y`이며, `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 차트를 숨기고 상태 안내를 보여준다.
 - quote snapshot 영역: `GET /api/quotes?symbols=005930.KS,AAPL,NVDA` 응답을 우선 사용한다. 현재가, 등락률, 거래량, asOf, provider, delayLabel, stale, dataStatus는 가격 근처에 함께 보여주며 차트에서 긁지 않는다.
-- 전 거래일 수급 영역: 국내 종목/ETF는 `GET /api/market/investor-flows?symbols=005930.KS` 응답으로 개인/외국인/기관 순매수 금액과 순매수 수량을 보여줄 수 있다. `tradeDate`, `provider`, `sourceLabel`, `delayLabel`, `asOf`, `stale`, `dataStatus`를 함께 표시하고, `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 이 영역만 숨긴다.
+- 전 거래일 수급 영역: 국내 종목/ETF는 `GET /api/market/investor-flows?symbols=005930.KS` 응답으로 개인/외국인/기관의 전 거래일 순매수/순매도 금액과 수량을 표시한다. `tradeDate`, `provider`, `sourceLabel`, `delayLabel`, `asOf`, `stale`, `dataStatus`를 함께 표시하고, 미국 종목이거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 이 영역만 숨긴다.
 - 차트 데이터 상태: `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 메인 차트를 숨기고 차트 영역에 API 상태 안내를 표시한다. 렌더링 가능한 경우에도 asOf, provider, delayLabel, stale, dataStatus를 차트 shell 안에 함께 보여준다.
 - 요약 지표 strip: 반응 점수, 언급 변화, 긍정/부정, 출처 수, 원문 링크 수
 - 반응 키워드와 시간대별 변화: 30분 키워드 pulse, 09:00~09:45 snapshot
@@ -47,7 +47,7 @@
 | `chartCandles.symbol`, `name`, `market`, `currency`, `range`, `interval`, `provider`, `delayLabel`, `asOf`, `stale`, `dataStatus`, `bars`, `displayPolicy` | market | `GET /api/market/chart-candles` 응답 shape. `bars`가 비었거나 `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 메인 차트를 숨긴다. |
 | `chartCandles.bars[].date`, `open`, `high`, `low`, `close`, `volume` | market | display-only OHLC bars. 원시 분봉, 다운로드, 개인/외국인/기관 수급은 포함하지 않는다. |
 | `investorFlow.symbol`, `name`, `market`, `currency`, `tradeDate`, `provider`, `sourceLabel`, `delayLabel`, `asOf`, `stale`, `dataStatus`, `individual`, `foreign`, `institution` | market | `GET /api/market/investor-flows` 응답 shape. 국내 종목/ETF의 전 거래일 개인/외국인/기관 수급만 다루며, `dataStatus`가 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK`이면 수급 영역을 숨긴다. |
-| `investorFlow.individual.netAmount`, `netVolume`, `foreign.netAmount`, `netVolume`, `institution.netAmount`, `netVolume` | market | 순매수 금액과 순매수 수량. 음수는 순매도 방향이며 투자 판단 문구로 쓰지 않는다. |
+| `investorFlow.individual.netAmount`, `netVolume`, `foreign.netAmount`, `netVolume`, `institution.netAmount`, `netVolume` | market | 전 거래일 순매수/순매도 금액과 수량. 양수는 순매수, 음수는 순매도 방향이며 투자 판단 문구로 쓰지 않는다. |
 | `quoteSnapshot.symbol`, `name`, `market`, `currency`, `price`, `change`, `changePct`, `volume`, `asOf`, `provider`, `delayLabel`, `stale`, `dataStatus` | market | `GET /api/quotes?symbols=005930.KS,AAPL,NVDA` 응답 shape. 공개 화면은 provider/asOf/delayLabel/stale/dataStatus를 가격 근처에 함께 표시한다. |
 | `headlineTone`, `headline`, `subtitle`, `scoreLine`, `riskNote` | agent/backend | 상단 팩트폭격 카피와 보조 문구 |
 | `headlineEvidence` | market/data/agent | 한줄평 근거 chip 배열 |
@@ -75,4 +75,4 @@
 
 - 2026-05-21: quote snapshot은 `GET /api/quotes`, 메인 가격 차트는 `GET /api/market/chart-candles`로 분리했다. 차트가 숨겨지는 상태와 차트 shell metadata 표시 기준을 최신 API 계약에 맞췄다.
 - 2026-05-22: chart-candles 요청 범위를 5Y로 두고 기본 화면 범위만 3M으로 제한해 장기 이평선과 확대/축소 축을 실제 bars 기준으로 계산한다. 축 라벨은 zoom/scroll과 봉 단위에 맞춰 여러 날짜 tick이 일/월/년 단위로 바뀌도록 보정했다.
-- 2026-05-22: 국내 종목/ETF 전 거래일 수급은 `GET /api/market/investor-flows` 별도 API로 분리했다. 가격/차트 API에는 개인/외국인/기관 수급을 넣지 않는다.
+- 2026-05-22: 국내 종목/ETF 전 거래일 수급은 `GET /api/market/investor-flows` 별도 API로 연결했다. 가격/차트 API에는 개인/외국인/기관 수급을 넣지 않고, 해외 종목이나 `INSUFFICIENT`, `PROVIDER_ERROR`, `MOCK` 응답은 수급 카드만 숨긴다.
