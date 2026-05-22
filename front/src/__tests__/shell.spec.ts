@@ -111,7 +111,7 @@ describe('front dashboard shell', () => {
     expect(stock.text()).toContain('오늘의 한줄평');
     expect(stock.text()).toContain('실적표 없으면 행복회로 압수');
     expect(stock.text()).toContain('실거래 판단 근거 아님');
-    expect(stock.text()).toContain('가격 차트와 전 거래일 수급');
+    expect(stock.text()).toContain('가격 차트');
     expect(stock.text()).toContain('KRX:005930');
     expect(stock.text()).toContain('quote API 미연결 · mock fixture');
     expect(stock.text()).toContain('MOCK · stale');

@@ -126,7 +126,7 @@ const quoteLoadState = ref<'fixture' | 'api' | 'error'>('fixture');
 const chartCandles = ref<ApiChartCandles | null>(null);
 const chartLoadState = ref<'idle' | 'loading' | 'api' | 'hidden' | 'error'>('idle');
 const chartBlockReason = ref('차트 API 응답을 기다리고 있습니다.');
-const investorFlow = ref<ApiInvestorFlowSnapshot | null>(null);
+const investorFlows = ref<ApiInvestorFlowSnapshot[]>([]);
 const investorFlowLoadState = ref<'idle' | 'loading' | 'api' | 'hidden' | 'error'>('idle');
 const isTestMode = typeof window !== 'undefined' && window.navigator.userAgent.includes('jsdom');
 const quoteApiBaseUrl = '';
@@ -180,10 +180,12 @@ const formatVolume = (value: number) => {
   return `${value.toLocaleString('ko-KR')}주`;
 };
 
-const formatSignedVolume = (value: number) => {
+const formatSignedNumber = (value: number) => {
   const sign = value > 0 ? '+' : value < 0 ? '-' : '';
-  return `${sign}${formatVolume(Math.abs(value))}`;
+  return `${sign}${Math.abs(value).toLocaleString('ko-KR')}`;
 };
+
+const formatSignedPct = (value: number) => `${value > 0 ? '+' : ''}${value.toFixed(2)}%`;
 
 const formatNetAmount = (value: number, currency: ApiInvestorFlowSnapshot['currency']) => {
   const sign = value > 0 ? '+' : value < 0 ? '-' : '';
@@ -197,12 +199,6 @@ const formatNetAmount = (value: number, currency: ApiInvestorFlowSnapshot['curre
   }
 
   return formatSignedCurrency(value, currency);
-};
-
-const flowDirectionLabel = (value: number) => {
-  if (value > 0) return '순매수';
-  if (value < 0) return '순매도';
-  return '중립';
 };
 
 const flowTone = (value: number) => {
@@ -329,53 +325,63 @@ const chartBlockTitle = computed(() => {
   if (chartLoadState.value === 'error') return '실제 차트 API가 아직 연결되지 않았습니다';
   return `실제 ${chartFixture.value.providerSymbol} 일자별 차트 API가 필요합니다`;
 });
-const chartPanelTitle = computed(() => (isDomesticInvestorFlowTarget.value ? '가격 차트와 전 거래일 수급' : '가격 차트'));
-
-const normalizedInvestorFlowStatus = computed(() => investorFlow.value?.dataStatus?.toUpperCase() ?? '');
-const canRenderInvestorFlow = computed(() => {
-  const payload = investorFlow.value;
-  if (investorFlowLoadState.value !== 'api' || !payload || !isDomesticInvestorFlowTarget.value) return false;
-  return !hiddenInvestorFlowStatuses.has(normalizedInvestorFlowStatus.value);
-});
+const investorFlowSnapshots = computed(() =>
+  investorFlows.value
+    .filter((item) => item.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase())
+    .filter((item) => !hiddenInvestorFlowStatuses.has(item.dataStatus.toUpperCase()))
+    .sort((first, second) => second.tradeDate.localeCompare(first.tradeDate))
+);
+const latestInvestorFlow = computed(() => investorFlowSnapshots.value[0] ?? null);
+const canRenderInvestorFlow = computed(
+  () => investorFlowLoadState.value === 'api' && isDomesticInvestorFlowTarget.value && investorFlowSnapshots.value.length > 0
+);
+const chartPanelTitle = computed(() => (canRenderInvestorFlow.value ? '가격 차트와 일별 수급' : '가격 차트'));
 const investorFlowStatusLabel = computed(() => {
-  const payload = investorFlow.value;
+  const payload = latestInvestorFlow.value;
   if (!payload) return investorFlowLoadState.value === 'loading' ? '수급 API 확인 중' : '수급 API 대기';
   return `${payload.dataStatus} · ${payload.stale ? 'stale' : 'fresh'}`;
 });
 const investorFlowMetaItems = computed(() => {
-  const payload = investorFlow.value;
+  const payload = latestInvestorFlow.value;
   if (!payload) return [];
 
   return [
-    { label: '거래일', value: payload.tradeDate },
+    { label: '최근 거래일', value: payload.tradeDate },
     { label: 'provider', value: payload.provider },
     { label: 'delay', value: payload.delayLabel },
     { label: 'asOf', value: formatAsOf(payload.asOf) },
     { label: 'status', value: investorFlowStatusLabel.value }
   ];
 });
-const investorFlowRows = computed(() => {
-  const payload = investorFlow.value;
-  if (!payload) return [];
+const investorFlowTableRows = computed(() => {
+  const bars = chartCandles.value?.bars ?? [];
 
-  return [
-    { key: 'individual', label: '개인', ...payload.individual },
-    { key: 'foreign', label: '외국인', ...payload.foreign },
-    { key: 'institution', label: '기관', ...payload.institution }
-  ].map((row) => ({
-    ...row,
-    direction: flowDirectionLabel(row.netAmount),
-    tone: flowTone(row.netAmount),
-    amountLabel: formatNetAmount(row.netAmount, payload.currency),
-    volumeLabel: formatSignedVolume(row.netVolume)
-  }));
-});
-const maxInvestorFlowAmount = computed(() => Math.max(...investorFlowRows.value.map((row) => Math.abs(row.netAmount)), 1));
-const dominantInvestorFlow = computed(() => {
-  const rows = investorFlowRows.value;
-  if (!rows.length) return null;
+  return investorFlowSnapshots.value.map((snapshot) => {
+    const barIndex = bars.findIndex((bar) => bar.date === snapshot.tradeDate);
+    const bar = barIndex >= 0 ? bars[barIndex] : null;
+    const previousBar = barIndex > 0 ? bars[barIndex - 1] : null;
+    const priceChange = bar && previousBar ? bar.close - previousBar.close : null;
+    const priceChangePct = priceChange !== null && previousBar?.close ? (priceChange / previousBar.close) * 100 : null;
 
-  return [...rows].sort((first, second) => Math.abs(second.netAmount) - Math.abs(first.netAmount))[0];
+    const flowCell = (leg: ApiInvestorFlowLeg) => ({
+      volumeLabel: formatSignedNumber(leg.netVolume),
+      amountLabel: formatNetAmount(leg.netAmount, snapshot.currency),
+      tone: flowTone(leg.netVolume || leg.netAmount)
+    });
+
+    return {
+      key: `${snapshot.symbol}-${snapshot.tradeDate}`,
+      dateLabel: snapshot.tradeDate.slice(5),
+      closeLabel: bar ? formatCurrency(bar.close, snapshot.currency) : '-',
+      changeLabel: priceChange === null ? '-' : formatSignedCurrency(priceChange, snapshot.currency),
+      changePctLabel: priceChangePct === null ? '-' : formatSignedPct(priceChangePct),
+      changeTone: flowTone(priceChange ?? 0),
+      volumeLabel: bar ? formatVolume(bar.volume) : '-',
+      individual: flowCell(snapshot.individual),
+      foreign: flowCell(snapshot.foreign),
+      institution: flowCell(snapshot.institution)
+    };
+  });
 });
 
 const reactionTrend = [
@@ -514,7 +520,7 @@ const loadChartCandles = async () => {
 };
 
 const loadInvestorFlows = async () => {
-  investorFlow.value = null;
+  investorFlows.value = [];
 
   if (isTestMode) {
     return;
@@ -542,23 +548,22 @@ const loadInvestorFlows = async () => {
 
     const payload = (await response.json()) as ApiInvestorFlowSnapshot[] | { items?: ApiInvestorFlowSnapshot[] };
     const items = Array.isArray(payload) ? payload : payload.items;
-    const snapshot = items?.find((item) => item.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase()) ?? items?.[0] ?? null;
+    const snapshots =
+      items?.filter(
+        (item) =>
+          item.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase() &&
+          !hiddenInvestorFlowStatuses.has(item.dataStatus.toUpperCase())
+      ) ?? [];
 
-    if (!snapshot) {
+    if (!snapshots.length) {
       investorFlowLoadState.value = 'hidden';
       return;
     }
 
-    investorFlow.value = snapshot;
-
-    if (hiddenInvestorFlowStatuses.has(snapshot.dataStatus.toUpperCase())) {
-      investorFlowLoadState.value = 'hidden';
-      return;
-    }
-
+    investorFlows.value = snapshots;
     investorFlowLoadState.value = 'api';
   } catch {
-    investorFlow.value = null;
+    investorFlows.value = [];
     investorFlowLoadState.value = 'error';
   }
 };
@@ -713,11 +718,11 @@ watch(quoteApiSymbol, () => {
         </div>
       </div>
 
-      <section v-if="canRenderInvestorFlow && investorFlow" class="investor-flow-panel" aria-label="전 거래일 수급">
+      <section v-if="canRenderInvestorFlow" class="investor-flow-panel" aria-label="일별 수급">
         <div class="investor-flow-head">
           <div>
             <p class="label">investor flow</p>
-            <h4>전 거래일 수급</h4>
+            <h4>일별 수급</h4>
           </div>
           <span class="status-pill subtle">{{ investorFlowStatusLabel }}</span>
         </div>
@@ -729,28 +734,41 @@ watch(quoteApiSymbol, () => {
           </span>
         </div>
 
-        <div class="investor-flow-grid">
-          <article v-for="row in investorFlowRows" :key="row.key" class="investor-flow-card" :class="row.tone">
-            <div>
-              <span>{{ row.label }}</span>
-              <strong>{{ row.direction }}</strong>
-            </div>
-            <p>{{ row.amountLabel }}</p>
-            <i>
-              <mark :style="{ width: `${Math.max(10, (Math.abs(row.netAmount) / maxInvestorFlowAmount) * 100)}%` }"></mark>
-            </i>
-            <em>{{ row.volumeLabel }}</em>
-          </article>
+        <div class="investor-flow-table-wrap" aria-label="최근 거래일 수급 표">
+          <table class="investor-flow-table">
+            <thead>
+              <tr>
+                <th>날짜</th>
+                <th>종가</th>
+                <th>전일비</th>
+                <th>등락률</th>
+                <th>거래량</th>
+                <th>개인</th>
+                <th>외국인</th>
+                <th>기관</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in investorFlowTableRows" :key="row.key">
+                <td>{{ row.dateLabel }}</td>
+                <td>{{ row.closeLabel }}</td>
+                <td :class="row.changeTone">{{ row.changeLabel }}</td>
+                <td :class="row.changeTone">{{ row.changePctLabel }}</td>
+                <td>{{ row.volumeLabel }}</td>
+                <td :class="row.individual.tone" :title="row.individual.amountLabel">{{ row.individual.volumeLabel }}</td>
+                <td :class="row.foreign.tone" :title="row.foreign.amountLabel">{{ row.foreign.volumeLabel }}</td>
+                <td :class="row.institution.tone" :title="row.institution.amountLabel">{{ row.institution.volumeLabel }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <p class="investor-flow-note">
-          <strong v-if="dominantInvestorFlow">{{ dominantInvestorFlow.label }} {{ dominantInvestorFlow.direction }}가 가장 큽니다.</strong>
-          이 값은 {{ investorFlow.sourceLabel }} 기준 관찰 데이터이며 장중 실시간 수급이나 투자 판단 문구가 아닙니다.
+          provider가 내려준 OK/STALE 거래일만 표시합니다. 다일 수급 API가 붙으면 5줄 높이 스크롤 목록으로 확장됩니다.
         </p>
       </section>
-
       <p class="chart-data-note">
-        현재가·등락률·거래량은 quote snapshot API, 메인 차트는 chart-candles API, 전 거래일 수급은 investor-flows API를 각각 따로 사용합니다.
+        현재가·등락률·거래량은 quote snapshot API, 메인 차트는 chart-candles API, 일별 수급은 investor-flows API를 각각 따로 사용합니다.
       </p>
     </section>
 

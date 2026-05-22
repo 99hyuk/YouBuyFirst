@@ -4397,88 +4397,65 @@ a {
   text-transform: uppercase;
 }
 
-.investor-flow-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.investor-flow-card {
-  min-width: 0;
-  display: grid;
-  gap: 7px;
-  padding: 10px;
+.investor-flow-table-wrap {
+  max-height: 244px;
+  overflow: auto;
   border: 1px solid #e1e9f3;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.94);
+  background: #ffffff;
 }
 
-.investor-flow-card > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.investor-flow-card span {
-  color: #6d7a8d;
+.investor-flow-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  color: #26384f;
   font-size: 11px;
-  font-weight: 850;
+  font-weight: 760;
 }
 
-.investor-flow-card strong {
-  color: #536174;
-  font-size: 11px;
+.investor-flow-table th,
+.investor-flow-table td {
+  height: 38px;
+  padding: 0 12px;
+  border-bottom: 1px solid #edf2f7;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.investor-flow-table th:first-child,
+.investor-flow-table td:first-child {
+  text-align: left;
+}
+
+.investor-flow-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f7f9fc;
+  color: #728096;
+  font-size: 10.5px;
   font-weight: 900;
 }
 
-.investor-flow-card p {
-  margin: 0;
-  color: var(--ink);
-  font-size: 18px;
-  font-weight: 930;
+.investor-flow-table tr:last-child td {
+  border-bottom: 0;
 }
 
-.investor-flow-card i {
-  display: flex;
-  height: 7px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: #e8eef6;
+.investor-flow-table td {
+  font-variant-numeric: tabular-nums;
 }
 
-.investor-flow-card mark {
-  height: 100%;
-  border-radius: inherit;
-}
-
-.investor-flow-card.up mark {
-  background: linear-gradient(90deg, #ff9aa5, var(--market-up));
-}
-
-.investor-flow-card.down mark {
-  background: linear-gradient(90deg, #8bb9ff, var(--market-down));
-}
-
-.investor-flow-card.flat mark {
-  background: linear-gradient(90deg, #cbd5e1, #94a3b8);
-}
-
-.investor-flow-card.up p,
-.investor-flow-card.up strong {
+.investor-flow-table .up {
   color: var(--market-up);
 }
 
-.investor-flow-card.down p,
-.investor-flow-card.down strong {
+.investor-flow-table .down {
   color: var(--market-down);
 }
 
-.investor-flow-card em {
+.investor-flow-table .flat {
   color: #66758a;
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 760;
 }
 
 .investor-flow-note {
@@ -9613,7 +9590,6 @@ a {
     .tradingview-widget-grid,
     .chart-api-request-grid,
     .chart-source-meta-grid,
-    .investor-flow-grid,
     .stock-chart-lower-grid,
     .flow-brief,
     .human-signal-board,
