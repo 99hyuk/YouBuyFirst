@@ -119,7 +119,7 @@ describe('front dashboard shell', () => {
     expect(stock.text()).toContain('quote snapshot');
     expect(stock.text()).toContain('실제 차트 API 대기');
     expect(stock.text()).toContain('/api/market/chart-candles');
-    expect(stock.text()).toContain('investor-flows API');
+    expect(stock.text()).toContain('investor-flows/history API');
     expect(stock.text()).toContain('유효한 bars를 줄 때만 표시');
     expect(stock.text()).toContain('bars[].open/high/low/close');
     expect(stock.text()).toContain('어제와 달라진 점');

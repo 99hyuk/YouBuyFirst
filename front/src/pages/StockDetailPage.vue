@@ -131,7 +131,7 @@ const investorFlowLoadState = ref<'idle' | 'loading' | 'api' | 'hidden' | 'error
 const isTestMode = typeof window !== 'undefined' && window.navigator.userAgent.includes('jsdom');
 const quoteApiBaseUrl = '';
 const hiddenChartStatuses = new Set(['INSUFFICIENT', 'PROVIDER_ERROR', 'MOCK']);
-const hiddenInvestorFlowStatuses = new Set(['INSUFFICIENT', 'PROVIDER_ERROR', 'MOCK']);
+const visibleInvestorFlowStatuses = new Set(['OK', 'STALE']);
 
 const routeSymbol = computed(() => String(route.params.symbol ?? stockFixtures[0].symbol).toUpperCase());
 const quoteApiSymbolFor = (item: StockDetailFixture) =>
@@ -149,7 +149,9 @@ const quoteApiSymbol = computed(() => quoteApiSymbolFor(stock.value));
 const quoteRequestSymbols = computed(() => Array.from(new Set(['005930.KS', 'AAPL', 'NVDA', quoteApiSymbol.value])));
 const quoteApiUrl = computed(() => `${quoteApiBaseUrl}/api/quotes?symbols=${quoteRequestSymbols.value.join(',')}`);
 const chartApiRequestUrl = computed(() => `/api/market/chart-candles?symbol=${quoteApiSymbol.value}&range=5Y&interval=1d`);
-const investorFlowApiRequestUrl = computed(() => `/api/market/investor-flows?symbols=${quoteApiSymbol.value}`);
+const investorFlowApiRequestUrl = computed(
+  () => `/api/market/investor-flows/history?symbol=${encodeURIComponent(quoteApiSymbol.value)}&limit=20`
+);
 const apiQuoteSnapshot = computed(() =>
   quoteSnapshots.value.find((quote) => quote.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase())
 );
@@ -328,7 +330,7 @@ const chartBlockTitle = computed(() => {
 const investorFlowSnapshots = computed(() =>
   investorFlows.value
     .filter((item) => item.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase())
-    .filter((item) => !hiddenInvestorFlowStatuses.has(item.dataStatus.toUpperCase()))
+    .filter((item) => visibleInvestorFlowStatuses.has(item.dataStatus.toUpperCase()))
     .sort((first, second) => second.tradeDate.localeCompare(first.tradeDate))
 );
 const latestInvestorFlow = computed(() => investorFlowSnapshots.value[0] ?? null);
@@ -552,7 +554,7 @@ const loadInvestorFlows = async () => {
       items?.filter(
         (item) =>
           item.symbol.toUpperCase() === quoteApiSymbol.value.toUpperCase() &&
-          !hiddenInvestorFlowStatuses.has(item.dataStatus.toUpperCase())
+          visibleInvestorFlowStatuses.has(item.dataStatus.toUpperCase())
       ) ?? [];
 
     if (!snapshots.length) {
@@ -768,7 +770,7 @@ watch(quoteApiSymbol, () => {
         </p>
       </section>
       <p class="chart-data-note">
-        현재가·등락률·거래량은 quote snapshot API, 메인 차트는 chart-candles API, 일별 수급은 investor-flows API를 각각 따로 사용합니다.
+        현재가·등락률·거래량은 quote snapshot API, 메인 차트는 chart-candles API, 일별 수급은 investor-flows/history API를 각각 따로 사용합니다.
       </p>
     </section>
 
