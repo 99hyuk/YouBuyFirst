@@ -267,6 +267,8 @@ def _watermark_for_adapter(
     default_cutoff_at: datetime | None = None,
 ) -> BoardWatermark | None:
     target = getattr(adapter, "target", None)
+    if target is not None and target.kind == CrawlTargetKind.GENERAL_BOARD_DIFFUSION:
+        return None
     board_id = getattr(target, "board_id", None)
     if not board_id:
         return None
