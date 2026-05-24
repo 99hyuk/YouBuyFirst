@@ -132,4 +132,10 @@ public class ChartCandleRefreshRequest {
                 && attemptToken != null
                 && attemptToken.equals(token);
     }
+
+    public boolean hasActiveAttemptToken() {
+        return STATUS_IN_PROGRESS.equals(status)
+                && attemptToken != null
+                && !attemptToken.isBlank();
+    }
 }

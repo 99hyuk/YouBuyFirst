@@ -73,18 +73,15 @@ public class ChartCandleRefreshRequestService {
 
     @Transactional
     public boolean canAcceptCompletion(String symbol, String range, String interval, String refreshAttemptToken) {
-        if (isBlank(refreshAttemptToken)) {
-            return true;
-        }
         return repository.findLockedBySymbolAndRangeLabelAndCandleInterval(symbol, range, interval)
-                .map(request -> request.isActiveAttempt(refreshAttemptToken))
-                .orElse(false);
+                .map(request -> canAcceptCompletion(request, refreshAttemptToken))
+                .orElse(isBlank(refreshAttemptToken));
     }
 
     @Transactional
     public void markCompleted(String symbol, String range, String interval, String refreshAttemptToken) {
         repository.findLockedBySymbolAndRangeLabelAndCandleInterval(symbol, range, interval)
-                .filter(request -> isBlank(refreshAttemptToken) || request.isActiveAttempt(refreshAttemptToken))
+                .filter(request -> canAcceptCompletion(request, refreshAttemptToken))
                 .ifPresent(request -> request.complete(Instant.now()));
     }
 
@@ -104,5 +101,12 @@ public class ChartCandleRefreshRequestService {
 
     private static boolean isBlank(String value) {
         return value == null || value.isBlank();
+    }
+
+    private static boolean canAcceptCompletion(ChartCandleRefreshRequest request, String refreshAttemptToken) {
+        if (isBlank(refreshAttemptToken)) {
+            return !request.hasActiveAttemptToken();
+        }
+        return request.isActiveAttempt(refreshAttemptToken);
     }
 }
