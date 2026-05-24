@@ -479,8 +479,8 @@ def test_diffusion_target_generates_ranked_diffusion_events_from_list_posts():
     assert event.diffusion_only is True
 
 
-def test_diffusion_target_ignores_latest_board_watermark_and_default_cutoff():
-    post = RawPost(
+def test_diffusion_target_ignores_latest_watermark_but_filters_posts_older_than_24_hours():
+    old_post = RawPost(
         source="SAFE",
         board_id="stock",
         external_id="SAFE-popular-old",
@@ -493,18 +493,31 @@ def test_diffusion_target_ignores_latest_board_watermark_and_default_cutoff():
         recommend_count=300,
         comment_count=144,
     )
+    recent_post = RawPost(
+        source="SAFE",
+        board_id="stock",
+        external_id="SAFE-popular-recent",
+        url="https://example.com/popular-recent",
+        title="recent thread in popular list",
+        content="",
+        author="anon",
+        published_at=datetime(2026, 5, 24, 3, 1, tzinfo=timezone.utc),
+        view_count=5000,
+        recommend_count=130,
+        comment_count=44,
+    )
     adapter = FakeStreamAdapter(
         "SAFE",
         BoardStreamResult(
-            posts=[post],
+            posts=[old_post, recent_post],
             coverage=BoardCoverage(
                 pages_fetched=1,
-                rows_seen=1,
+                rows_seen=2,
                 ignored_pinned_count=0,
                 duplicate_stop=False,
                 cutoff_stop=False,
-                oldest_seen_at=post.published_at,
-                newest_seen_at=post.published_at,
+                oldest_seen_at=old_post.published_at,
+                newest_seen_at=recent_post.published_at,
                 last_cursor="popular",
                 coverage_status="complete",
             ),
@@ -540,6 +553,8 @@ def test_diffusion_target_ignores_latest_board_watermark_and_default_cutoff():
 
     assert adapter.received_watermark is None
     assert results[0]["diffusionEventCount"] == 1
+    assert [post.external_id for post in client.ingested_batches[0]["posts"]] == ["SAFE-popular-recent"]
     event = client.ingested_batches[0]["diffusionEvents"][0]
-    assert event.external_id == "SAFE-popular-old"
+    assert event.external_id == "SAFE-popular-recent"
+    assert event.rank == 2
     assert event.observed_at == datetime(2026, 5, 24, 12, 0, tzinfo=timezone.utc)

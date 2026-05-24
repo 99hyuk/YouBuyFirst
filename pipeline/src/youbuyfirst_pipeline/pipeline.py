@@ -32,6 +32,7 @@ class CommunityPipeline:
         backoff_policy: CrawlBackoffPolicy | None = None,
         now_provider: Callable[[], datetime] | None = None,
         default_board_lookback_hours: float | None = 24,
+        diffusion_max_age_hours: float | None = 24,
     ) -> None:
         self.adapters = adapters
         self.matcher = matcher
@@ -42,6 +43,7 @@ class CommunityPipeline:
         self.backoff_policy = backoff_policy or CrawlBackoffPolicy()
         self.now_provider = now_provider or _utc_now
         self.default_board_lookback_hours = default_board_lookback_hours
+        self.diffusion_max_age_hours = diffusion_max_age_hours
         self._active_backoffs: dict[str, CrawlBackoffDecision] = {}
 
     async def run_once(self) -> list[dict]:
@@ -99,7 +101,21 @@ class CommunityPipeline:
                     default_cutoff_at=self._default_cutoff_at(started),
                 )
                 raw_posts = stream_result.posts
-                diffusion_events = stream_result.diffusion_events or _diffusion_events_for_adapter(adapter, raw_posts, started)
+                diffusion_ranked_posts = _ranked_diffusion_posts_for_adapter(
+                    adapter,
+                    raw_posts,
+                    started,
+                    self.diffusion_max_age_hours,
+                )
+                if diffusion_ranked_posts is not None:
+                    raw_posts = [post for _rank, post in diffusion_ranked_posts]
+                    diffusion_events = stream_result.diffusion_events or _diffusion_events_for_adapter(
+                        adapter,
+                        diffusion_ranked_posts,
+                        started,
+                    )
+                else:
+                    diffusion_events = stream_result.diffusion_events
                 coverage = _coverage_result_fields(stream_result.coverage)
                 enriched = [self._enrich(post) for post in raw_posts]
                 finished = self.now_provider()
@@ -324,7 +340,27 @@ def _target_result_context(adapter: CommunityAdapter) -> dict:
     return context
 
 
-def _diffusion_events_for_adapter(adapter: CommunityAdapter, posts: list[RawPost], observed_at: datetime) -> list[DiffusionEvent]:
+def _ranked_diffusion_posts_for_adapter(
+    adapter: CommunityAdapter,
+    posts: list[RawPost],
+    observed_at: datetime,
+    max_age_hours: float | None,
+) -> list[tuple[int, RawPost]] | None:
+    target = getattr(adapter, "target", None)
+    if target is None or target.kind != CrawlTargetKind.GENERAL_BOARD_DIFFUSION:
+        return None
+    cutoff_at = _diffusion_cutoff_at(observed_at, max_age_hours)
+    ranked_posts = list(enumerate(posts, start=1))
+    if cutoff_at is None:
+        return ranked_posts
+    return [
+        (rank, post)
+        for rank, post in ranked_posts
+        if _as_utc(post.published_at) >= cutoff_at
+    ]
+
+
+def _diffusion_events_for_adapter(adapter: CommunityAdapter, ranked_posts: list[tuple[int, RawPost]], observed_at: datetime) -> list[DiffusionEvent]:
     target = getattr(adapter, "target", None)
     if target is None or target.kind != CrawlTargetKind.GENERAL_BOARD_DIFFUSION:
         return []
@@ -332,13 +368,13 @@ def _diffusion_events_for_adapter(adapter: CommunityAdapter, posts: list[RawPost
     if not diffusion_type:
         return []
     events: list[DiffusionEvent] = []
-    for index, post in enumerate(posts, start=1):
+    for rank, post in ranked_posts:
         events.append(
             DiffusionEvent(
                 external_id=post.external_id,
                 board_id=post.board_id or target.board_id,
                 diffusion_type=diffusion_type,
-                rank=index,
+                rank=rank,
                 observed_at=observed_at,
                 view_count=post.view_count,
                 recommend_count=post.recommend_count,
@@ -347,6 +383,18 @@ def _diffusion_events_for_adapter(adapter: CommunityAdapter, posts: list[RawPost
             )
         )
     return events
+
+
+def _diffusion_cutoff_at(observed_at: datetime, max_age_hours: float | None) -> datetime | None:
+    if max_age_hours is None or max_age_hours <= 0:
+        return None
+    return _as_utc(observed_at) - timedelta(hours=max_age_hours)
+
+
+def _as_utc(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc)
 
 
 def _skip_record_message(result_context: dict, policy_decision: SourcePolicyDecision) -> str:

@@ -73,6 +73,7 @@ def build_pipeline() -> CommunityPipeline:
         source_policy_registry=default_source_policy_registry(),
         runtime_environment=runtime_environment,
         default_board_lookback_hours=float(os.getenv("CRAWLER_LATEST_LOOKBACK_HOURS", "24")),
+        diffusion_max_age_hours=float(os.getenv("CRAWLER_DIFFUSION_MAX_AGE_HOURS", "24")),
     )
 
 

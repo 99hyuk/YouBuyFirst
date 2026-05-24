@@ -158,7 +158,7 @@ watermark는 run이 성공적으로 끝났거나 partial이라도 저장된 새 
 - 원 최신글 게시물과 연결되는 `postKey`
 - 최신글 run에서 보지 못한 글이면 `diffusionOnly=true`
 
-현재 구현은 backend `community_post_diffusion_events` 저장소와 ingestion `diffusionEvents` payload를 제공합니다. Python pipeline은 `general-board-diffusion` target의 목록 순서를 rank로 변환해 같은 ingestion run에 전달할 수 있습니다. 확산 target은 최신글 watermark와 24시간 cutoff를 쓰지 않고, 매 run마다 정해진 목록을 다시 관측해 같은 글의 rank, 조회수, 추천수, 댓글수 변화를 `observedAt`별로 남깁니다. Source별 인기글/개념글 URL registry와 기본 활성화 여부는 별도 작업으로 남겨 둡니다.
+현재 구현은 backend `community_post_diffusion_events` 저장소와 ingestion `diffusionEvents` payload를 제공합니다. Python pipeline은 `general-board-diffusion` target의 목록 순서를 rank로 변환해 같은 ingestion run에 전달할 수 있습니다. 확산 target은 최신글 watermark를 쓰지 않고 매 run마다 정해진 목록을 다시 관측하되, 기본적으로 작성 후 24시간(`CRAWLER_DIFFUSION_MAX_AGE_HOURS`)을 넘긴 글은 현재 분위기 입력에서 제외합니다. 같은 글의 rank, 조회수, 추천수, 댓글수 변화는 `observedAt`별로 남깁니다. Source별 인기글/개념글 URL registry와 기본 활성화 여부는 별도 작업으로 남겨 둡니다.
 
 댓글은 처음부터 전체 수집하지 않습니다. 아래 조건 중 하나 이상을 만족하는 글만 제한적으로 수집합니다.
 
