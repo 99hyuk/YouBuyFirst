@@ -84,7 +84,7 @@ ops는 에이전트 행동 규칙 PR을 main에 머지한 뒤 열린 worktree �
 - PR 생성/수정 후 `gh pr view --json body --jq .body`로 본문 저장 상태를 확인합니다.
 - PR 본문은 현재 `.github/pull_request_template.md`의 `##` 섹션 제목을 모두 포함해야 합니다. 비슷하게 재작성한 본문은 실패로 봅니다.
 - 한국어 본문에 `??` 치환 문자열이 보이면 merge 전에 고칩니다.
-- 코드/API/DB/배치/front 동작 PR과 정책 문서 PR은 Codex 리뷰를 요청하거나 자동 리뷰 결과를 확인합니다.
+- 코드/API/DB/배치/crawler/chart/market data/front 동작 PR과 정책 문서 PR은 Codex 리뷰를 요청하거나 자동 리뷰 결과를 확인합니다.
 - PR 리뷰 댓글을 확인합니다. 사람 리뷰와 `chatgpt-codex-connector`의 P1/P2/actionable 지적은 타당성을 판단한 뒤 처리하거나 오탐/후속 분리 사유를 한국어로 남깁니다.
 
 ## PR 전 체크리스트
