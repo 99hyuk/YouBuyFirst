@@ -202,7 +202,7 @@ if ($missing) { throw "PR template headings missing: $($missing -join ', ')" }
 
 - Codex code review가 켜진 repo에서 review 대상 PR을 열 때
 - draft PR을 ready for review로 바꿀 때
-- PR 댓글에 정확히 `@codex review`를 남길 때
+- PR 댓글에 `@codex review`를 포함할 때. 일회성 초점이 있으면 `@codex review for security regressions`처럼 추가 지시를 붙일 수 있습니다.
 
 자동 리뷰가 아직 달리지 않았는데 리뷰가 필요한 PR이면 merge 전에 `@codex review`로 수동 요청하거나, 자동 리뷰 미실행 사유를 PR 본문/완료 보고에 남깁니다.
 
