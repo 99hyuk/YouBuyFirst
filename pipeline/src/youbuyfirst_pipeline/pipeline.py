@@ -7,10 +7,11 @@ from uuid import uuid4
 from youbuyfirst_pipeline.board_stream import BoardCoverage, BoardStreamResult, BoardWatermark
 from youbuyfirst_pipeline.backoff import CrawlBackoffDecision, CrawlBackoffPolicy, format_utc
 from youbuyfirst_pipeline.client import SpringIngestionClient
+from youbuyfirst_pipeline.crawl_targets import CrawlTargetKind
 from youbuyfirst_pipeline.crawlers.base import CommunityAdapter, SourceBlockedError
 from youbuyfirst_pipeline.llm import LLMProvider
 from youbuyfirst_pipeline.matcher import InstrumentMatcher
-from youbuyfirst_pipeline.models import Analysis, EnrichedPost, Mention, MentionDecision, RawPost
+from youbuyfirst_pipeline.models import Analysis, DiffusionEvent, EnrichedPost, Mention, MentionDecision, RawPost
 from youbuyfirst_pipeline.source_policy import (
     CrawlRuntimeEnvironment,
     SourcePolicyDecision,
@@ -92,14 +93,25 @@ class CommunityPipeline:
             try:
                 stream_result = await _fetch_adapter_result(adapter, self.client)
                 raw_posts = stream_result.posts
+                diffusion_events = stream_result.diffusion_events or _diffusion_events_for_adapter(adapter, raw_posts, started)
                 coverage = _coverage_result_fields(stream_result.coverage)
                 enriched = [self._enrich(post) for post in raw_posts]
                 finished = self.now_provider()
                 self._active_backoffs.pop(backoff_key, None)
-                if enriched:
-                    result = self.client.ingest(adapter.source, run_id, started, finished, enriched, coverage)
+                if enriched or diffusion_events:
+                    result = self.client.ingest(
+                        adapter.source,
+                        run_id,
+                        started,
+                        finished,
+                        enriched,
+                        coverage,
+                        diffusion_events=diffusion_events,
+                    )
                     if coverage:
                         result["coverage"] = coverage
+                    if diffusion_events:
+                        result["diffusionEventCount"] = len(diffusion_events)
                     results.append({**result_context, **result})
                 else:
                     record_error = self._safe_record_run(
@@ -276,7 +288,34 @@ def _target_result_context(adapter: CommunityAdapter) -> dict:
         context["targetSymbol"] = target.symbol
     if target.url:
         context["targetUrl"] = target.url
+    if getattr(target, "diffusion_type", None):
+        context["diffusionType"] = target.diffusion_type
     return context
+
+
+def _diffusion_events_for_adapter(adapter: CommunityAdapter, posts: list[RawPost], observed_at: datetime) -> list[DiffusionEvent]:
+    target = getattr(adapter, "target", None)
+    if target is None or target.kind != CrawlTargetKind.GENERAL_BOARD_DIFFUSION:
+        return []
+    diffusion_type = getattr(target, "diffusion_type", None)
+    if not diffusion_type:
+        return []
+    events: list[DiffusionEvent] = []
+    for index, post in enumerate(posts, start=1):
+        events.append(
+            DiffusionEvent(
+                external_id=post.external_id,
+                board_id=post.board_id or target.board_id,
+                diffusion_type=diffusion_type,
+                rank=index,
+                observed_at=observed_at,
+                view_count=post.view_count,
+                recommend_count=post.recommend_count,
+                comment_count=post.comment_count,
+                diffusion_only=True,
+            )
+        )
+    return events
 
 
 def _skip_record_message(result_context: dict, policy_decision: SourcePolicyDecision) -> str:

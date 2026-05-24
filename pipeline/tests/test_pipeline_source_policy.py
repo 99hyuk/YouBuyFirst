@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 from youbuyfirst_pipeline.board_stream import BoardCoverage, BoardStreamResult, BoardWatermark
 from youbuyfirst_pipeline.crawl_targets import CrawlTarget
-from youbuyfirst_pipeline.models import RawPost
+from youbuyfirst_pipeline.models import DiffusionEvent, RawPost
 from youbuyfirst_pipeline.pipeline import CommunityPipeline
 from youbuyfirst_pipeline.source_policy import (
     CrawlRuntimeEnvironment,
@@ -55,11 +55,14 @@ class FakeClient:
         self.ingested_batches: list[dict] = []
         self.watermarks: dict[tuple[str, str], BoardWatermark] = {}
 
-    def ingest(self, source, run_id, batch_started_at, batch_finished_at, posts, coverage=None):
+    def ingest(self, source, run_id, batch_started_at, batch_finished_at, posts, coverage=None, diffusion_events=None):
         post_list = list(posts)
+        event_list = list(diffusion_events or [])
         payload = {"source": source, "runId": run_id, "acceptedPosts": len(post_list), "posts": post_list}
         if coverage is not None:
             payload["coverage"] = coverage
+        if event_list:
+            payload["diffusionEvents"] = event_list
         self.ingested_batches.append(payload)
         return {"source": source, "runId": run_id, "acceptedPosts": len(post_list)}
 
@@ -321,3 +324,105 @@ def test_board_stream_adapter_passes_coverage_to_ingest_for_new_posts():
     assert client.ingested_batches[0]["coverage"]["rowsSeen"] == 1
     assert client.ingested_batches[0]["posts"][0].board_id == "stock"
     assert client.ingested_batches[0]["posts"][0].view_count == 10
+
+
+def test_board_stream_adapter_passes_diffusion_events_to_ingest_even_without_new_posts():
+    event = DiffusionEvent(
+        external_id="SAFE-1",
+        board_id="stock",
+        diffusion_type="popular",
+        rank=1,
+        observed_at=datetime(2026, 5, 24, 3, 0, tzinfo=timezone.utc),
+        view_count=1000,
+        recommend_count=25,
+        comment_count=40,
+        diffusion_only=True,
+    )
+    coverage = BoardCoverage(
+        pages_fetched=1,
+        rows_seen=1,
+        ignored_pinned_count=0,
+        duplicate_stop=False,
+        cutoff_stop=False,
+        oldest_seen_at=datetime(2026, 5, 24, 2, 59, tzinfo=timezone.utc),
+        newest_seen_at=datetime(2026, 5, 24, 2, 59, tzinfo=timezone.utc),
+        last_cursor="popular",
+        coverage_status="complete",
+    )
+    adapter = FakeStreamAdapter("SAFE", BoardStreamResult(posts=[], coverage=coverage, diffusion_events=[event]))
+    adapter.target = CrawlTarget.community_board("SAFE", board_id="stock", url="https://example.com/popular")
+    registry = SourcePolicyRegistry(
+        {
+            "SAFE": SourcePolicy("SAFE", SourceStatus.ENABLED, "review complete"),
+        }
+    )
+    client = FakeClient()
+    pipeline = _pipeline(adapter, registry, CrawlRuntimeEnvironment.PUBLIC, client)
+
+    results = asyncio.run(pipeline.run_once())
+
+    assert results[0]["diffusionEventCount"] == 1
+    assert client.ingested_batches[0]["posts"] == []
+    assert client.ingested_batches[0]["diffusionEvents"] == [event]
+    assert client.recorded_runs == []
+
+
+def test_diffusion_target_generates_ranked_diffusion_events_from_list_posts():
+    post = RawPost(
+        source="SAFE",
+        board_id="stock",
+        external_id="SAFE-100",
+        url="https://example.com/100",
+        title="popular thread",
+        content="",
+        author="anon",
+        published_at=datetime(2026, 5, 24, 3, 1, tzinfo=timezone.utc),
+        view_count=1500,
+        recommend_count=30,
+        comment_count=44,
+    )
+    coverage = BoardCoverage(
+        pages_fetched=1,
+        rows_seen=1,
+        ignored_pinned_count=0,
+        duplicate_stop=False,
+        cutoff_stop=False,
+        oldest_seen_at=post.published_at,
+        newest_seen_at=post.published_at,
+        last_cursor="1",
+        coverage_status="complete",
+    )
+    adapter = FakeStreamAdapter("SAFE", BoardStreamResult(posts=[post], coverage=coverage))
+    adapter.target = CrawlTarget.community_diffusion_board(
+        "SAFE",
+        board_id="stock",
+        diffusion_type="popular",
+        url="https://example.com/popular",
+    )
+    registry = SourcePolicyRegistry(
+        {
+            "SAFE": SourcePolicy("SAFE", SourceStatus.ENABLED, "review complete"),
+        }
+    )
+    client = FakeClient()
+    pipeline = CommunityPipeline(
+        adapters=[adapter],
+        matcher=FakeMatcher(),
+        llm_provider=FakeLLMProvider(),
+        client=client,
+        source_policy_registry=registry,
+        runtime_environment=CrawlRuntimeEnvironment.PUBLIC,
+        now_provider=lambda: datetime(2026, 5, 24, 3, 5, tzinfo=timezone.utc),
+    )
+
+    results = asyncio.run(pipeline.run_once())
+
+    assert results[0]["targetKind"] == "general-board-diffusion"
+    assert results[0]["diffusionType"] == "popular"
+    event = client.ingested_batches[0]["diffusionEvents"][0]
+    assert event.external_id == "SAFE-100"
+    assert event.diffusion_type == "popular"
+    assert event.rank == 1
+    assert event.observed_at == datetime(2026, 5, 24, 3, 5, tzinfo=timezone.utc)
+    assert event.view_count == 1500
+    assert event.diffusion_only is True

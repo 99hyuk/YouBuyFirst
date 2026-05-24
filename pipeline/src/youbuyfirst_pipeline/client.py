@@ -8,7 +8,7 @@ import httpx
 from youbuyfirst_pipeline.board_stream import BoardCoverage, BoardWatermark
 from youbuyfirst_pipeline.market_investor_flows import InvestorFlowSnapshot
 from youbuyfirst_pipeline.market_quotes import ChartCandleSet, QuoteSnapshot
-from youbuyfirst_pipeline.models import EnrichedPost
+from youbuyfirst_pipeline.models import DiffusionEvent, EnrichedPost
 
 
 class SpringIngestionClient:
@@ -30,6 +30,7 @@ class SpringIngestionClient:
         batch_finished_at: datetime,
         posts: Iterable[EnrichedPost],
         coverage: dict | BoardCoverage | None = None,
+        diffusion_events: Iterable[DiffusionEvent] | None = None,
     ) -> dict:
         payload = {
             "source": source,
@@ -37,6 +38,7 @@ class SpringIngestionClient:
             "batchStartedAt": _iso(batch_started_at),
             "batchFinishedAt": _iso(batch_finished_at),
             "posts": [self._post_payload(post) for post in posts],
+            "diffusionEvents": [self._diffusion_payload(event) for event in diffusion_events or []],
             **_coverage_payload(coverage),
         }
         with httpx.Client(timeout=self.timeout_seconds) as client:
@@ -167,6 +169,20 @@ class SpringIngestionClient:
                 }
                 for analysis in post.analyses
             ],
+        }
+
+    @staticmethod
+    def _diffusion_payload(event: DiffusionEvent) -> dict:
+        return {
+            "externalId": event.external_id,
+            "boardId": event.board_id,
+            "diffusionType": event.diffusion_type,
+            "rank": event.rank,
+            "observedAt": _iso(event.observed_at),
+            "viewCount": event.view_count,
+            "recommendCount": event.recommend_count,
+            "commentCount": event.comment_count,
+            "diffusionOnly": event.diffusion_only,
         }
 
 
