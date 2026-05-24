@@ -84,7 +84,8 @@ ops는 에이전트 행동 규칙 PR을 main에 머지한 뒤 열린 worktree �
 - PR 생성/수정 후 `gh pr view --json body --jq .body`로 본문 저장 상태를 확인합니다.
 - PR 본문은 현재 `.github/pull_request_template.md`의 `##` 섹션 제목을 모두 포함해야 합니다. 비슷하게 재작성한 본문은 실패로 봅니다.
 - 한국어 본문에 `??` 치환 문자열이 보이면 merge 전에 고칩니다.
-- PR 리뷰 댓글을 확인합니다. 사람 리뷰와 `chatgpt-codex-connector`의 P1/P2/actionable 지적은 처리하거나 오탐/후속 분리 사유를 한국어로 남깁니다.
+- 코드/API/DB/배치/front 동작 PR과 정책 문서 PR은 Codex 리뷰를 요청하거나 자동 리뷰 결과를 확인합니다.
+- PR 리뷰 댓글을 확인합니다. 사람 리뷰와 `chatgpt-codex-connector`의 P1/P2/actionable 지적은 타당성을 판단한 뒤 처리하거나 오탐/후속 분리 사유를 한국어로 남깁니다.
 
 ## PR 전 체크리스트
 
@@ -97,8 +98,9 @@ ops는 에이전트 행동 규칙 PR을 main에 머지한 뒤 열린 worktree �
 7. 한국어 PR 본문은 UTF-8 no BOM 파일과 `gh --body-file <path>`를 사용합니다.
 8. 생성/수정 직후 템플릿 섹션 누락, `??` 깨짐, 라벨 누락을 확인합니다.
 9. PR 본문에는 변경 내용, 범위, 검증 결과, 리스크, Notion 기록 여부를 적습니다.
-10. 사람 리뷰와 자동 리뷰의 actionable 의견을 확인합니다.
-11. 새 데이터/API/배치 흐름이 생기면 정본 위치, ID/key, 상태값, source/asOf, unknown/mock 처리, 완료 기준을 함께 확인합니다.
+10. 필요한 PR에는 Codex 리뷰를 요청하거나 자동 리뷰 결과를 확인합니다.
+11. 사람 리뷰와 자동 리뷰의 actionable 의견을 확인하고, 맞으면 고치며, 아니면 이유를 남깁니다.
+12. 새 데이터/API/배치 흐름이 생기면 정본 위치, ID/key, 상태값, source/asOf, unknown/mock 처리, 완료 기준을 함께 확인합니다.
 
 ## Notion 기록
 
