@@ -106,7 +106,10 @@ def test_client_reads_board_watermark_from_backend():
 
     watermark = SpringIngestionClient("http://backend").get_board_watermark("FMKOREA", "stock")
 
-    assert watermark == BoardWatermark(last_seen_external_id="FMKOREA-100")
+    assert watermark == BoardWatermark(
+        last_seen_external_id="FMKOREA-100",
+        cutoff_at=datetime(2026, 5, 24, 2, 0, tzinfo=timezone.utc),
+    )
 
 
 @respx.mock

@@ -84,7 +84,10 @@ class SpringIngestionClient:
             response.raise_for_status()
             payload = response.json()
             external_id = payload.get("lastSeenExternalId")
-            return BoardWatermark(last_seen_external_id=external_id) if external_id else None
+            cutoff_at = _parse_iso(payload.get("lastSeenPublishedAt"))
+            if not external_id and cutoff_at is None:
+                return None
+            return BoardWatermark(last_seen_external_id=external_id, cutoff_at=cutoff_at)
 
     def publish_quote_snapshots(self, snapshots: Iterable[QuoteSnapshot]) -> None:
         payload = {
@@ -190,6 +193,15 @@ def _iso(value: datetime) -> str:
     if value.tzinfo is None:
         value = value.replace(tzinfo=timezone.utc)
     return value.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _parse_iso(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
 
 
 def _coverage_payload(coverage: dict | BoardCoverage | None) -> dict:

@@ -72,6 +72,7 @@ def build_pipeline() -> CommunityPipeline:
         client=client,
         source_policy_registry=default_source_policy_registry(),
         runtime_environment=runtime_environment,
+        default_board_lookback_hours=float(os.getenv("CRAWLER_LATEST_LOOKBACK_HOURS", "24")),
     )
 
 

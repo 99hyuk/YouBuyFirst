@@ -104,7 +104,7 @@ class BoardStreamCrawler:
                 if watermark.cutoff_at is not None and post.published_at < watermark.cutoff_at:
                     cutoff_stop = True
                     continue
-                if duplicate_stop or cutoff_stop:
+                if watermark.cutoff_at is None and (duplicate_stop or cutoff_stop):
                     continue
                 posts.append(post)
                 if len(posts) >= self.max_posts_per_run:

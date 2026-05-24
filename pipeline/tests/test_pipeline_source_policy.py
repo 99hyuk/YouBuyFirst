@@ -276,12 +276,63 @@ def test_board_stream_adapter_receives_db_watermark_for_board_target():
     )
     client = FakeClient()
     client.watermarks[("SAFE", "stock")] = BoardWatermark(last_seen_external_id="SAFE-stock-100")
-    pipeline = _pipeline(adapter, registry, CrawlRuntimeEnvironment.PUBLIC, client)
+    pipeline = CommunityPipeline(
+        adapters=[adapter],
+        matcher=FakeMatcher(),
+        llm_provider=FakeLLMProvider(),
+        client=client,
+        source_policy_registry=registry,
+        runtime_environment=CrawlRuntimeEnvironment.PUBLIC,
+        now_provider=lambda: datetime(2026, 5, 24, 12, 0, tzinfo=timezone.utc),
+    )
 
     results = asyncio.run(pipeline.run_once())
 
     assert results[0]["coverage"]["duplicateStop"] is True
-    assert adapter.received_watermark == BoardWatermark(last_seen_external_id="SAFE-stock-100")
+    assert adapter.received_watermark == BoardWatermark(
+        last_seen_external_id="SAFE-stock-100",
+        cutoff_at=datetime(2026, 5, 23, 12, 0, tzinfo=timezone.utc),
+    )
+
+
+def test_board_stream_adapter_uses_default_24_hour_cutoff_without_db_watermark():
+    adapter = FakeStreamAdapter(
+        "SAFE",
+        BoardStreamResult(
+            posts=[],
+            coverage=BoardCoverage(
+                pages_fetched=1,
+                rows_seen=0,
+                ignored_pinned_count=0,
+                duplicate_stop=False,
+                cutoff_stop=False,
+                oldest_seen_at=None,
+                newest_seen_at=None,
+                last_cursor="1",
+                coverage_status="complete",
+            ),
+        ),
+    )
+    adapter.target = CrawlTarget.community_board("SAFE", board_id="stock", url="https://example.com/stock")
+    registry = SourcePolicyRegistry(
+        {
+            "SAFE": SourcePolicy("SAFE", SourceStatus.ENABLED, "review complete"),
+        }
+    )
+    client = FakeClient()
+    pipeline = CommunityPipeline(
+        adapters=[adapter],
+        matcher=FakeMatcher(),
+        llm_provider=FakeLLMProvider(),
+        client=client,
+        source_policy_registry=registry,
+        runtime_environment=CrawlRuntimeEnvironment.PUBLIC,
+        now_provider=lambda: datetime(2026, 5, 24, 12, 0, tzinfo=timezone.utc),
+    )
+
+    asyncio.run(pipeline.run_once())
+
+    assert adapter.received_watermark == BoardWatermark(cutoff_at=datetime(2026, 5, 23, 12, 0, tzinfo=timezone.utc))
 
 
 def test_board_stream_adapter_passes_coverage_to_ingest_for_new_posts():

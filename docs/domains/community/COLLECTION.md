@@ -103,7 +103,7 @@ source 활성화 상태가 `enabled` 또는 허용된 로컬 환경의 `local-re
 
 watermark는 run이 성공적으로 끝났거나 partial이라도 저장된 새 글과 coverage가 일관될 때만 전진시킵니다. 차단, 파싱 실패, 시간 초과로 게시판 앞부분을 확인하지 못한 run은 최신 watermark를 전진시키지 않습니다.
 
-현재 MVP 구현은 간단 버전 watermark를 사용합니다. crawler가 시작할 때 backend가 `community_posts`에서 `source + boardId`별 최신 저장 글을 조회해 `lastSeenExternalId`와 `lastSeenPublishedAt`을 돌려주고, crawler는 해당 글을 만나면 중단합니다. 별도 watermark 테이블은 아직 두지 않습니다.
+현재 MVP 구현은 간단 버전 watermark를 사용합니다. crawler가 시작할 때 backend가 `community_posts`에서 `source + boardId`별 최신 저장 글을 조회해 `lastSeenExternalId`와 `lastSeenPublishedAt`을 돌려주고, crawler는 해당 글을 만나거나 `lastSeenPublishedAt`보다 오래된 글을 만나면 다음 page/cursor로 넘어가지 않습니다. DB watermark가 없거나 너무 오래됐을 때는 기본 24시간 lookback(`CRAWLER_LATEST_LOOKBACK_HOURS`)을 cutoff로 사용합니다. 별도 watermark 테이블은 아직 두지 않습니다.
 
 운영 버전 후속 과제:
 

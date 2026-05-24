@@ -1,6 +1,6 @@
 ﻿from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Callable
 from uuid import uuid4
 
@@ -31,6 +31,7 @@ class CommunityPipeline:
         runtime_environment: CrawlRuntimeEnvironment = CrawlRuntimeEnvironment.PUBLIC,
         backoff_policy: CrawlBackoffPolicy | None = None,
         now_provider: Callable[[], datetime] | None = None,
+        default_board_lookback_hours: float | None = 24,
     ) -> None:
         self.adapters = adapters
         self.matcher = matcher
@@ -40,6 +41,7 @@ class CommunityPipeline:
         self.runtime_environment = runtime_environment
         self.backoff_policy = backoff_policy or CrawlBackoffPolicy()
         self.now_provider = now_provider or _utc_now
+        self.default_board_lookback_hours = default_board_lookback_hours
         self._active_backoffs: dict[str, CrawlBackoffDecision] = {}
 
     async def run_once(self) -> list[dict]:
@@ -91,7 +93,11 @@ class CommunityPipeline:
                 results.append(result)
                 continue
             try:
-                stream_result = await _fetch_adapter_result(adapter, self.client)
+                stream_result = await _fetch_adapter_result(
+                    adapter,
+                    self.client,
+                    default_cutoff_at=self._default_cutoff_at(started),
+                )
                 raw_posts = stream_result.posts
                 diffusion_events = stream_result.diffusion_events or _diffusion_events_for_adapter(adapter, raw_posts, started)
                 coverage = _coverage_result_fields(stream_result.coverage)
@@ -225,6 +231,11 @@ class CommunityPipeline:
         except Exception as exc:
             return str(exc)
 
+    def _default_cutoff_at(self, started: datetime) -> datetime | None:
+        if self.default_board_lookback_hours is None or self.default_board_lookback_hours <= 0:
+            return None
+        return started - timedelta(hours=self.default_board_lookback_hours)
+
 
 def _accepted_decisions(candidates: list[Mention], decisions: list[MentionDecision]) -> list[MentionDecision]:
     candidate_keys = {(candidate.market.upper(), candidate.symbol.upper(), candidate.matched_text) for candidate in candidates}
@@ -239,22 +250,40 @@ def _accepted_decisions(candidates: list[Mention], decisions: list[MentionDecisi
     return accepted
 
 
-async def _fetch_adapter_result(adapter: CommunityAdapter, client: SpringIngestionClient) -> BoardStreamResult:
+async def _fetch_adapter_result(
+    adapter: CommunityAdapter,
+    client: SpringIngestionClient,
+    default_cutoff_at: datetime | None = None,
+) -> BoardStreamResult:
     fetch_stream = getattr(adapter, "fetch_stream", None)
     if fetch_stream:
-        return await fetch_stream(_watermark_for_adapter(adapter, client))
+        return await fetch_stream(_watermark_for_adapter(adapter, client, default_cutoff_at))
     return BoardStreamResult(posts=await adapter.fetch_posts(), coverage=None)
 
 
-def _watermark_for_adapter(adapter: CommunityAdapter, client: SpringIngestionClient) -> BoardWatermark | None:
+def _watermark_for_adapter(
+    adapter: CommunityAdapter,
+    client: SpringIngestionClient,
+    default_cutoff_at: datetime | None = None,
+) -> BoardWatermark | None:
     target = getattr(adapter, "target", None)
     board_id = getattr(target, "board_id", None)
     if not board_id:
         return None
     get_board_watermark = getattr(client, "get_board_watermark", None)
-    if not get_board_watermark:
-        return None
-    return get_board_watermark(adapter.source, board_id)
+    watermark = get_board_watermark(adapter.source, board_id) if get_board_watermark else None
+    cutoff_at = _later_datetime(watermark.cutoff_at if watermark else None, default_cutoff_at)
+    if watermark is None:
+        return BoardWatermark(cutoff_at=cutoff_at) if cutoff_at else None
+    return BoardWatermark(last_seen_external_id=watermark.last_seen_external_id, cutoff_at=cutoff_at)
+
+
+def _later_datetime(left: datetime | None, right: datetime | None) -> datetime | None:
+    if left is None:
+        return right
+    if right is None:
+        return left
+    return max(left, right)
 
 
 def _coverage_result_fields(coverage: BoardCoverage | None) -> dict:
