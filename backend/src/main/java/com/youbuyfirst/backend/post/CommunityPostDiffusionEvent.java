@@ -43,8 +43,8 @@ public class CommunityPostDiffusionEvent {
     @Column(name = "diffusion_type", nullable = false, length = 40)
     private String diffusionType;
 
-    @Column(name = "rank_position")
-    private Integer rank;
+    @Column(name = "list_position")
+    private Integer listPosition;
 
     @Column(name = "observed_at", nullable = false)
     private Instant observedAt;
@@ -76,7 +76,7 @@ public class CommunityPostDiffusionEvent {
             String externalId,
             String boardId,
             String diffusionType,
-            Integer rank,
+            Integer listPosition,
             Instant observedAt,
             Integer viewCount,
             Integer recommendCount,
@@ -90,7 +90,7 @@ public class CommunityPostDiffusionEvent {
         this.externalId = externalId;
         this.boardId = boardId;
         this.diffusionType = diffusionType;
-        this.rank = rank;
+        this.listPosition = listPosition;
         this.observedAt = observedAt;
         this.viewCount = viewCount;
         this.recommendCount = recommendCount;
@@ -124,8 +124,8 @@ public class CommunityPostDiffusionEvent {
         return diffusionType;
     }
 
-    public Integer getRank() {
-        return rank;
+    public Integer getListPosition() {
+        return listPosition;
     }
 
     public Instant getObservedAt() {

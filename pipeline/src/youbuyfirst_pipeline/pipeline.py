@@ -101,17 +101,17 @@ class CommunityPipeline:
                     default_cutoff_at=self._default_cutoff_at(started),
                 )
                 raw_posts = stream_result.posts
-                diffusion_ranked_posts = _ranked_diffusion_posts_for_adapter(
+                diffusion_positioned_posts = _positioned_diffusion_posts_for_adapter(
                     adapter,
                     raw_posts,
                     started,
                     self.diffusion_max_age_hours,
                 )
-                if diffusion_ranked_posts is not None:
-                    raw_posts = [post for _rank, post in diffusion_ranked_posts]
+                if diffusion_positioned_posts is not None:
+                    raw_posts = [post for _list_position, post in diffusion_positioned_posts]
                     diffusion_events = stream_result.diffusion_events or _diffusion_events_for_adapter(
                         adapter,
-                        diffusion_ranked_posts,
+                        diffusion_positioned_posts,
                         started,
                     )
                 else:
@@ -340,7 +340,7 @@ def _target_result_context(adapter: CommunityAdapter) -> dict:
     return context
 
 
-def _ranked_diffusion_posts_for_adapter(
+def _positioned_diffusion_posts_for_adapter(
     adapter: CommunityAdapter,
     posts: list[RawPost],
     observed_at: datetime,
@@ -350,17 +350,17 @@ def _ranked_diffusion_posts_for_adapter(
     if target is None or target.kind != CrawlTargetKind.GENERAL_BOARD_DIFFUSION:
         return None
     cutoff_at = _diffusion_cutoff_at(observed_at, max_age_hours)
-    ranked_posts = list(enumerate(posts, start=1))
+    positioned_posts = list(enumerate(posts, start=1))
     if cutoff_at is None:
-        return ranked_posts
+        return positioned_posts
     return [
-        (rank, post)
-        for rank, post in ranked_posts
+        (list_position, post)
+        for list_position, post in positioned_posts
         if _as_utc(post.published_at) >= cutoff_at
     ]
 
 
-def _diffusion_events_for_adapter(adapter: CommunityAdapter, ranked_posts: list[tuple[int, RawPost]], observed_at: datetime) -> list[DiffusionEvent]:
+def _diffusion_events_for_adapter(adapter: CommunityAdapter, positioned_posts: list[tuple[int, RawPost]], observed_at: datetime) -> list[DiffusionEvent]:
     target = getattr(adapter, "target", None)
     if target is None or target.kind != CrawlTargetKind.GENERAL_BOARD_DIFFUSION:
         return []
@@ -368,13 +368,13 @@ def _diffusion_events_for_adapter(adapter: CommunityAdapter, ranked_posts: list[
     if not diffusion_type:
         return []
     events: list[DiffusionEvent] = []
-    for rank, post in ranked_posts:
+    for list_position, post in positioned_posts:
         events.append(
             DiffusionEvent(
                 external_id=post.external_id,
                 board_id=post.board_id or target.board_id,
                 diffusion_type=diffusion_type,
-                rank=rank,
+                list_position=list_position,
                 observed_at=observed_at,
                 view_count=post.view_count,
                 recommend_count=post.recommend_count,

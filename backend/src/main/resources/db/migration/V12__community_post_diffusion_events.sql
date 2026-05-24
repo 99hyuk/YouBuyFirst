@@ -5,7 +5,7 @@ create table community_post_diffusion_events (
     external_id varchar(200) not null,
     board_id varchar(120),
     diffusion_type varchar(40) not null,
-    rank_position integer,
+    list_position integer,
     observed_at datetime(6) not null,
     view_count integer,
     recommend_count integer,

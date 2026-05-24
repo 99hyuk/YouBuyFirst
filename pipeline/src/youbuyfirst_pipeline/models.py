@@ -61,7 +61,7 @@ class DiffusionEvent:
     external_id: str
     board_id: str | None
     diffusion_type: str
-    rank: int | None
+    list_position: int | None
     observed_at: datetime
     view_count: int | None = None
     recommend_count: int | None = None

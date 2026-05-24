@@ -10,7 +10,7 @@ public record DiffusionPayload(
         @NotBlank String externalId,
         String boardId,
         @NotBlank String diffusionType,
-        @Min(1) Integer rank,
+        @Min(1) Integer listPosition,
         @NotNull Instant observedAt,
         @Min(0) Integer viewCount,
         @Min(0) Integer recommendCount,

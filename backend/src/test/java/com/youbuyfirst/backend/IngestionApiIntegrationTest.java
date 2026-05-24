@@ -164,7 +164,7 @@ class IngestionApiIntegrationTest {
                 .contains("\"boardId\":\"stockus\"")
                 .contains("\"externalId\":\"dc-us-777\"")
                 .contains("\"diffusionType\":\"concept\"")
-                .contains("\"rank\":1")
+                .contains("\"listPosition\":1")
                 .contains("\"viewCount\":2300")
                 .contains("\"recommendCount\":41")
                 .contains("\"commentCount\":86")

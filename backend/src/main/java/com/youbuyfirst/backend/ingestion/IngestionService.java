@@ -211,7 +211,7 @@ public class IngestionService {
                     externalId,
                     boardId,
                     diffusionType,
-                    payload.rank(),
+                    payload.listPosition(),
                     payload.observedAt(),
                     payload.viewCount(),
                     payload.recommendCount(),

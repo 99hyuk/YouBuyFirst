@@ -382,7 +382,7 @@ def test_board_stream_adapter_passes_diffusion_events_to_ingest_even_without_new
         external_id="SAFE-1",
         board_id="stock",
         diffusion_type="popular",
-        rank=1,
+        list_position=1,
         observed_at=datetime(2026, 5, 24, 3, 0, tzinfo=timezone.utc),
         view_count=1000,
         recommend_count=25,
@@ -418,7 +418,7 @@ def test_board_stream_adapter_passes_diffusion_events_to_ingest_even_without_new
     assert client.recorded_runs == []
 
 
-def test_diffusion_target_generates_ranked_diffusion_events_from_list_posts():
+def test_diffusion_target_generates_list_position_diffusion_events_from_list_posts():
     post = RawPost(
         source="SAFE",
         board_id="stock",
@@ -473,7 +473,7 @@ def test_diffusion_target_generates_ranked_diffusion_events_from_list_posts():
     event = client.ingested_batches[0]["diffusionEvents"][0]
     assert event.external_id == "SAFE-100"
     assert event.diffusion_type == "popular"
-    assert event.rank == 1
+    assert event.list_position == 1
     assert event.observed_at == datetime(2026, 5, 24, 3, 5, tzinfo=timezone.utc)
     assert event.view_count == 1500
     assert event.diffusion_only is True
@@ -556,5 +556,5 @@ def test_diffusion_target_ignores_latest_watermark_but_filters_posts_older_than_
     assert [post.external_id for post in client.ingested_batches[0]["posts"]] == ["SAFE-popular-recent"]
     event = client.ingested_batches[0]["diffusionEvents"][0]
     assert event.external_id == "SAFE-popular-recent"
-    assert event.rank == 2
+    assert event.list_position == 2
     assert event.observed_at == datetime(2026, 5, 24, 12, 0, tzinfo=timezone.utc)

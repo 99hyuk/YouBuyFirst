@@ -180,7 +180,7 @@ class SpringIngestionClient:
             "externalId": event.external_id,
             "boardId": event.board_id,
             "diffusionType": event.diffusion_type,
-            "rank": event.rank,
+            "listPosition": event.list_position,
             "observedAt": _iso(event.observed_at),
             "viewCount": event.view_count,
             "recommendCount": event.recommend_count,
