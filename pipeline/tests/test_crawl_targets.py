@@ -130,6 +130,22 @@ def test_default_crawl_targets_do_not_expand_to_all_kr_instruments_when_watchlis
     assert [target for target in targets if target.target_id == "FMKOREA:community-board"][0].url == "https://www.fmkorea.com/stock"
 
 
+def test_default_crawl_targets_falls_back_to_legacy_codes_when_watchlist_is_empty():
+    targets = default_crawl_targets(
+        [],
+        naver_stock_codes=["000660"],
+        naver_watchlist_codes=[],
+        stock_board_target_limit=2,
+    )
+
+    stock_targets = [target for target in targets if target.kind == CrawlTargetKind.STOCK_BOARD]
+    assert [target.target_id for target in stock_targets] == [
+        "NAVER:KR:000660",
+        "NAVER:KR:005930",
+    ]
+    assert stock_targets[0].priority == 80
+
+
 def test_naver_stock_board_target_limit_is_capped_to_thirty():
     configured_codes = [f"{index:06d}" for index in range(1, 45)]
 

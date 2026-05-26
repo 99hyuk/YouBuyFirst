@@ -290,7 +290,7 @@ def default_crawl_targets(
     extra_stock_board_candidates: Iterable[StockBoardTargetCandidate] | None = None,
 ) -> list[CrawlTarget]:
     _ = instruments
-    watchlist_codes = naver_watchlist_codes if naver_watchlist_codes is not None else naver_stock_codes
+    watchlist_codes = _first_non_empty(naver_watchlist_codes, naver_stock_codes)
 
     targets = build_naver_stock_board_targets(
         watchlist_symbols=watchlist_codes,
@@ -391,3 +391,13 @@ def _normalize_naver_stock_code(value: str) -> str:
             normalized = normalized[: -len(suffix)]
             break
     return normalized.strip()
+
+
+def _first_non_empty(*values: Iterable[str] | None) -> list[str] | None:
+    for value in values:
+        if value is None:
+            continue
+        items = [item for item in value if item.strip()]
+        if items:
+            return items
+    return None
