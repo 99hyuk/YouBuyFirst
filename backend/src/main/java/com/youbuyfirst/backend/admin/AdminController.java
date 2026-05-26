@@ -174,6 +174,7 @@ public class AdminController {
     }
 
     @PostMapping("/alias-candidates/{candidateId}/promote")
+    @Transactional
     public InstrumentAliasView promoteAliasCandidate(
             @PathVariable Long candidateId,
             @Valid @RequestBody AliasCandidatePromoteRequest request

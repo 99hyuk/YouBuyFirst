@@ -338,6 +338,151 @@ class IngestionApiIntegrationTest {
     }
 
     @Test
+    void requiresSuggestedAliasCandidateBeforePromotionAndPreventsRePromotion() {
+        Long candidateId = createAliasCandidate(
+                "dc-us-alias-promote-gate-20260525-1000",
+                "슬라승격게이트",
+                "TSLA",
+                "슬라승격게이트 is a Tesla alias candidate"
+        );
+
+        ResponseEntity<String> pendingPromotion = restTemplate.postForEntity(
+                "/admin/alias-candidates/" + candidateId + "/promote",
+                Map.ofEntries(
+                        Map.entry("confidence", 0.8),
+                        Map.entry("reviewer", "premature-review"),
+                        Map.entry("reviewNotes", "should not pass")
+                ),
+                String.class
+        );
+
+        assertThat(pendingPromotion.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(aliasCount("US", "TSLA", "슬라승격게이트")).isZero();
+
+        ResponseEntity<String> suggested = restTemplate.postForEntity(
+                "/admin/alias-candidates/" + candidateId + "/review",
+                Map.ofEntries(
+                        Map.entry("status", "SUGGESTED"),
+                        Map.entry("reviewer", "ai-alias-review"),
+                        Map.entry("reviewNotes", "candidate passed context review")
+                ),
+                String.class
+        );
+        assertThat(suggested.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        ResponseEntity<String> promoted = restTemplate.postForEntity(
+                "/admin/alias-candidates/" + candidateId + "/promote",
+                Map.ofEntries(
+                        Map.entry("confidence", 0.81),
+                        Map.entry("reviewer", "human-review"),
+                        Map.entry("reviewNotes", "approved once")
+                ),
+                String.class
+        );
+        assertThat(promoted.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        ResponseEntity<String> secondPromotion = restTemplate.postForEntity(
+                "/admin/alias-candidates/" + candidateId + "/promote",
+                Map.ofEntries(
+                        Map.entry("confidence", 0.91),
+                        Map.entry("reviewer", "overwrite-review"),
+                        Map.entry("reviewNotes", "should not overwrite")
+                ),
+                String.class
+        );
+
+        assertThat(secondPromotion.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(aliasCandidateReviewMetadata(candidateId))
+                .contains("PROMOTED")
+                .contains("human-review")
+                .contains("approved once");
+    }
+
+    @Test
+    void rejectsPendingAsAliasCandidateReviewDecision() {
+        Long candidateId = createAliasCandidate(
+                "dc-us-alias-pending-review-20260525-1000",
+                "슬라보류불가",
+                "TSLA",
+                "슬라보류불가 should not be accepted as a review decision"
+        );
+
+        ResponseEntity<String> pendingReview = restTemplate.postForEntity(
+                "/admin/alias-candidates/" + candidateId + "/review",
+                Map.ofEntries(
+                        Map.entry("status", "PENDING"),
+                        Map.entry("reviewer", "ai-alias-review"),
+                        Map.entry("reviewNotes", "this would blur audit state")
+                ),
+                String.class
+        );
+
+        assertThat(pendingReview.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(aliasCandidateReviewMetadata(candidateId))
+                .contains("PENDING")
+                .contains("null")
+                .doesNotContain("ai-alias-review");
+    }
+
+    @Test
+    void promotesCandidateWhenNonAcceptedAliasesShareNormalizedText() {
+        Long instrumentId = instrumentId("US", "TSLA");
+        insertInstrumentAlias(instrumentId, "슬라중복-차단", "슬라중복", "BLOCKED", true);
+        insertInstrumentAlias(instrumentId, "슬라중복-검토", "슬라중복", "REVIEW", true);
+        Long candidateId = createAliasCandidate(
+                "dc-us-alias-duplicate-normalized-20260525-1000",
+                "슬라중복",
+                "TSLA",
+                "슬라중복 was repeatedly used for Tesla"
+        );
+        markAliasCandidateSuggested(candidateId);
+
+        ResponseEntity<String> promoted = restTemplate.postForEntity(
+                "/admin/alias-candidates/" + candidateId + "/promote",
+                Map.ofEntries(
+                        Map.entry("confidence", 0.83),
+                        Map.entry("reviewer", "human-review"),
+                        Map.entry("reviewNotes", "approved despite older non-counting rows")
+                ),
+                String.class
+        );
+
+        assertThat(promoted.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(promoted.getBody())
+                .contains("\"alias\":\"슬라중복\"")
+                .contains("\"status\":\"ACCEPTED\"")
+                .contains("\"ambiguous\":false");
+        assertThat(acceptedAliasCount("US", "TSLA", "슬라중복")).isEqualTo(1);
+    }
+
+    @Test
+    void promoteResponseCanReuseExistingAcceptedAliasWithoutLazyLoadingFailure() {
+        Long candidateId = createAliasCandidate(
+                "dc-us-alias-existing-accepted-20260525-1000",
+                "TSLA",
+                "TSLA",
+                "TSLA is already an accepted alias and should be returned safely"
+        );
+        markAliasCandidateSuggested(candidateId);
+
+        ResponseEntity<String> promoted = restTemplate.postForEntity(
+                "/admin/alias-candidates/" + candidateId + "/promote",
+                Map.ofEntries(
+                        Map.entry("confidence", 0.9),
+                        Map.entry("reviewer", "human-review"),
+                        Map.entry("reviewNotes", "reuse existing accepted alias")
+                ),
+                String.class
+        );
+
+        assertThat(promoted.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(promoted.getBody())
+                .contains("\"symbol\":\"TSLA\"")
+                .contains("\"alias\":\"TSLA\"")
+                .contains("\"status\":\"ACCEPTED\"");
+    }
+
+    @Test
     void rejectsAliasCandidateWithoutCreatingAcceptedAlias() {
         Long candidateId = createAliasCandidate(
                 "dc-us-alias-reject-20260525-1000",
@@ -1448,6 +1593,104 @@ class IngestionApiIntegrationTest {
                 Long.class,
                 "DCINSIDE",
                 alias
+        );
+    }
+
+    private void markAliasCandidateSuggested(Long candidateId) {
+        jdbcTemplate.update(
+                """
+                        update instrument_alias_candidates
+                        set status = 'SUGGESTED',
+                            reviewer = 'ai-alias-review',
+                            review_notes = 'context passed review',
+                            reviewed_at = ?,
+                            updated_at = ?
+                        where id = ?
+                        """,
+                Timestamp.from(Instant.parse("2026-01-01T02:00:00Z")),
+                Timestamp.from(Instant.parse("2026-01-01T02:00:00Z")),
+                candidateId
+        );
+    }
+
+    private Long instrumentId(String market, String symbol) {
+        return jdbcTemplate.queryForObject(
+                "select id from instruments where market = ? and symbol = ?",
+                Long.class,
+                market,
+                symbol
+        );
+    }
+
+    private void insertInstrumentAlias(
+            Long instrumentId,
+            String alias,
+            String normalizedAlias,
+            String status,
+            boolean ambiguous
+    ) {
+        jdbcTemplate.update(
+                """
+                        insert into instrument_aliases
+                            (instrument_id, alias, normalized_alias, source, confidence, status, ambiguous, notes, created_at, updated_at)
+                        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                instrumentId,
+                alias,
+                normalizedAlias,
+                "test",
+                0.2,
+                status,
+                ambiguous,
+                "test duplicate normalized alias",
+                Timestamp.from(Instant.parse("2026-01-01T00:00:00Z")),
+                Timestamp.from(Instant.parse("2026-01-01T00:00:00Z"))
+        );
+    }
+
+    private int aliasCount(String market, String symbol, String normalizedAlias) {
+        return jdbcTemplate.queryForObject(
+                """
+                        select count(*)
+                        from instrument_aliases ia
+                        join instruments i on i.id = ia.instrument_id
+                        where i.market = ? and i.symbol = ? and ia.normalized_alias = ?
+                        """,
+                Integer.class,
+                market,
+                symbol,
+                normalizedAlias
+        );
+    }
+
+    private int acceptedAliasCount(String market, String symbol, String normalizedAlias) {
+        return jdbcTemplate.queryForObject(
+                """
+                        select count(*)
+                        from instrument_aliases ia
+                        join instruments i on i.id = ia.instrument_id
+                        where i.market = ?
+                          and i.symbol = ?
+                          and ia.normalized_alias = ?
+                          and ia.status = 'ACCEPTED'
+                          and ia.ambiguous = false
+                        """,
+                Integer.class,
+                market,
+                symbol,
+                normalizedAlias
+        );
+    }
+
+    private String aliasCandidateReviewMetadata(Long candidateId) {
+        return jdbcTemplate.queryForObject(
+                """
+                        select status, reviewer, review_notes
+                        from instrument_alias_candidates
+                        where id = ?
+                        """,
+                (rs, rowNum) -> rs.getString("status") + "|" + rs.getString("reviewer") + "|" + rs.getString("review_notes"),
+                candidateId
         );
     }
 

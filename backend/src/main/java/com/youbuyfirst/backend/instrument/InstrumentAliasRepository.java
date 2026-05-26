@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface InstrumentAliasRepository extends JpaRepository<InstrumentAlias, Long> {
 
@@ -19,8 +18,6 @@ public interface InstrumentAliasRepository extends JpaRepository<InstrumentAlias
             String status,
             Pageable pageable
     );
-
-    Optional<InstrumentAlias> findByInstrumentAndNormalizedAlias(Instrument instrument, String normalizedAlias);
 
     List<InstrumentAlias> findByNormalizedAliasAndStatusIgnoreCaseAndAmbiguousFalse(String normalizedAlias, String status);
 }

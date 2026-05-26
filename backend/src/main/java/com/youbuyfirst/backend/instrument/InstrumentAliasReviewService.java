@@ -6,12 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Set;
 
 @Service
 public class InstrumentAliasReviewService {
 
-    private static final Set<String> REVIEW_STATUSES = Set.of("PENDING", "SUGGESTED", "REJECTED");
+    private static final Set<String> REVIEW_STATUSES = Set.of("SUGGESTED", "REJECTED");
 
     private final InstrumentAliasCandidateRepository aliasCandidateRepository;
     private final InstrumentAliasRepository aliasRepository;
@@ -46,8 +47,8 @@ public class InstrumentAliasReviewService {
     @Transactional
     public InstrumentAlias promoteCandidate(Long candidateId, Double confidence, String reviewer, String reviewNotes) {
         InstrumentAliasCandidate candidate = findCandidate(candidateId);
-        if ("REJECTED".equals(candidate.getStatus())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "rejected alias candidate cannot be promoted");
+        if (!"SUGGESTED".equals(candidate.getStatus())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "alias candidate must be suggested before promotion");
         }
         if (isBlank(candidate.getSuggestedMarket()) || isBlank(candidate.getSuggestedSymbol())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "alias candidate needs suggested market and symbol before promotion");
@@ -57,28 +58,38 @@ public class InstrumentAliasReviewService {
                 .findByMarketIgnoreCaseAndSymbolIgnoreCase(candidate.getSuggestedMarket(), candidate.getSuggestedSymbol())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "suggested instrument not found"));
 
-        for (InstrumentAlias alias : aliasRepository.findByNormalizedAliasAndStatusIgnoreCaseAndAmbiguousFalse(candidate.getNormalizedAlias(), "ACCEPTED")) {
+        List<InstrumentAlias> acceptedAliases = aliasRepository.findByNormalizedAliasAndStatusIgnoreCaseAndAmbiguousFalse(
+                candidate.getNormalizedAlias(),
+                "ACCEPTED"
+        );
+        for (InstrumentAlias alias : acceptedAliases) {
             if (!alias.getInstrument().getId().equals(instrument.getId())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "alias is already accepted for another instrument");
             }
         }
+        InstrumentAlias existingAcceptedAlias = acceptedAliases.stream()
+                .filter(alias -> alias.getInstrument().getId().equals(instrument.getId()))
+                .findFirst()
+                .orElse(null);
 
         Instant now = Instant.now();
         String reviewerValue = clean(reviewer);
         String reviewNotesValue = clean(reviewNotes);
         candidate.markPromoted(reviewerValue, reviewNotesValue, now);
 
-        return aliasRepository.findByInstrumentAndNormalizedAlias(instrument, candidate.getNormalizedAlias())
-                .orElseGet(() -> aliasRepository.save(new InstrumentAlias(
-                        instrument,
-                        candidate.getAlias(),
-                        "alias-candidate:" + candidate.getSource(),
-                        confidence == null ? 0.8 : confidence,
-                        "ACCEPTED",
-                        false,
-                        reviewNotesValue,
-                        now
-                )));
+        if (existingAcceptedAlias != null) {
+            return existingAcceptedAlias;
+        }
+        return aliasRepository.save(new InstrumentAlias(
+                instrument,
+                candidate.getAlias(),
+                "alias-candidate:" + candidate.getSource(),
+                confidence == null ? 0.8 : confidence,
+                "ACCEPTED",
+                false,
+                reviewNotesValue,
+                now
+        ));
     }
 
     private InstrumentAliasCandidate findCandidate(Long candidateId) {
