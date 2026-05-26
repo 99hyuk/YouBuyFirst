@@ -34,8 +34,20 @@ insert into instrument_identifiers (
 )
 select id,
        'YFINANCE',
-       concat(symbol, '.KS'),
-       concat(symbol, '.KS'),
+       concat(
+           upper(replace(symbol, ' ', '')),
+           case
+               when upper(replace(symbol, ' ', '')) in ('035900', '086520', '196170', '247540') then '.KQ'
+               else '.KS'
+           end
+       ),
+       concat(
+           upper(replace(symbol, ' ', '')),
+           case
+               when upper(replace(symbol, ' ', '')) in ('035900', '086520', '196170', '247540') then '.KQ'
+               else '.KS'
+           end
+       ),
        'MARKET_DATA',
        'seed',
        true,
@@ -57,8 +69,8 @@ insert into instrument_identifiers (
 )
 select id,
        'YFINANCE',
-       symbol,
-       symbol,
+       upper(replace(symbol, ' ', '')),
+       upper(replace(symbol, ' ', '')),
        'MARKET_DATA',
        'seed',
        true,
@@ -80,8 +92,8 @@ insert into instrument_identifiers (
 )
 select id,
        'KRX_TICKER',
-       symbol,
-       symbol,
+       upper(replace(symbol, ' ', '')),
+       upper(replace(symbol, ' ', '')),
        'EXCHANGE_REFERENCE',
        'seed',
        true,
@@ -103,8 +115,8 @@ insert into instrument_identifiers (
 )
 select id,
        'US_TICKER',
-       symbol,
-       symbol,
+       upper(replace(symbol, ' ', '')),
+       upper(replace(symbol, ' ', '')),
        'EXCHANGE_REFERENCE',
        'seed',
        true,
@@ -126,8 +138,8 @@ insert into instrument_identifiers (
 )
 select id,
        'NAVER_STOCK_BOARD',
-       symbol,
-       symbol,
+       upper(replace(symbol, ' ', '')),
+       upper(replace(symbol, ' ', '')),
        'COMMUNITY_BOARD',
        'seed',
        true,
