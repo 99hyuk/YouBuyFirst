@@ -88,6 +88,17 @@ ops는 에이전트 행동 규칙 PR을 main에 머지한 뒤 열린 worktree �
 - 코드/API/DB/배치/crawler/chart/market data/front 동작 PR과 정책 문서 PR은 Codex 리뷰를 요청하거나 자동 리뷰 결과를 확인합니다. PR 생성/ready 직후 리뷰가 아직 없으면 바로 merge/완료 처리하지 말고 review 상태로 둔 뒤 재확인합니다.
 - PR 리뷰 댓글을 확인합니다. 사람 리뷰와 `chatgpt-codex-connector`의 P1/P2/actionable 지적은 타당성을 판단한 뒤 처리하거나 오탐/후속 분리 사유를 한국어로 남깁니다.
 
+## 배포 확인
+
+기본 배포 흐름은 GitHub `main` 머지 후 Netlify Git 연동 자동 배포입니다. Netlify MCP는 이 흐름을 대체하기보다 배포 상태 확인과 문제 분리에 사용합니다.
+
+- Netlify 프로젝트는 우선 MCP `get-projects`에서 `youbuyfirst`를 조회해 확인합니다.
+- front, routing, build 설정, 정적 asset 변경이 main에 머지되면 GitHub CI 결과와 Netlify current deploy 상태를 함께 확인합니다.
+- Netlify MCP로 `currentDeploy.state`, primary site URL, branch URL을 확인한 뒤 실제 URL HTTP smoke test를 실행합니다.
+- 배포가 실패하거나 화면이 이전 버전이면 deploy ID 기준으로 MCP `get-deploy`를 확인하고, GitHub CI 실패인지 Netlify build 실패인지, 배포는 됐지만 앱 라우팅 문제인지 분리합니다.
+- MCP `deploy-site` 같은 write operation은 기존 siteId를 확인했고 사용자가 수동 재배포를 요청했을 때만 씁니다. 새 site 생성이나 설정 변경은 추측으로 진행하지 않습니다.
+- 로컬 브랜치나 dev server 변경은 Netlify production에 반영되지 않습니다. 배포 확인은 항상 main merge 이후 상태와 구분해서 보고합니다.
+
 ## PR 전 체크리스트
 
 1. 변경 범위가 한 작업/한 primary work area인지 확인합니다.
