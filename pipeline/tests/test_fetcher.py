@@ -16,6 +16,32 @@ async def test_fetcher_treats_rate_limit_as_blocked_without_browser_fallback():
 
 @pytest.mark.anyio
 @respx.mock
+async def test_fetcher_sends_standard_html_request_headers():
+    route = respx.get("https://example.com/board").mock(return_value=httpx.Response(200, text="<html></html>"))
+
+    await BrowserCapableFetcher(user_agent="test").fetch_html("https://example.com/board")
+
+    request_headers = route.calls.last.request.headers
+    assert request_headers["accept"].startswith("text/html")
+    assert "ko-KR" in request_headers["accept-language"]
+
+
+@pytest.mark.anyio
+@respx.mock
+async def test_fetcher_treats_fmkorea_security_page_as_blocked_without_browser_fallback():
+    respx.get("https://www.fmkorea.com/stock").mock(
+        return_value=httpx.Response(
+            430,
+            text="<html><title>에펨코리아 보안 시스템</title><body>보안 시스템</body></html>",
+        )
+    )
+
+    with pytest.raises(SourceBlockedError, match="430"):
+        await BrowserCapableFetcher(user_agent="test").fetch_html("https://www.fmkorea.com/stock")
+
+
+@pytest.mark.anyio
+@respx.mock
 async def test_fetcher_treats_captcha_html_as_blocked_without_browser_fallback():
     respx.get("https://example.com/board").mock(
         return_value=httpx.Response(200, text="<html><title>captcha</title><body>verify you are human</body></html>")

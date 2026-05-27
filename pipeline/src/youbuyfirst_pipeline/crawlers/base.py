@@ -32,6 +32,11 @@ class BrowserCapableFetcher:
     def __init__(self, user_agent: str, timeout_seconds: float = 10.0) -> None:
         self.user_agent = user_agent
         self.timeout_seconds = timeout_seconds
+        self.headers = {
+            "User-Agent": self.user_agent,
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7",
+        }
 
     async def fetch_html(self, url: str, allow_browser_fallback: bool = True) -> FetchResult:
         try:
@@ -47,10 +52,10 @@ class BrowserCapableFetcher:
         async with httpx.AsyncClient(
             follow_redirects=True,
             timeout=self.timeout_seconds,
-            headers={"User-Agent": self.user_agent},
+            headers=self.headers,
         ) as client:
             response = await client.get(url)
-            if response.status_code in {403, 429}:
+            if response.status_code in {403, 429, 430}:
                 raise SourceBlockedError(f"{url} returned {response.status_code}")
             response.raise_for_status()
             html = _decode_html(url, response)
