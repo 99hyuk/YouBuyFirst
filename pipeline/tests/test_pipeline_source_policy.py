@@ -12,6 +12,7 @@ from youbuyfirst_pipeline.source_policy import (
     SourcePolicy,
     SourcePolicyRegistry,
     SourceStatus,
+    default_source_policy_registry,
 )
 
 
@@ -156,6 +157,18 @@ def test_public_runtime_skips_local_research_source_without_fetching():
             ),
         }
     ]
+
+
+def test_default_source_policy_registers_tossinvest_as_local_research_source():
+    registry = default_source_policy_registry()
+
+    local_decision = registry.decide("TOSSINVEST", CrawlRuntimeEnvironment.LOCAL)
+    public_decision = registry.decide("TOSSINVEST", CrawlRuntimeEnvironment.PUBLIC)
+
+    assert local_decision.allowed is True
+    assert local_decision.policy.status == SourceStatus.LOCAL_RESEARCH_ONLY
+    assert public_decision.allowed is False
+    assert public_decision.reason == "source policy local-research-only is not allowed in public runtime"
 
 
 def test_disabled_source_skips_and_records_backend_run():

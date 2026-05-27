@@ -11,6 +11,22 @@ DCINSIDE_US_STOCK_BOARD_URL = "https://gall.dcinside.com/mini/board/lists/?id=ny
 DCINSIDE_STOCK_BOARD_URL = "https://gall.dcinside.com/board/lists/?id=neostock"
 DCINSIDE_KOREA_STOCK_BOARD_URL = "https://gall.dcinside.com/mini/board/lists/?id=koreastock"
 PPOMPPU_STOCK_BOARD_URL = "https://www.ppomppu.co.kr/zboard/zboard.php?id=stock"
+TOSSINVEST_US_STOCK_LOUNGE_RECENT_URL = (
+    "https://wts-cert-api.tossinvest.com/api/v4/comments"
+    "?subjectType=LOUNGE&subjectId=LOUNGE_193394&commentSortType=RECENT"
+)
+TOSSINVEST_US_STOCK_LOUNGE_POPULAR_URL = (
+    "https://wts-cert-api.tossinvest.com/api/v4/comments"
+    "?subjectType=LOUNGE&subjectId=LOUNGE_193394&commentSortType=POPULAR"
+)
+TOSSINVEST_KR_STOCK_LOUNGE_RECENT_URL = (
+    "https://wts-cert-api.tossinvest.com/api/v4/comments"
+    "?subjectType=LOUNGE&subjectId=LOUNGE_193404&commentSortType=RECENT"
+)
+TOSSINVEST_KR_STOCK_LOUNGE_POPULAR_URL = (
+    "https://wts-cert-api.tossinvest.com/api/v4/comments"
+    "?subjectType=LOUNGE&subjectId=LOUNGE_193404&commentSortType=POPULAR"
+)
 
 
 class CrawlTargetKind(str, Enum):
@@ -275,6 +291,38 @@ def community_board_registry(fmkorea_url: str | None = None) -> tuple[CommunityB
                     url=None,
                     enabled_by_default=False,
                     note="Verify PPOMPPU hot/popular category URL before enabling.",
+                ),
+            ),
+        ),
+        CommunityBoardRegistryEntry(
+            source="TOSSINVEST",
+            board_id="us-stock-lounge",
+            display_name="TossInvest US stock lounge",
+            market_scope="US",
+            latest_url=TOSSINVEST_US_STOCK_LOUNGE_RECENT_URL,
+            latest_priority=250,
+            crawl_policy="public-web-observed-lounge-latest",
+            diffusion_boards=(
+                DiffusionBoardRegistryEntry(
+                    diffusion_type="popular",
+                    url=TOSSINVEST_US_STOCK_LOUNGE_POPULAR_URL,
+                    enabled_by_default=True,
+                ),
+            ),
+        ),
+        CommunityBoardRegistryEntry(
+            source="TOSSINVEST",
+            board_id="kr-stock-lounge",
+            display_name="TossInvest domestic stock lounge",
+            market_scope="KR",
+            latest_url=TOSSINVEST_KR_STOCK_LOUNGE_RECENT_URL,
+            latest_priority=260,
+            crawl_policy="public-web-observed-lounge-latest",
+            diffusion_boards=(
+                DiffusionBoardRegistryEntry(
+                    diffusion_type="popular",
+                    url=TOSSINVEST_KR_STOCK_LOUNGE_POPULAR_URL,
+                    enabled_by_default=True,
                 ),
             ),
         ),

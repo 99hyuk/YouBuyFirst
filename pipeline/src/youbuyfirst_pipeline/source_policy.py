@@ -95,6 +95,11 @@ def default_source_policy_registry() -> SourcePolicyRegistry:
                 status=SourceStatus.LOCAL_RESEARCH_ONLY,
                 reason="MVP source allowed only for local research before public review",
             ),
+            "TOSSINVEST": SourcePolicy(
+                source="TOSSINVEST",
+                status=SourceStatus.LOCAL_RESEARCH_ONLY,
+                reason="Observed public web community source; keep local-research-only before public review",
+            ),
         }
     )
 
