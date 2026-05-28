@@ -277,7 +277,8 @@ async def test_fmkorea_fetch_stream_walks_pages_until_duplicate_with_coverage():
 
     result = await adapter.fetch_stream(BoardWatermark(last_seen_external_id="FMKOREA-1001"))
 
-    assert fetcher.urls == ["https://www.fmkorea.com/stock", "https://www.fmkorea.com/stock?page=2"]
+    assert fetcher.urls == []
+    assert fetcher.browser_urls == ["https://www.fmkorea.com/stock", "https://www.fmkorea.com/stock?page=2"]
     assert [post.external_id for post in result.posts] == ["FMKOREA-1002"]
     assert result.coverage.pages_fetched == 2
     assert result.coverage.rows_seen == 2
@@ -286,7 +287,7 @@ async def test_fmkorea_fetch_stream_walks_pages_until_duplicate_with_coverage():
 
 
 @pytest.mark.anyio
-async def test_fmkorea_fetch_stream_can_enable_local_browser_fetch_without_http_first():
+async def test_fmkorea_fetch_stream_uses_browser_fetch_by_default_without_http_first():
     page = """
     <table><tr>
       <td class="title"><a href="/1002">새 글</a></td>
@@ -300,7 +301,6 @@ async def test_fmkorea_fetch_stream_can_enable_local_browser_fetch_without_http_
         fetcher,
         target=target,
         stream_crawler=BoardStreamCrawler(max_pages_per_run=1),
-        use_local_browser_fetch=True,
     )
 
     result = await adapter.fetch_stream()

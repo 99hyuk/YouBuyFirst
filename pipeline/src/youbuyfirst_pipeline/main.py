@@ -90,10 +90,6 @@ def build_pipeline() -> CommunityPipeline:
         targets,
         fetcher,
         stream_crawler=_stream_crawler_from_env(),
-        fmkorea_local_browser_fetch_enabled=_configured_bool(
-            os.getenv("FMKOREA_LOCAL_BROWSER_FETCH_ENABLED"),
-            False,
-        ),
     )
 
     matcher = InstrumentMatcher(instruments, review_aliases=review_alias_rules(alias_rules))
@@ -153,7 +149,6 @@ def _adapters_from_targets(
     targets: list[CrawlTarget],
     fetcher: BrowserCapableFetcher,
     stream_crawler: BoardStreamCrawler | None = None,
-    fmkorea_local_browser_fetch_enabled: bool = False,
 ) -> list:
     adapters = []
     for target in targets:
@@ -172,7 +167,6 @@ def _adapters_from_targets(
                     url=target.url,
                     target=target,
                     stream_crawler=stream_crawler,
-                    use_local_browser_fetch=fmkorea_local_browser_fetch_enabled,
                 )
             )
             continue

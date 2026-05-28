@@ -20,7 +20,7 @@ class FmkoreaAdapter:
         url: str | None = None,
         target: CrawlTarget | None = None,
         stream_crawler: BoardStreamCrawler | None = None,
-        use_local_browser_fetch: bool = False,
+        use_local_browser_fetch: bool = True,
     ) -> None:
         self.fetcher = fetcher
         self.url = url or self.default_url

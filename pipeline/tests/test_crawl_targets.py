@@ -202,11 +202,11 @@ def test_adapters_are_created_from_targets_with_target_metadata():
     ]
 
 
-def test_adapters_can_enable_fmkorea_local_browser_fetch():
+def test_adapters_use_browser_fetch_for_fmkorea_by_default():
     fetcher = BrowserCapableFetcher(user_agent="test")
     target = CrawlTarget.community_board("FMKOREA", board_id="stock", url="https://example.com/stock")
 
-    adapters = _adapters_from_targets([target], fetcher, fmkorea_local_browser_fetch_enabled=True)
+    adapters = _adapters_from_targets([target], fetcher)
 
     assert adapters[0].source == "FMKOREA"
     assert adapters[0].use_local_browser_fetch is True
