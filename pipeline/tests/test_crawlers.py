@@ -24,6 +24,21 @@ class FakeFetcher:
         return FetchResult(url=url, html=self.pages[url], status_code=200)
 
 
+class OptionRecordingFetcher(FakeFetcher):
+    def __init__(self, pages: dict[str, str]) -> None:
+        super().__init__(pages)
+        self.blocked_status_browser_fallbacks: list[set[int] | None] = []
+
+    async def fetch_html(
+        self,
+        url: str,
+        allow_browser_fallback: bool = True,
+        blocked_status_browser_fallback: set[int] | None = None,
+    ) -> FetchResult:
+        self.blocked_status_browser_fallbacks.append(blocked_status_browser_fallback)
+        return await super().fetch_html(url, allow_browser_fallback=allow_browser_fallback)
+
+
 def test_naver_fixture_is_parsed_into_posts():
     html = """
     <table class="type2">
@@ -278,6 +293,30 @@ async def test_fmkorea_fetch_stream_walks_pages_until_duplicate_with_coverage():
     assert result.coverage.rows_seen == 2
     assert result.coverage.duplicate_stop is True
     assert result.coverage.coverage_status == "complete"
+
+
+@pytest.mark.anyio
+async def test_fmkorea_fetch_stream_can_enable_local_browser_fallback_for_security_status():
+    page = """
+    <table><tr>
+      <td class="title"><a href="/1002">새 글</a></td>
+      <td class="author"><span>writer</span></td>
+      <td class="time">09:20</td>
+    </tr></table>
+    """
+    fetcher = OptionRecordingFetcher({"https://www.fmkorea.com/stock": page})
+    target = CrawlTarget.community_board("FMKOREA", board_id="stock", url="https://www.fmkorea.com/stock")
+    adapter = FmkoreaAdapter(
+        fetcher,
+        target=target,
+        stream_crawler=BoardStreamCrawler(max_pages_per_run=1),
+        use_local_browser_fallback=True,
+    )
+
+    result = await adapter.fetch_stream()
+
+    assert [post.external_id for post in result.posts] == ["FMKOREA-1002"]
+    assert fetcher.blocked_status_browser_fallbacks == [{430}]
 
 
 @pytest.mark.anyio

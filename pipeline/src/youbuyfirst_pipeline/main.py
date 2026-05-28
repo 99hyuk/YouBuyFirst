@@ -56,7 +56,11 @@ def build_pipeline() -> CommunityPipeline:
         "CRAWLER_USER_AGENT",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
     )
-    fetcher = BrowserCapableFetcher(user_agent=user_agent, timeout_seconds=float(os.getenv("CRAWLER_TIMEOUT_SECONDS", "10")))
+    fetcher = BrowserCapableFetcher(
+        user_agent=user_agent,
+        timeout_seconds=float(os.getenv("CRAWLER_TIMEOUT_SECONDS", "10")),
+        browser_channel=_optional_env(os.getenv("CRAWLER_BROWSER_CHANNEL")),
+    )
 
     instrument_path = Path(os.getenv("INSTRUMENT_CSV_PATH", "data/instruments.sample.csv"))
     alias_path = Path(os.getenv("INSTRUMENT_ALIAS_CSV_PATH", "data/instrument_aliases.sample.csv"))
@@ -82,7 +86,15 @@ def build_pipeline() -> CommunityPipeline:
         ),
         fmkorea_url=os.getenv("FMKOREA_STOCK_URL"),
     )
-    adapters = _adapters_from_targets(targets, fetcher, stream_crawler=_stream_crawler_from_env())
+    adapters = _adapters_from_targets(
+        targets,
+        fetcher,
+        stream_crawler=_stream_crawler_from_env(),
+        fmkorea_local_browser_fallback_enabled=_configured_bool(
+            os.getenv("FMKOREA_LOCAL_BROWSER_FALLBACK_ENABLED"),
+            False,
+        ),
+    )
 
     matcher = InstrumentMatcher(instruments, review_aliases=review_alias_rules(alias_rules))
     client = _spring_client()
@@ -121,6 +133,13 @@ def _configured_bool(value: str | None, default: bool) -> bool:
     return value.strip().lower() in {"1", "true", "yes", "y"}
 
 
+def _optional_env(value: str | None) -> str | None:
+    if value is None:
+        return None
+    stripped = value.strip()
+    return stripped or None
+
+
 def _stream_crawler_from_env() -> BoardStreamCrawler:
     return BoardStreamCrawler(
         max_pages_per_run=int(os.getenv("CRAWLER_MAX_PAGES_PER_RUN", "20")),
@@ -134,6 +153,7 @@ def _adapters_from_targets(
     targets: list[CrawlTarget],
     fetcher: BrowserCapableFetcher,
     stream_crawler: BoardStreamCrawler | None = None,
+    fmkorea_local_browser_fallback_enabled: bool = False,
 ) -> list:
     adapters = []
     for target in targets:
@@ -146,7 +166,15 @@ def _adapters_from_targets(
             CrawlTargetKind.COMMUNITY_BOARD,
             CrawlTargetKind.GENERAL_BOARD_DIFFUSION,
         }:
-            adapters.append(FmkoreaAdapter(fetcher, url=target.url, target=target, stream_crawler=stream_crawler))
+            adapters.append(
+                FmkoreaAdapter(
+                    fetcher,
+                    url=target.url,
+                    target=target,
+                    stream_crawler=stream_crawler,
+                    use_local_browser_fallback=fmkorea_local_browser_fallback_enabled,
+                )
+            )
             continue
         if target.source == "DCINSIDE" and target.kind in {
             CrawlTargetKind.COMMUNITY_BOARD,
