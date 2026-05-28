@@ -116,8 +116,8 @@ Meta와 X가 공개 웹 데이터 스크래핑을 문제 삼은 사례입니다.
 
 - 수집 여부는 소스별 위험도 평가 후 결정합니다.
 - 허용되지 않은 경로를 우회하지 않습니다.
-- FMKOREA 브라우저 fallback은 `FMKOREA_LOCAL_BROWSER_FALLBACK_ENABLED=true`로 명시한 로컬 개인 지표용 수집에만 허용합니다.
-- 브라우저 fallback을 켜도 로그인, CAPTCHA, 사람 인증, 프록시 회전, fingerprint 위장은 하지 않고, 결과는 공개 화면이나 공유 리포트에 포함하지 않습니다.
+- FMKOREA 브라우저 수집은 `FMKOREA_LOCAL_BROWSER_FETCH_ENABLED=true`로 명시한 로컬 개인 지표용 수집에만 허용합니다.
+- 브라우저 수집을 켜도 로그인, CAPTCHA, 사람 인증, 프록시 회전, fingerprint 위장은 하지 않고, 결과는 공개 화면이나 공유 리포트에 포함하지 않습니다.
 
 ### 디시인사이드
 

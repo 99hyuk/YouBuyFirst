@@ -18,25 +18,15 @@ class FakeFetcher:
     def __init__(self, pages: dict[str, str]) -> None:
         self.pages = pages
         self.urls: list[str] = []
+        self.browser_urls: list[str] = []
 
     async def fetch_html(self, url: str, allow_browser_fallback: bool = True) -> FetchResult:
         self.urls.append(url)
         return FetchResult(url=url, html=self.pages[url], status_code=200)
 
-
-class OptionRecordingFetcher(FakeFetcher):
-    def __init__(self, pages: dict[str, str]) -> None:
-        super().__init__(pages)
-        self.blocked_status_browser_fallbacks: list[set[int] | None] = []
-
-    async def fetch_html(
-        self,
-        url: str,
-        allow_browser_fallback: bool = True,
-        blocked_status_browser_fallback: set[int] | None = None,
-    ) -> FetchResult:
-        self.blocked_status_browser_fallbacks.append(blocked_status_browser_fallback)
-        return await super().fetch_html(url, allow_browser_fallback=allow_browser_fallback)
+    async def fetch_browser_html(self, url: str) -> FetchResult:
+        self.browser_urls.append(url)
+        return FetchResult(url=url, html=self.pages[url], status_code=200)
 
 
 def test_naver_fixture_is_parsed_into_posts():
@@ -296,7 +286,7 @@ async def test_fmkorea_fetch_stream_walks_pages_until_duplicate_with_coverage():
 
 
 @pytest.mark.anyio
-async def test_fmkorea_fetch_stream_can_enable_local_browser_fallback_for_security_status():
+async def test_fmkorea_fetch_stream_can_enable_local_browser_fetch_without_http_first():
     page = """
     <table><tr>
       <td class="title"><a href="/1002">새 글</a></td>
@@ -304,19 +294,20 @@ async def test_fmkorea_fetch_stream_can_enable_local_browser_fallback_for_securi
       <td class="time">09:20</td>
     </tr></table>
     """
-    fetcher = OptionRecordingFetcher({"https://www.fmkorea.com/stock": page})
+    fetcher = FakeFetcher({"https://www.fmkorea.com/stock": page})
     target = CrawlTarget.community_board("FMKOREA", board_id="stock", url="https://www.fmkorea.com/stock")
     adapter = FmkoreaAdapter(
         fetcher,
         target=target,
         stream_crawler=BoardStreamCrawler(max_pages_per_run=1),
-        use_local_browser_fallback=True,
+        use_local_browser_fetch=True,
     )
 
     result = await adapter.fetch_stream()
 
     assert [post.external_id for post in result.posts] == ["FMKOREA-1002"]
-    assert fetcher.blocked_status_browser_fallbacks == [{430}]
+    assert fetcher.urls == []
+    assert fetcher.browser_urls == ["https://www.fmkorea.com/stock"]
 
 
 @pytest.mark.anyio

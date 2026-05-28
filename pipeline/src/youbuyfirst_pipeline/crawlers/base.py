@@ -50,23 +50,18 @@ class BrowserCapableFetcher:
         self,
         url: str,
         allow_browser_fallback: bool = True,
-        blocked_status_browser_fallback: set[int] | None = None,
     ) -> FetchResult:
         try:
             return await self._fetch_http(url)
-        except SourceBlockedError as exc:
-            if (
-                allow_browser_fallback
-                and exc.status_code is not None
-                and blocked_status_browser_fallback is not None
-                and exc.status_code in blocked_status_browser_fallback
-            ):
-                return await self._fetch_browser(url)
+        except SourceBlockedError:
             raise
         except httpx.HTTPError:
             if not allow_browser_fallback:
                 raise
             return await self._fetch_browser(url)
+
+    async def fetch_browser_html(self, url: str) -> FetchResult:
+        return await self._fetch_browser(url)
 
     async def _fetch_http(self, url: str) -> FetchResult:
         async with httpx.AsyncClient(

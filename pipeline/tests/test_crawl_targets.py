@@ -202,14 +202,14 @@ def test_adapters_are_created_from_targets_with_target_metadata():
     ]
 
 
-def test_adapters_can_enable_fmkorea_local_browser_fallback():
+def test_adapters_can_enable_fmkorea_local_browser_fetch():
     fetcher = BrowserCapableFetcher(user_agent="test")
     target = CrawlTarget.community_board("FMKOREA", board_id="stock", url="https://example.com/stock")
 
-    adapters = _adapters_from_targets([target], fetcher, fmkorea_local_browser_fallback_enabled=True)
+    adapters = _adapters_from_targets([target], fetcher, fmkorea_local_browser_fetch_enabled=True)
 
     assert adapters[0].source == "FMKOREA"
-    assert adapters[0].use_local_browser_fallback is True
+    assert adapters[0].use_local_browser_fetch is True
 
 
 def test_stream_crawler_from_env_configures_limits_and_page_delay(monkeypatch):

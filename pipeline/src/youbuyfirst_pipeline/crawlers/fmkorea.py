@@ -20,13 +20,13 @@ class FmkoreaAdapter:
         url: str | None = None,
         target: CrawlTarget | None = None,
         stream_crawler: BoardStreamCrawler | None = None,
-        use_local_browser_fallback: bool = False,
+        use_local_browser_fetch: bool = False,
     ) -> None:
         self.fetcher = fetcher
         self.url = url or self.default_url
         self.target = target or CrawlTarget.community_board(self.source, url=self.url, label="FMKOREA stock board")
         self.stream_crawler = stream_crawler or BoardStreamCrawler()
-        self.use_local_browser_fallback = use_local_browser_fallback
+        self.use_local_browser_fetch = use_local_browser_fetch
 
     async def fetch_posts(self) -> list[RawPost]:
         result = await self._fetch_fmkorea_html(self.url)
@@ -43,8 +43,8 @@ class FmkoreaAdapter:
         return BoardPage(cursor=current_page, posts=posts, next_cursor=next_cursor)
 
     async def _fetch_fmkorea_html(self, url: str) -> FetchResult:
-        if self.use_local_browser_fallback:
-            return await self.fetcher.fetch_html(url, blocked_status_browser_fallback={430})
+        if self.use_local_browser_fetch:
+            return await self.fetcher.fetch_browser_html(url)
         return await self.fetcher.fetch_html(url)
 
     @staticmethod

@@ -62,13 +62,7 @@ async def test_fetcher_treats_fmkorea_security_html_as_blocked_without_browser_f
 
 @pytest.mark.anyio
 @respx.mock
-async def test_fetcher_can_opt_into_blocked_status_browser_fallback(monkeypatch):
-    respx.get("https://www.fmkorea.com/stock").mock(
-        return_value=httpx.Response(
-            430,
-            text="<html><title>에펨코리아 보안 시스템</title><body>보안 시스템</body></html>",
-        )
-    )
+async def test_fetcher_can_fetch_browser_html_directly(monkeypatch):
     fetcher = BrowserCapableFetcher(user_agent="test")
     browser_urls = []
 
@@ -80,10 +74,7 @@ async def test_fetcher_can_opt_into_blocked_status_browser_fallback(monkeypatch)
 
     monkeypatch.setattr(fetcher, "_fetch_browser", fake_browser_result)
 
-    result = await fetcher.fetch_html(
-        "https://www.fmkorea.com/stock",
-        blocked_status_browser_fallback={430},
-    )
+    result = await fetcher.fetch_browser_html("https://www.fmkorea.com/stock")
 
     assert result.html == "<html><body>browser rendered</body></html>"
     assert browser_urls == ["https://www.fmkorea.com/stock"]
