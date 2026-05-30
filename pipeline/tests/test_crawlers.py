@@ -1,3 +1,4 @@
+import json
 from datetime import timezone
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from youbuyfirst_pipeline.crawlers.fmkorea import FmkoreaAdapter
 from youbuyfirst_pipeline.crawlers.dcinside import DcinsideAdapter
 from youbuyfirst_pipeline.crawlers.naver import NaverBoardAdapter
 from youbuyfirst_pipeline.crawlers.ppomppu import PpomppuAdapter
+from youbuyfirst_pipeline.crawlers.tossinvest import TossInvestAdapter
 
 FIXTURE_DIR = Path(__file__).parent / "fixtures" / "crawlers"
 
@@ -244,6 +246,127 @@ def test_ppomppu_blank_recommend_and_missing_comment_are_zero():
     assert posts[0].recommend_count == 0
     assert posts[0].comment_count == 0
     assert posts[0].view_count == 257
+
+
+def test_tossinvest_lounge_comment_payload_is_parsed_into_posts():
+    payload = {
+        "result": {
+            "results": [
+                {
+                    "type": "USER_COMMENT",
+                    "commentId": 252502612,
+                    "author": {"nickname": "토스러"},
+                    "parentId": None,
+                    "message": {
+                        "title": "이거 맞나요..?",
+                        "message": "주식 처음 주린이 입니다\n매달 200씩 가져갈 생각입니다",
+                    },
+                    "board": {
+                        "topic": "미국주식이야기",
+                        "subjectId": "LOUNGE_193394",
+                        "subjectType": "LOUNGE",
+                        "stockCode": "",
+                    },
+                    "statistic": {"likeCount": 7, "replyCount": 2, "readCount": 23},
+                    "createdAt": "2026-05-27T23:36:12.528890234+09:00",
+                    "updatedAt": "2026-05-27T23:36:12.528890234+09:00",
+                    "accessLevel": "EXTERNAL_PUBLIC",
+                },
+                {
+                    "type": "USER_COMMENT",
+                    "commentId": 252502611,
+                    "author": {"nickname": "답글러"},
+                    "parentId": 252502612,
+                    "message": {"title": "", "message": "답글은 최신글 목록에서 제외"},
+                    "board": {"topic": "미국주식이야기", "subjectId": "LOUNGE_193394", "subjectType": "LOUNGE"},
+                    "statistic": {"likeCount": 0, "replyCount": 0, "readCount": 1},
+                    "createdAt": "2026-05-27T23:37:12+09:00",
+                    "accessLevel": "EXTERNAL_PUBLIC",
+                },
+            ],
+            "key": 252502612,
+            "totalCount": 74892,
+            "hasNext": True,
+        }
+    }
+
+    posts = TossInvestAdapter.parse_comments_payload(payload, board_id="us-stock-lounge")
+
+    assert len(posts) == 1
+    assert posts[0].source == "TOSSINVEST"
+    assert posts[0].board_id == "us-stock-lounge"
+    assert posts[0].external_id == "TOSSINVEST-252502612"
+    assert posts[0].url == "https://www.tossinvest.com/community/posts/252502612"
+    assert posts[0].title == "이거 맞나요..?"
+    assert posts[0].content == "주식 처음 주린이 입니다\n매달 200씩 가져갈 생각입니다"
+    assert posts[0].author == "토스러"
+    assert posts[0].published_at.isoformat() == "2026-05-27T14:36:12.528890+00:00"
+    assert posts[0].view_count == 23
+    assert posts[0].recommend_count == 7
+    assert posts[0].comment_count == 2
+
+
+@pytest.mark.anyio
+async def test_tossinvest_lounge_fetch_stream_walks_cursor_until_duplicate():
+    first_payload = {
+        "result": {
+            "results": [
+                {
+                    "commentId": 3,
+                    "author": {"nickname": "writer"},
+                    "parentId": None,
+                    "message": {"title": "새 글", "message": "테슬라 얘기"},
+                    "board": {"topic": "미국주식이야기", "subjectId": "LOUNGE_193394", "subjectType": "LOUNGE"},
+                    "statistic": {"likeCount": 1, "replyCount": 0, "readCount": 10},
+                    "createdAt": "2026-05-27T23:36:12+09:00",
+                    "accessLevel": "EXTERNAL_PUBLIC",
+                }
+            ],
+            "key": 3,
+            "hasNext": True,
+        }
+    }
+    second_payload = {
+        "result": {
+            "results": [
+                {
+                    "commentId": 2,
+                    "author": {"nickname": "writer"},
+                    "parentId": None,
+                    "message": {"title": "이미 본 글", "message": ""},
+                    "board": {"topic": "미국주식이야기", "subjectId": "LOUNGE_193394", "subjectType": "LOUNGE"},
+                    "statistic": {"likeCount": 0, "replyCount": 0, "readCount": 9},
+                    "createdAt": "2026-05-27T23:35:12+09:00",
+                    "accessLevel": "EXTERNAL_PUBLIC",
+                }
+            ],
+            "key": 2,
+            "hasNext": True,
+        }
+    }
+    fetcher = FakeFetcher(
+        {
+            "https://wts-cert-api.tossinvest.com/api/v4/comments?subjectType=LOUNGE&subjectId=LOUNGE_193394&commentSortType=RECENT": json.dumps(first_payload),
+            "https://wts-cert-api.tossinvest.com/api/v4/comments?subjectType=LOUNGE&subjectId=LOUNGE_193394&commentSortType=RECENT&lastCommentId=3": json.dumps(second_payload),
+        }
+    )
+    target = CrawlTarget.community_board(
+        "TOSSINVEST",
+        board_id="us-stock-lounge",
+        url="https://wts-cert-api.tossinvest.com/api/v4/comments?subjectType=LOUNGE&subjectId=LOUNGE_193394&commentSortType=RECENT",
+    )
+    adapter = TossInvestAdapter(fetcher, target=target, stream_crawler=BoardStreamCrawler(max_pages_per_run=5))
+
+    result = await adapter.fetch_stream(BoardWatermark(last_seen_external_id="TOSSINVEST-2"))
+
+    assert fetcher.urls == [
+        "https://wts-cert-api.tossinvest.com/api/v4/comments?subjectType=LOUNGE&subjectId=LOUNGE_193394&commentSortType=RECENT",
+        "https://wts-cert-api.tossinvest.com/api/v4/comments?subjectType=LOUNGE&subjectId=LOUNGE_193394&commentSortType=RECENT&lastCommentId=3",
+    ]
+    assert [post.external_id for post in result.posts] == ["TOSSINVEST-3"]
+    assert result.coverage.pages_fetched == 2
+    assert result.coverage.rows_seen == 2
+    assert result.coverage.duplicate_stop is True
 
 
 @pytest.mark.anyio

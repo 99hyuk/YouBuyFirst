@@ -65,32 +65,56 @@ def test_default_crawl_targets_prioritize_watchlist_before_core_stock_board_targ
         ("DCINSIDE", "neostock"),
         ("DCINSIDE", "koreastock"),
         ("PPOMPPU", "stock"),
+        ("TOSSINVEST", "us-stock-lounge"),
+        ("TOSSINVEST", "kr-stock-lounge"),
     ]
     diffusion_targets = [target for target in targets if target.kind == CrawlTargetKind.GENERAL_BOARD_DIFFUSION]
     assert [(target.board_id, target.diffusion_type, target.url) for target in diffusion_targets] == [
         ("nyse", "concept", "https://gall.dcinside.com/mini/board/lists/?id=nyse&exception_mode=recommend"),
         ("neostock", "concept", "https://gall.dcinside.com/board/lists/?id=neostock&exception_mode=recommend"),
         ("koreastock", "concept", "https://gall.dcinside.com/mini/board/lists/?id=koreastock&exception_mode=recommend"),
+        (
+            "us-stock-lounge",
+            "popular",
+            "https://wts-cert-api.tossinvest.com/api/v4/comments?subjectType=LOUNGE&subjectId=LOUNGE_193394&commentSortType=POPULAR",
+        ),
+        (
+            "kr-stock-lounge",
+            "popular",
+            "https://wts-cert-api.tossinvest.com/api/v4/comments?subjectType=LOUNGE&subjectId=LOUNGE_193404&commentSortType=POPULAR",
+        ),
     ]
-    assert [target.priority for target in diffusion_targets] == [260, 270, 280]
+    assert [target.priority for target in diffusion_targets] == [260, 270, 280, 300, 310]
 
 
-def test_community_board_registry_keeps_disabled_diffusion_candidates_out_of_default_targets():
+def test_community_board_registry_tracks_latest_and_diffusion_targets():
     registry = community_board_registry(fmkorea_url="https://example.com/stock")
 
-    assert [entry.board_id for entry in registry] == ["stock", "nyse", "neostock", "koreastock", "stock"]
+    assert [entry.board_id for entry in registry] == [
+        "stock",
+        "nyse",
+        "neostock",
+        "koreastock",
+        "stock",
+        "us-stock-lounge",
+        "kr-stock-lounge",
+    ]
     assert [(entry.source, entry.display_name, entry.market_scope) for entry in registry] == [
         ("FMKOREA", "FMKOREA stock board", "KR_US"),
         ("DCINSIDE", "DCInside US stock gallery", "US"),
         ("DCINSIDE", "DCInside stock gallery", "KR_GENERAL"),
         ("DCINSIDE", "DCInside domestic stock gallery", "KR"),
         ("PPOMPPU", "PPOMPPU stock forum", "KR_US"),
+        ("TOSSINVEST", "TossInvest US stock lounge", "US"),
+        ("TOSSINVEST", "TossInvest domestic stock lounge", "KR"),
     ]
     assert registry[0].latest_url == "https://example.com/stock"
     assert registry[0].diffusion_boards[0].diffusion_type == "popular"
     assert registry[0].diffusion_boards[0].enabled_by_default is False
+    assert registry[4].source == "PPOMPPU"
+    assert registry[4].diffusion_boards[0].enabled_by_default is False
     assert registry[-1].diffusion_boards[0].diffusion_type == "popular"
-    assert registry[-1].diffusion_boards[0].enabled_by_default is False
+    assert registry[-1].diffusion_boards[0].enabled_by_default is True
 
 
 def test_community_diffusion_target_builds_separate_target_identity():
@@ -188,17 +212,19 @@ def test_adapters_are_created_from_targets_with_target_metadata():
         CrawlTarget.community_diffusion_board("DCINSIDE", board_id="nyse", diffusion_type="concept", url="https://example.com/concept"),
         CrawlTarget.community_board("DCINSIDE", board_id="nyse", url="https://example.com/dc"),
         CrawlTarget.community_board("PPOMPPU", board_id="stock", url="https://example.com/ppomppu"),
+        CrawlTarget.community_board("TOSSINVEST", board_id="us-stock-lounge", url="https://example.com/toss"),
     ]
 
     adapters = _adapters_from_targets(targets, fetcher)
 
-    assert [adapter.source for adapter in adapters] == ["NAVER", "FMKOREA", "DCINSIDE", "DCINSIDE", "PPOMPPU"]
+    assert [adapter.source for adapter in adapters] == ["NAVER", "FMKOREA", "DCINSIDE", "DCINSIDE", "PPOMPPU", "TOSSINVEST"]
     assert [adapter.target.target_id for adapter in adapters] == [
         "NAVER:KR:005930",
         "FMKOREA:community-board",
         "DCINSIDE:nyse:diffusion:concept",
         "DCINSIDE:nyse",
         "PPOMPPU:stock",
+        "TOSSINVEST:us-stock-lounge",
     ]
 
 

@@ -65,10 +65,14 @@
 | `DCINSIDE` | 주식 갤러리 | 국내 주식과 시장 전반 단기 반응 |
 | `DCINSIDE` | 국내주식 갤러리 | 국내 종목 중심 반응 |
 | `PPOMPPU` | 증권포럼 | 국내 투자자 일반 반응, 추천/조회 확산 |
+| `TOSSINVEST` | 미국주식이야기 라운지 | 미국장 전반 분위기와 종목 언급 흐름 |
+| `TOSSINVEST` | 국내주식토론 라운지 | 국내장 전반 분위기와 종목 언급 흐름 |
 
-pipeline의 `community_board_registry()`는 위 1차 대상의 최신글 URL, source 안의 `boardId`, 표시명, 시장 범위, 기본 우선순위를 한곳에서 관리합니다. 기본 최신글 target은 5개 게시판 모두 활성화합니다.
+pipeline의 `community_board_registry()`는 위 1차 대상의 최신글 URL, source 안의 `boardId`, 표시명, 시장 범위, 기본 우선순위를 한곳에서 관리합니다. 기본 최신글 target은 7개 게시판/라운지를 활성화합니다.
 
 source 활성화 상태가 `enabled` 또는 허용된 로컬 환경의 `local-research-only`가 아니면 외부 요청을 보내지 않습니다. 로그인, CAPTCHA, 프록시 회전, fingerprint 위장은 하지 않고, 공개 HTTP 목록 수집을 우선합니다. Playwright는 정적 HTTP로 공개 목록을 읽을 수 없지만 정책상 허용되는 렌더링 수집일 때만 사용합니다. FMKOREA는 로컬 개인 지표용으로만 다루며, 수집이 허용된 로컬 환경에서도 HTTP 목록 요청을 먼저 보내지 않고 처음부터 브라우저 렌더링으로 접근합니다.
+
+2026-05-28 확인 기준으로 토스증권은 공개 웹 robots.txt에서 `/`를 허용하고, 종목 커뮤니티 sitemap과 `미국주식이야기`/`국내주식토론` 라운지의 공개 JSON 목록이 확인됐습니다. 다만 공식 오픈 API가 아니라 웹 프론트가 사용하는 공개 관찰 경로이므로 source policy는 `local-research-only`로 두고, `accessLevel=EXTERNAL_PUBLIC` 글만 제한 snippet으로 저장합니다.
 
 ### 순회 방식
 
@@ -173,6 +177,8 @@ watermark는 run이 성공적으로 끝났거나 partial이라도 저장된 새 
 | `DCINSIDE` | `koreastock` | `concept` | enabled | 공개 목록에서 `exception_mode=recommend` 개념글 목록 확인 |
 | `FMKOREA` | `stock` | `popular` | disabled | 인기글 URL과 공개 브라우저 접근성을 별도 확인한 뒤 활성화 |
 | `PPOMPPU` | `stock` | `popular` | disabled | 핫/인기 category URL과 공개 HTTP 접근성을 별도 확인한 뒤 활성화 |
+| `TOSSINVEST` | `us-stock-lounge` | `popular` | enabled | 라운지 `commentSortType=POPULAR` 공개 목록 확인 |
+| `TOSSINVEST` | `kr-stock-lounge` | `popular` | enabled | 라운지 `commentSortType=POPULAR` 공개 목록 확인 |
 
 disabled 확산 후보는 registry에 남기지만 `default_crawl_targets()`에서는 target으로 만들지 않습니다. URL이 불확실하거나 공개 HTTP 접근이 불안정한 상태에서 crawler가 임의 요청을 보내지 않게 하기 위한 기준입니다.
 

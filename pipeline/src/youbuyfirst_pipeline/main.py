@@ -23,6 +23,7 @@ from youbuyfirst_pipeline.crawlers.dcinside import DcinsideAdapter
 from youbuyfirst_pipeline.crawlers.fmkorea import FmkoreaAdapter
 from youbuyfirst_pipeline.crawlers.naver import NaverBoardAdapter
 from youbuyfirst_pipeline.crawlers.ppomppu import PpomppuAdapter
+from youbuyfirst_pipeline.crawlers.tossinvest import TossInvestAdapter
 from youbuyfirst_pipeline.instruments import load_alias_rules, load_instrument_snapshot, review_alias_rules
 from youbuyfirst_pipeline.llm import build_llm_provider
 from youbuyfirst_pipeline.market_investor_flows import (
@@ -181,6 +182,12 @@ def _adapters_from_targets(
             CrawlTargetKind.GENERAL_BOARD_DIFFUSION,
         }:
             adapters.append(PpomppuAdapter(fetcher, target=target, stream_crawler=stream_crawler))
+            continue
+        if target.source == "TOSSINVEST" and target.kind in {
+            CrawlTargetKind.COMMUNITY_BOARD,
+            CrawlTargetKind.GENERAL_BOARD_DIFFUSION,
+        }:
+            adapters.append(TossInvestAdapter(fetcher, target=target, stream_crawler=stream_crawler))
             continue
         raise ValueError(f"unsupported crawl target: {target.target_id}")
     return adapters
